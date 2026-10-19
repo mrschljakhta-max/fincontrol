@@ -6,7 +6,7 @@
     {
       "binding": "DB",
       "database_name": "fincontrol-db",
-      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+      "database_id": "b1ace3a9-6ebb-496a-a7f3-235cb528d641"
     }
   ]
 }
