@@ -1,0 +1,8 @@
+node_modules/
+.dev.vars
+.env
+.wrangler/
+*.sqlite
+*.sqlite3
+*.csv
+*.xlsx
