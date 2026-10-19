@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS entries (id TEXT PRIMARY KEY, entry_date TEXT NOT NULL, kind TEXT NOT NULL CHECK(kind IN ('income','expense','debt_payment')), category TEXT NOT NULL, amount_cents INTEGER NOT NULL CHECK(amount_cents>0), description TEXT NOT NULL DEFAULT '', status TEXT NOT NULL CHECK(status IN ('planned','actual')), created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE INDEX IF NOT EXISTS idx_entries_date ON entries(entry_date);
