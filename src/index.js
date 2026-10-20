@@ -56,7 +56,7 @@ export default {async fetch(request,env){
     if(!b||typeof b!=="object"||Array.isArray(b))return json({error:"Invalid input"},400);
     const amount=typeof b.amount==="number"?b.amount:NaN;
     const validDate=typeof b.entry_date==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(b.entry_date)&&!Number.isNaN(Date.parse(b.entry_date))&&new Date(b.entry_date).toISOString().slice(0,10)===b.entry_date;
-    if(!validDate||!["income","expense","debt_payment"].includes(b.kind)||!["planned","actual"].includes(b.status)||typeof b.category!=="string"||!b.category.trim()||b.category.length>80||typeof b.description!=="string"||b.description.length>300||!Number.isFinite(amount)||amount<=0||amount>100000000||Math.round(amount*100)!==amount*100)return json({error:"Invalid input"},400);
+    if(!validDate||!["income","expense","debt_payment"].includes(b.kind)||!["planned","actual"].includes(b.status)||typeof b.category!=="string"||!b.category.trim()||b.category.length>80||typeof b.description!=="string"||b.description.length>300||!Number.isFinite(amount)||amount<=0||amount>100000000||Math.abs(Math.round(amount*100)-amount*100)>1e-7)return json({error:"Invalid input"},400);
     try{const id=crypto.randomUUID();await env.DB.prepare("INSERT INTO entries(id,entry_date,kind,category,amount_cents,description,status) VALUES(?,?,?,?,?,?,?)").bind(id,b.entry_date,b.kind,b.category.trim(),Math.round(amount*100),b.description,b.status).run();return json({id},201)}catch{return json({error:"Database unavailable"},503)}
   }
   return json({error:"Not found"},404);
