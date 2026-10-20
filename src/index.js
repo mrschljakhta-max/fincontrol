@@ -40,7 +40,7 @@ if(!entries.length){const tr=document.createElement("tr");cell(tr,"Операц�
 for(const x of entries){const tr=document.createElement("tr");[x.entry_date,kinds[x.kind]||x.kind,x.category,fmt(x.amount_cents/100),x.status==="planned"?"План":"Факт",x.description].forEach(v=>cell(tr,v));tbody.append(tr)}
 }
 async function load(){const r=await fetch("/api/entries");if(!r.ok)throw Error("Не вдалося прочитати записи ("+r.status+")");entries=await r.json();draw()}
-document.querySelector('[name="entry_date"]').value=new Date().toLocaleDateString("en-CA");
+const today=new Date();const localDay=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");document.querySelector('[name="entry_date"]').value=localDay;
 document.getElementById("entry").addEventListener("submit",async e=>{e.preventDefault();const f=e.currentTarget;const btn=f.querySelector("button");btn.disabled=true;const notice=document.getElementById("notice");notice.textContent="Збереження…";try{const body=Object.fromEntries(new FormData(f));body.amount=Number(body.amount);const r=await fetch("/api/entries",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw Error("Помилка збереження ("+r.status+")");await load();notice.textContent="Збережено";f.elements.amount.value="";f.elements.description.value=""}catch(err){notice.textContent=err.message}finally{btn.disabled=false}});
 document.getElementById("export").addEventListener("click",()=>{const esc=x=>'"'+String(x??"").replace(/"/g,'""')+'"';const cols=["entry_date","kind","category","amount_cents","status","description"];const csv="\uFEFF"+[cols.join(";"),...entries.map(x=>cols.map(k=>esc(x[k])).join(";"))].join("\r\n");const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download="fincontrol-entries.csv";a.click();URL.revokeObjectURL(url)});
 load().catch(err=>{document.getElementById("notice").textContent=err.message;document.getElementById("rows").textContent="Немає доступу до даних"});
@@ -53,8 +53,10 @@ export default {async fetch(request,env){
   if(url.pathname==="/api/entries"&&request.method==="GET"){try{const r=await env.DB.prepare("SELECT * FROM entries ORDER BY entry_date DESC, created_at DESC LIMIT 2000").all();return json(r.results)}catch{return json({error:"Database unavailable"},503)}}
   if(url.pathname==="/api/entries"&&request.method==="POST"){
     let b;try{b=await request.json()}catch{return json({error:"Invalid JSON"},400)}
-    const amount=Number(b.amount);
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(b.entry_date)||!["income","expense","debt_payment"].includes(b.kind)||!["planned","actual"].includes(b.status)||typeof b.category!=="string"||!b.category.trim()||b.category.length>80||typeof b.description!=="string"||b.description.length>300||!Number.isFinite(amount)||amount<=0||amount>100000000)return json({error:"Invalid input"},400);
+    if(!b||typeof b!=="object"||Array.isArray(b))return json({error:"Invalid input"},400);
+    const amount=typeof b.amount==="number"?b.amount:NaN;
+    const validDate=typeof b.entry_date==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(b.entry_date)&&!Number.isNaN(Date.parse(b.entry_date))&&new Date(b.entry_date).toISOString().slice(0,10)===b.entry_date;
+    if(!validDate||!["income","expense","debt_payment"].includes(b.kind)||!["planned","actual"].includes(b.status)||typeof b.category!=="string"||!b.category.trim()||b.category.length>80||typeof b.description!=="string"||b.description.length>300||!Number.isFinite(amount)||amount<=0||amount>100000000||Math.round(amount*100)!==amount*100)return json({error:"Invalid input"},400);
     try{const id=crypto.randomUUID();await env.DB.prepare("INSERT INTO entries(id,entry_date,kind,category,amount_cents,description,status) VALUES(?,?,?,?,?,?,?)").bind(id,b.entry_date,b.kind,b.category.trim(),Math.round(amount*100),b.description,b.status).run();return json({id},201)}catch{return json({error:"Database unavailable"},503)}
   }
   return json({error:"Not found"},404);
