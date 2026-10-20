@@ -9,8 +9,10 @@ async function verifyAccess(request,env){
     const h=JSON.parse(new TextDecoder().decode(b64(parts[0])));
     const p=JSON.parse(new TextDecoder().decode(b64(parts[1])));
     const now=Math.floor(Date.now()/1000);
-    const issuer="https://"+env.ACCESS_TEAM_DOMAIN.replace(/^https?:\/\//,"").replace(/\/$/,"");
-    if(h.alg!=="RS256"||!h.kid||p.iss!==issuer||!Array.isArray(p.aud)||!p.aud.includes(env.ACCESS_AUD)||!p.exp||p.exp<=now||!p.iat||p.iat>now+60)return false;
+    const domain=env.ACCESS_TEAM_DOMAIN.replace(/^https?:\/\//,"").replace(/\/$/,"");
+    if(!/^[a-z0-9-]+\.cloudflareaccess\.com$/i.test(domain))return false;
+    const issuer="https://"+domain;
+    if(h.alg!=="RS256"||!h.kid||p.nbf>now+60||p.iss!==issuer||!Array.isArray(p.aud)||!p.aud.includes(env.ACCESS_AUD)||!p.exp||p.exp<=now||!p.iat||p.iat>now+60)return false;
     const res=await fetch(issuer+"/cdn-cgi/access/certs",{cf:{cacheTtl:300,cacheEverything:true}});
     if(!res.ok)return false;
     const certs=await res.json();const jwk=certs.keys?.find(k=>k.kid===h.kid&&k.kty==="RSA");
