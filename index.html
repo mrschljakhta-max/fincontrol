@@ -20,7 +20,8 @@ function save(){localStorage.setItem(KEY,JSON.stringify(state));draw()}
 function cell(row,value){const td=document.createElement("td");td.textContent=String(value??"");row.append(td);return td}
 function draw(){
 const sum=kind=>state.entries.filter(e=>e.status==="actual"&&e.kind===kind).reduce((a,e)=>a+e.cents,0);
-const inc=sum("income"),exp=sum("expense"),paid=sum("debt_payment");\nlet creditBalance=null;try{const credits=JSON.parse(localStorage.getItem("fincontrol-debts-v1"))?.credits;if(Array.isArray(credits))creditBalance=credits.reduce((a,c)=>a+(Number.isSafeInteger(c.balance)&&c.balance>=0?c.balance:0),0)}catch{}
+const inc=sum("income"),exp=sum("expense"),paid=sum("debt_payment");
+let creditBalance=null;try{const credits=JSON.parse(localStorage.getItem("fincontrol-debts-v1"))?.credits;if(Array.isArray(credits))creditBalance=credits.reduce((a,c)=>a+(Number.isSafeInteger(c.balance)&&c.balance>=0?c.balance:0),0)}catch{}
 for(const [id,value] of Object.entries({income:inc,expense:exp,paid,balance:inc-exp-paid,debt:creditBalance===null?Math.max(0,state.debtCents-paid):creditBalance}))document.getElementById(id).textContent=(id!=="debt"&&state.entries.filter(e=>e.status==="actual").length===0?"Немає записів":money(value));
 
 const body=document.getElementById("rows");body.replaceChildren();
