@@ -81,9 +81,14 @@ test('real 3D mesh renders, then advances continuously without scrolling',()=>{
  assert.ok(h.stats.draws>start);
  assert.ok(h.uniforms.some(v=>v.name==='uTime'&&v.value>0));
 });
-test('scroll past hero pauses GPU animation, returning resumes it',()=>{
+test('crystal stays animated throughout the page and stops after phone transition',()=>{
  const h=harness();
  h.api.setStage(3);
+ assert.ok(h.pending.size>0);
+ const before=h.stats.draws;
+ h.nextFrame(1200);
+ assert.ok(h.stats.draws>before);
+ h.api.setStage(7);
  assert.equal(h.pending.size,0);
  h.api.setStage(0);
  assert.ok(h.pending.size>0);
