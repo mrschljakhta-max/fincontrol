@@ -10,7 +10,7 @@
  if(!canvas||!shell)return;
  const reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)');
  let gl,program,buffer,indices=0,lastTime=0,active=true,frameId=0,paused=false,
-     width=0,height=0,scrollStage=0,angleOffset=0,rendered=false,contextLost=false;
+     width=0,height=0,scrollStage=0,renderTime=0,rendered=false,contextLost=false;
  const root=document.body;
  const fract=x=>x-Math.floor(x);
  let seed=41821;
@@ -50,7 +50,7 @@
   vTint=aTint;
   vChunk=aChunk;
   vView=p.z;
-  float perspective=2.88/(4.15-p.z);
+  float perspective=2.45/(4.35-p.z);
   gl_Position=vec4(p.x*perspective/uAspect,p.y*perspective,-p.z*.19,1.);
  }
  `;
@@ -240,6 +240,7 @@
  function draw(ms){
   if(!gl||contextLost)return;
   resize();
+  renderTime=ms;
   const clock=ms/1000;
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   gl.useProgram(program);
@@ -271,10 +272,10 @@
   setStage(value){
    scrollStage=Number.isFinite(value)?Math.max(0,value):0;
    if(!isRelevant()){stop();return}
-   if(!isMotionOn())draw(0);
+   if(!isMotionOn())draw(renderTime);
    else start();
   },
-  setMotion(yes){paused=!yes;if(!yes){stop();draw(0)}else start()},
+  setMotion(yes){paused=!yes;if(!yes){stop();draw(renderTime)}else start()},
   destroy(){active=false;stop();if(gl){gl.deleteBuffer(buffer);gl.deleteProgram(program)}root.classList.remove('ex-webgl-ready')}
  };
  window.FCCrystal3D=API;
