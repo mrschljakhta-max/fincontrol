@@ -1,0 +1,75 @@
+/* FINCONTROL Crystal Engine: real 3D facets instead of a rotating flat PNG.
+   Loaded after existing experience-core and photo-core CSS; preserves all fallbacks. */
+.ex-page .ex-morph-shell{
+  --ex-3d-scale:1;
+}
+.ex-page #ex-crystal-3d{
+  position:absolute;
+  z-index:1;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  pointer-events:none;
+  opacity:0;
+  transform:scale(var(--ex-3d-scale,1));
+  transform-origin:50% 50%;
+  filter:drop-shadow(0 0 12px rgba(250,47,76,.18));
+  transition:opacity .45s ease;
+}
+.ex-page .ex-core-lava{
+  position:absolute;
+  z-index:0;
+  pointer-events:none;
+  left:28%;
+  top:27%;
+  width:44%;
+  height:46%;
+  border-radius:50%;
+  opacity:0;
+  background:
+    radial-gradient(circle at 50% 48%,
+      rgba(255,247,242,.93) 0%,
+      rgba(255,117,137,.85) 4%,
+      rgba(250,47,76,.66) 13%,
+      rgba(171,43,65,.36) 32%,
+      rgba(171,43,65,.17) 47%,
+      transparent 71%);
+  filter:blur(15px);
+  transform:scale(1);
+  mix-blend-mode:screen;
+  animation:ex-3d-lava-breath 3.7s ease-in-out infinite;
+}
+.ex-page.ex-webgl-ready #ex-crystal-3d{
+  opacity:var(--ex-stone-visible,1);
+}
+.ex-page.ex-webgl-ready .ex-core-lava{
+  opacity:calc(var(--ex-stone-visible,1) * .98);
+}
+.ex-page.ex-webgl-ready #ex-rock-idle{
+  visibility:hidden;
+}
+.ex-page.ex-webgl-ready .ex-core-svg{
+  position:relative;
+  z-index:3;
+}
+.ex-page.ex-webgl-ready .ex-orbit{
+  opacity:calc(var(--ex-orbit-visible,1) * .75);
+}
+.ex-page.ex-webgl-ready .ex-debris{
+  opacity:.38;
+}
+@keyframes ex-3d-lava-breath{
+  0%,100%{transform:scale(.92);filter:blur(15px)}
+  50%{transform:scale(1.13);filter:blur(20px)}
+}
+/* Full-motion-off and accessibility conditions freeze both 3D and aura. */
+.ex-page.ex-motion-off .ex-core-lava{animation:none!important}
+@media(prefers-reduced-motion:reduce){
+ .ex-page .ex-core-lava{animation:none!important}
+ .ex-page #ex-crystal-3d{transition:none!important}
+}
+@media(max-width:700px){
+ .ex-page #ex-crystal-3d{filter:none}
+ .ex-page .ex-core-lava{filter:blur(12px)}
+}
