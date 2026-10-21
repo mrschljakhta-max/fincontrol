@@ -265,6 +265,11 @@ html{scroll-padding-top:calc(78px + 12px)}
  font-weight:680;
 }
 .ex-page .ex-button-primary{
+ /* Accessible white button labels: darkest point #BB2543 ≈ 6.07:1;
+    brightest point #C72947 ≈ 5.47:1. Neon #FA2F4C lives in the glow/border. */
+ background:linear-gradient(112deg,#AB2B41,#BB2543 55%,#C72947);
+ color:#FFFFFF!important;
+ border:1px solid rgba(255,107,127,.5);
  box-shadow:0 10px 33px rgba(250,47,76,.26),inset 0 1px rgba(255,255,255,.15);
 }
 .ex-page .ex-hero-actions{gap:clamp(12px,1.8vw,28px)}
