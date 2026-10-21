@@ -9,7 +9,7 @@
  const shell=document.getElementById('ex-morph-shell');
  if(!canvas||!shell)return;
  const reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)');
- let gl,program,buffer,indices=0,lastTime=0,active=true,frameId=0,paused=false,
+ let gl,program,buffer,rockTexture=null,rockTextureReady=false,indices=0,lastTime=0,active=true,frameId=0,paused=false,
      width=0,height=0,scrollStage=0,renderTime=0,rendered=false,contextLost=false;
  const root=document.body;
  const fract=x=>x-Math.floor(x);
@@ -20,12 +20,13 @@
  const norm=v=>{const d=len(v)||1;return v.map(x=>x/d)};
  const sub=(a,b)=>a.map((x,i)=>x-b[i]);
  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
- const attribs=8;
+ const attribs=10;
  const vSource=`
  attribute vec3 aPosition;
  attribute vec3 aNormal;
  attribute float aTint;
  attribute float aChunk;
+ attribute vec2 aUV;
  uniform float uTime;
  uniform float uStage;
  uniform float uAspect;
@@ -34,6 +35,7 @@
  varying float vTint;
  varying float vChunk;
  varying float vView;
+ varying vec2 vUV;
  mat3 rx(float a){float c=cos(a),s=sin(a);return mat3(1.,0.,0.,0.,c,-s,0.,s,c);}
  mat3 ry(float a){float c=cos(a),s=sin(a);return mat3(c,0.,s,0.,1.,0.,-s,0.,c);}
  mat3 rz(float a){float c=cos(a),s=sin(a);return mat3(c,-s,0.,s,c,0.,0.,0.,1.);}
@@ -50,6 +52,7 @@
   vTint=aTint;
   vChunk=aChunk;
   vView=p.z;
+  vUV=aUV;
   float perspective=2.45/(4.35-p.z);
   gl_Position=vec4(p.x*perspective/uAspect,p.y*perspective,-p.z*.19,1.);
  }
@@ -57,6 +60,9 @@
  const fSource=`
  precision highp float;
  uniform float uTime;
+ uniform float uHasTexture;
+ uniform sampler2D uRockTexture;
+ varying vec2 vUV;
  varying vec3 vNormal;
  varying vec3 vSurface;
  varying float vTint;
@@ -101,6 +107,14 @@
   color+=vec3(.31,.08,.13)*rim*.32;
   color+=vec3(.99,.035,.082)*lava*(1.1+grain*.45);
   color+=vec3(.21,.018,.045)*pow(noise(vSurface*4.1),2.)*.24;
+  if(uHasTexture>.5){
+   // Original user-approved obsidian photo is a surface detail map, NOT a
+   // 2-D billboard. Facets still rotate in true 3D with normal-based light.
+   vec4 detail=texture2D(uRockTexture,vUV);
+   vec3 enhanced=detail.rgb*(.48+diff*.45+rim*.12)+vec3(.08,.01,.02)*lava;
+   color=mix(color,enhanced,detail.a*.72);
+   color+=vec3(1.,.06,.12)*lava*.4;
+  }
   color*=.95+min(vView,1.0)*.05;
   gl_FragColor=vec4(color,1.0);
  }
@@ -186,10 +200,37 @@
     if(n.some(x=>!Number.isFinite(x)))n=[0,0,1];
     const tint=Math.min(1,.17+rnd()*.92);
     for(const p of [v0,v1,v2])
-     values.push(p[0],p[1],p[2],n[0],n[1],n[2],tint,k*.11);
+     values.push(p[0],p[1],p[2],n[0],n[1],n[2],tint,k*.11,.5+p[0]/2.8,.5+p[1]/2.8);
    }
   }
   return new Float32Array(values);
+ }
+ function loadTexture(){
+  // Same-origin source also used by the SVG fallback. It is optional.
+  if(!gl||typeof Image==='undefined')return;
+  const target=gl;
+  rockTexture=target.createTexture();
+  target.bindTexture(target.TEXTURE_2D,rockTexture);
+  target.texParameteri(target.TEXTURE_2D,target.TEXTURE_MIN_FILTER,target.LINEAR);
+  target.texParameteri(target.TEXTURE_2D,target.TEXTURE_MAG_FILTER,target.LINEAR);
+  target.texParameteri(target.TEXTURE_2D,target.TEXTURE_WRAP_S,target.CLAMP_TO_EDGE);
+  target.texParameteri(target.TEXTURE_2D,target.TEXTURE_WRAP_T,target.CLAMP_TO_EDGE);
+  // Transparent 1x1 until the optional detailed photographic texture arrives.
+  target.texImage2D(target.TEXTURE_2D,0,target.RGBA,1,1,0,target.RGBA,target.UNSIGNED_BYTE,new Uint8Array([0,0,0,0]));
+  const image=new Image();
+  image.decoding='async';
+  image.onload=()=>{
+   if(!active||contextLost||gl!==target||!rockTexture)return;
+   try{
+    target.bindTexture(target.TEXTURE_2D,rockTexture);
+    target.pixelStorei(target.UNPACK_FLIP_Y_WEBGL,true);
+    target.texImage2D(target.TEXTURE_2D,0,target.RGBA,target.RGBA,target.UNSIGNED_BYTE,image);
+    rockTextureReady=true;
+    if(!isMotionOn())draw(renderTime);
+   }catch(err){rockTextureReady=false}
+  };
+  image.onerror=()=>{rockTextureReady=false};
+  image.src='assets/images/fincontrol-core-rock.webp?v=1';
  }
  function init(){
   try{
@@ -203,7 +244,7 @@
    gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
    gl.bufferData(gl.ARRAY_BUFFER,geometry,gl.STATIC_DRAW);
    const stride=attribs*4;
-   for(const [name,count,start] of [['aPosition',3,0],['aNormal',3,3],['aTint',1,6],['aChunk',1,7]]){
+   for(const [name,count,start] of [['aPosition',3,0],['aNormal',3,3],['aTint',1,6],['aChunk',1,7],['aUV',2,8]]){
     const p=gl.getAttribLocation(program,name);
     if(p<0)continue;
     gl.enableVertexAttribArray(p);
@@ -213,6 +254,7 @@
    gl.depthFunc(gl.LEQUAL);
    gl.disable(gl.CULL_FACE);
    gl.clearColor(0,0,0,0);
+   loadTexture();
    resize();
    draw(0);
    if(gl.getError()!==gl.NO_ERROR)throw Error('WebGL drawing error');
@@ -244,6 +286,10 @@
   const clock=ms/1000;
   gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   gl.useProgram(program);
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D,rockTexture);
+  gl.uniform1i(gl.getUniformLocation(program,'uRockTexture'),0);
+  gl.uniform1f(gl.getUniformLocation(program,'uHasTexture'),rockTextureReady?1:0);
   gl.uniform1f(gl.getUniformLocation(program,'uTime'),clock);
   gl.uniform1f(gl.getUniformLocation(program,'uStage'),scrollStage);
   gl.uniform1f(gl.getUniformLocation(program,'uAspect'),width/height);
@@ -277,7 +323,7 @@
    else start();
   },
   setMotion(yes){paused=!yes;if(!yes){stop();draw(renderTime)}else start()},
-  destroy(){active=false;stop();if(gl){gl.deleteBuffer(buffer);gl.deleteProgram(program)}root.classList.remove('ex-webgl-ready')}
+  destroy(){active=false;stop();if(gl){gl.deleteBuffer(buffer);if(rockTexture)gl.deleteTexture(rockTexture);gl.deleteProgram(program)}root.classList.remove('ex-webgl-ready')}
  };
  window.FCCrystal3D=API;
  canvas.addEventListener('webglcontextlost',event=>{
