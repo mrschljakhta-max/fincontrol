@@ -1,0 +1,92 @@
+/* FINCONTROL premium concept phone — photographic 3/4 render, independently moving.
+ * The real asset is a local transparent WebP, not a background screenshot or SVG icon.
+ * Scrolling blends the 3D obsidian crystal into this premium product render.
+ */
+.ex-page .ex-morph-shell{--ex-premium-loaded:0;--ex-phone-pop:0}
+.ex-page .ex-premium-phone{
+  position:absolute;
+  z-index:5;
+  display:block;
+  width:72%;
+  height:auto;
+  max-height:118%;
+  object-fit:contain;
+  top:50%;
+  left:50%;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+  opacity:0;
+  transform:translate3d(-35%,-55%,0) scale(.78);
+  filter:drop-shadow(0 25px 28px rgba(0,0,0,.65)) drop-shadow(0 0 22px rgba(250,47,76,.21));
+  transition:opacity .36s ease-out;
+  will-change:transform,opacity;
+}
+.ex-page.ex-premium-ready .ex-premium-phone{
+  opacity:var(--ex-phone-visible,0);
+}
+.ex-page.ex-premium-ready .ex-device{
+  visibility:hidden;
+}
+.ex-page .ex-premium-phone-frame{
+  display:block;
+  width:100%;
+  height:auto;
+  transform-origin:50% 52%;
+  animation:ex-premium-levitate 8.5s ease-in-out infinite;
+}
+.ex-page .ex-premium-phone-glare{
+  position:absolute;
+  z-index:6;
+  width:24%;
+  height:62%;
+  top:12%;
+  left:46%;
+  opacity:0;
+  pointer-events:none;
+  transform:translate3d(0,0,0) rotate(-21deg);
+  background:linear-gradient(100deg,transparent 0%,rgba(243,252,255,.02) 30%,rgba(243,252,255,.08) 46%,transparent 68%);
+  filter:blur(9px);
+  mix-blend-mode:screen;
+  border-radius:35%;
+}
+.ex-page.ex-premium-ready .ex-premium-phone-glare{
+  opacity:calc(var(--ex-phone-visible,0) * .58);
+  animation:ex-premium-glint 10s ease-in-out infinite;
+}
+@keyframes ex-premium-levitate{
+  0%,100%{transform:translate3d(0,2px,0) rotate(-1.5deg) scale(.985)}
+  50%{transform:translate3d(0,-9px,0) rotate(1.4deg) scale(1.015)}
+}
+@keyframes ex-premium-glint{
+  0%,100%{transform:translateX(-18px) rotate(-21deg);opacity:0}
+  20%{opacity:.12}
+  52%{transform:translateX(34px) rotate(-21deg);opacity:.66}
+  78%{opacity:.08}
+}
+.ex-page.ex-motion-off .ex-premium-phone-frame,
+.ex-page.ex-motion-off .ex-premium-phone-glare{
+  animation:none!important;
+}
+.ex-page.ex-motion-off .ex-premium-phone{
+  transition:none!important;
+}
+@media(max-width:850px){
+ .ex-page .ex-premium-phone{
+    width:78%;
+    transform:translate3d(-32%,-56%,0) scale(.80);
+ }
+ .ex-page .ex-premium-phone-glare{display:none}
+}
+@media(max-width:600px){
+ .ex-page .ex-premium-phone{
+    width:82%;
+    filter:drop-shadow(0 15px 18px rgba(0,0,0,.64));
+    transform:translate3d(-35%,-59%,0) scale(.88);
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .ex-page .ex-premium-phone-frame,
+ .ex-page .ex-premium-phone-glare{animation:none!important}
+ .ex-page .ex-premium-phone{transition:none!important;will-change:auto}
+}
