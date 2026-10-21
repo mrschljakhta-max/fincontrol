@@ -50,6 +50,27 @@ function outline(values){
  }
  return result;
 }
+function extraValidation(k,v){
+ const validDate=s=>typeof s==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(Date.parse(s));
+ if(k==='fincontrol-privat-rules-v1'){
+  if(!isObject(v)||Object.keys(v).length>25000||Object.values(v).some(x=>!['income','expense','internal_transfer','cash_withdrawal','refund','review','skip'].includes(x)))
+   throw Error('Некоректні правила імпорту Приват24.');
+ }
+ if(k==='fincontrol-smart-rules-v1'){
+  if(v.length>25000||v.some(x=>!isObject(x)||typeof x.pattern!=='string'||typeof x.category!=='string'||!['income','expense','refund','review'].includes(x.kind)))
+   throw Error('Некоректна структура розумних правил.');
+ }
+ if(k==='fincontrol-calendar-v1'){
+  if(v.events.length>50000||v.events.some(x=>!isObject(x)||!validDate(x.date)||!Number.isSafeInteger(x.cents)||x.cents<=0||!['income','expense'].includes(x.kind)||!['once','monthly'].includes(x.repeat)))
+   throw Error('Некоректні події фінансового календаря.');
+ }
+ if(k==='fincontrol-goals-v1'){
+  if(!isObject(v)||['monthly','extra','buffer'].some(field=>!Number.isFinite(v[field])||v[field]<0)||(v.buffer>80))
+   throw Error('Некоректні параметри фінансових цілей.');
+ }
+ if(k==='fincontrol-audit-changelog-v1'&&!Array.isArray(v))throw Error('Некоректний журнал виправлень.');
+ if(['fincontrol-dashboard-v2','fincontrol-ui-compact-v1','fincontrol-nav-groups-v1'].includes(k)&&!isObject(v))throw Error('Некоректні параметри інтерфейсу.');
+}
 function inspectBackup(data,store){
  if(!isObject(data)||data.format!==FORMAT||data.version!==VERSION||!isObject(data.data))
   throw Error('Це не повна резервна копія FINCONTROL версії 2. Старі копії журналу імпортуй через розділ «Журнал».');
@@ -69,6 +90,7 @@ function inspectBackup(data,store){
   try{value=JSON.parse(raw)}catch{throw Error('Пошкоджений JSON модуля: '+label(k))}
   store.validate(k,value);
   if(value===null)throw Error('У копії порожній модуль: '+label(k));
+  extraValidation(k,value);
   parsed[k]=value;
   if(!Object.hasOwn(labelMap,k))warnings.push('Невідомий модуль: '+k+'. Його буде перенесено як є.');
  }
@@ -93,6 +115,7 @@ function inspectBackup(data,store){
   const ids=debts.credits.map(c=>c.id);
   if(new Set(ids).size!==ids.length)throw Error('Кредитний реєстр має повторювані ідентифікатори.');
  }
+ if(bytes>3500000)warnings.push('Копія доволі велика. Для відновлення браузеру може знадобитися додаткове місце у локальному сховищі.');
  const info=outline(rawData);
  return {backup:data,parsed,info,warnings,bytes};
 }
