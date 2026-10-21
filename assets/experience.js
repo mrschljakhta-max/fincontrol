@@ -9,9 +9,25 @@
  const fmt=new Intl.NumberFormat('uk-UA',{style:'currency',currency:'UAH',maximumFractionDigits:0});
  const compact=new Intl.NumberFormat('uk-UA',{notation:'compact',maximumFractionDigits:1});
  const number=new Intl.NumberFormat('uk-UA');
+ let privacyOn=false;
+ const privacyKey='fincontrol-experience-private-v1';
+ try{privacyOn=localStorage.getItem(privacyKey)==='on'}catch{}
+ const privacyButton=$('ex-privacy-toggle');
+ function applyPrivacy(){
+  document.body.classList.toggle('ex-private-on',privacyOn);
+  privacyButton.setAttribute('aria-pressed',String(privacyOn));
+  privacyButton.setAttribute('aria-label',privacyOn?'Показати фінансові суми':'Приховати фінансові суми');
+  privacyButton.textContent=privacyOn?'◉':'◌';
+ }
+ privacyButton.addEventListener('click',()=>{
+  privacyOn=!privacyOn;applyPrivacy();
+  try{localStorage.setItem(privacyKey,privacyOn?'on':'off')}catch{}
+  refreshData();
+ });
+ applyPrivacy();
  const percent=x=>Math.max(0,Math.min(100,Number.isFinite(x)?x:0));
- const cash=cents=>Number.isFinite(cents)?fmt.format(cents/100):'—';
- const amount=uah=>Number.isFinite(uah)?fmt.format(uah):'—';
+ const cash=cents=>privacyOn&&Number.isFinite(cents)?'••••':Number.isFinite(cents)?fmt.format(cents/100):'—';
+ const amount=uah=>privacyOn&&Number.isFinite(uah)?'••••':Number.isFinite(uah)?fmt.format(uah):'—';
  const stamp=d=>C.day(d).toLocaleDateString('uk-UA',{day:'numeric',month:'short'});
  const captionMonth=d=>C.day(d).toLocaleDateString('uk-UA',{month:'long',year:'numeric'});
  const signed={income:1,refund:1,expense:-1,debt_payment:-1,reserve_deposit:-1};
@@ -61,8 +77,8 @@
   set('ex-month-expenses',cash(totals.out));
   set('ex-month-reserve',cash(totals.reserve));
   const ratio=totals.inc>0?Math.round(100*totals.out/totals.inc):null;
-  set('ex-donut-value',ratio===null?'—':ratio+'%');
-  $('ex-overview-donut').style.setProperty('--ex-donut-angle',percent(ratio)+'%');
+  set('ex-donut-value',ratio===null?'—':privacyOn?'••':ratio+'%');
+  $('ex-overview-donut').style.setProperty('--ex-donut-angle',(privacyOn?0:percent(ratio))+'%');
   note.textContent=ratio===null?'Без надходжень у цьому місяці відсоток витрат не розраховується.':'Витрати й кредитні платежі — як частка надходжень. Резерв показано окремо, власні перекази не включено.';
  }
  function renderCalendar(calendar,ledger,debts,today){
@@ -149,9 +165,9 @@
   const saved=reserve.saved+net,target=reserve.target;
   const progress=percent(100*saved/target);
   set('ex-reserve-amount',amount(saved));set('ex-reserve-target','із '+amount(target));
-  set('ex-reserve-percent',Math.round(progress)+'%');
+  set('ex-reserve-percent',privacyOn?'••':Math.round(progress)+'%');
   set('ex-reserve-left',amount(Math.max(0,target-saved)));
-  $('ex-reserve-progress').dataset.target=progress.toFixed(1)+'%';
+  $('ex-reserve-progress').dataset.target=(privacyOn?0:progress).toFixed(1)+'%';
  }
  function renderHome(home){
   if(!home||!Number.isFinite(home.priceUsd)||!Number.isFinite(home.rate)||home.priceUsd<=0||home.rate<=0){
@@ -164,8 +180,8 @@
   const saved=Number(home.saved||0);
   const progress=percent(100*saved/target);
   set('ex-house-saved',amount(saved));set('ex-house-target','із '+amount(target));
-  set('ex-house-percent',Math.round(progress)+'%');
-  $('ex-house-progress').dataset.target=progress.toFixed(1)+'%';
+  set('ex-house-percent',privacyOn?'••':Math.round(progress)+'%');
+  $('ex-house-progress').dataset.target=(privacyOn?0:progress).toFixed(1)+'%';
  }
  function renderAnalytics(ledger,today){
   const container=$('ex-chart');container.replaceChildren();
@@ -184,9 +200,9 @@
    const bars=el('div','ex-chart-bars');
    for(const [type,val] of [['in',m.inc],['out',m.out]]){
     const bar=el('span','ex-chart-bar'+(type==='out'?' is-out':''));
-    bar.style.setProperty('--bar-h',val?Math.max(3,val/max*100)+'%':'0%');
+    bar.style.setProperty('--bar-h',privacyOn?'5%':val?Math.max(3,val/max*100)+'%':'0%');
     bar.style.setProperty('--bar-delay',idx*70+'ms');
-    bar.setAttribute('title',(type==='in'?'Надходження':'Витрати')+' · '+cash(val));
+    bar.setAttribute('title',privacyOn?'Суми приховано':(type==='in'?'Надходження':'Витрати')+' · '+cash(val));
     bars.append(bar);
    }
    group.append(bars,el('span','ex-chart-month',C.day(m.ym+'-01').toLocaleDateString('uk-UA',{month:'short'})));
