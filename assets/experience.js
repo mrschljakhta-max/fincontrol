@@ -17,7 +17,10 @@
   document.body.classList.toggle('ex-private-on',privacyOn);
   privacyButton.setAttribute('aria-pressed',String(privacyOn));
   privacyButton.setAttribute('aria-label',privacyOn?'Показати фінансові суми':'Приховати фінансові суми');
-  privacyButton.textContent=privacyOn?'◉':'◌';
+  // Preserve the inline Tabler SVG when toggling privacy. TextContent would
+  // remove the icon node and break future keyboard/visual state updates.
+  privacyButton.querySelector('use')?.setAttribute?.('href',
+   'assets/icons/tabler-sprite.svg#ti-'+(privacyOn?'eye':'eye-off'));
  }
  privacyButton.addEventListener('click',()=>{
   privacyOn=!privacyOn;applyPrivacy();
@@ -66,6 +69,8 @@
   motionButton.setAttribute('aria-pressed',String(motionEnabled));
   motionButton.setAttribute('aria-label',motionEnabled?'Вимкнути рух':'Увімкнути рух');
   motionButton.querySelector('span:last-child').textContent=motionEnabled?'Рух':'Без руху';
+  motionButton.querySelector('.ex-motion-glyph use')?.setAttribute?.('href',
+   'assets/icons/tabler-sprite.svg#ti-'+(motionEnabled?'player-pause':'player-play'));
   if(persist)try{localStorage.setItem(motionKey,motionEnabled?'on':'off')}catch{}
   if(!motionEnabled)reveal.forEach(el=>el.classList.add('is-visible'));
   else if('IntersectionObserver' in window)observeReveals();
@@ -77,6 +82,8 @@
  document.body.classList.toggle('ex-motion-off',!motionEnabled);
  motionButton.setAttribute('aria-pressed',String(motionEnabled));
  if(!motionEnabled)motionButton.querySelector('span:last-child').textContent='Без руху';
+ motionButton.querySelector('.ex-motion-glyph use')?.setAttribute?.('href',
+  'assets/icons/tabler-sprite.svg#ti-'+(motionEnabled?'player-pause':'player-play'));
  const read=k=>{try{return S.read(k)}catch(e){lastError=e.message;return null}};
  const el=(tag,cls='',str)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(str!==undefined)x.textContent=String(str);return x};
  const set=(id,v)=>{$(id).textContent=v};
@@ -185,7 +192,8 @@
   if(!active.length){host.append(el('p','ex-empty','Непогашених кредитів немає.'));return}
   for(const credit of active.slice(0,4)){
    const row=el('div','ex-credit-row');
-   const symbol=el('span','ex-credit-icon','▣');symbol.setAttribute('aria-hidden','true');
+   const symbol=el('span','ex-credit-icon');symbol.setAttribute('aria-hidden','true');
+   symbol.innerHTML='<svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-credit-card"></use></svg>';
    const info=el('div');info.append(el('strong','',credit.name||'Кредит'));
    const due=C.validDate(credit.due)?'Платіж · '+stamp(credit.due):'Термін не задано';
    info.append(el('small','',due));
