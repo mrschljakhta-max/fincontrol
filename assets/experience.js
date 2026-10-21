@@ -75,7 +75,7 @@
   const month=first.slice(0,7);
   set('ex-calendar-month',captionMonth(first));
   const container=$('ex-calendar-grid');container.replaceChildren();
-  const days=C.ordinal(last)-C.ordinal(displayStart)+1;
+  const days=Math.ceil(distance/7)*7;
   for(let i=0;i<days;i++){
    const date=C.addDays(displayStart,i),list=byDay.get(date)||[],button=el('button','ex-calendar-day');
    button.type='button';
