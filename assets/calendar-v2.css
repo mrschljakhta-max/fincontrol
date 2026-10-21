@@ -1,0 +1,182 @@
+/* FINCONTROL CALENDAR 2.0 — responsive monthly agenda, restrained graphitic palette. */
+.fc-calendar-page main{max-width:1500px;padding:22px clamp(18px,2.6vw,36px) 86px}
+.fc-calendar-page .fc-cal-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:6px 0 18px}
+.fc-calendar-page .fc-cal-heading h1{font-size:clamp(24px,2.6vw,35px);font-weight:630;letter-spacing:-.045em;margin:0 0 4px;line-height:1.2}
+.fc-calendar-page .fc-cal-heading .eyebrow{font-size:9px;color:var(--slate);letter-spacing:.15em;margin:0 0 6px}
+.fc-calendar-page .fc-cal-today{color:var(--slate);font-size:12px;margin:0}
+.fc-calendar-page .fc-cal-heading-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.fc-calendar-page button{font-size:12px;font-weight:520}
+.fc-calendar-page .fc-cal-primary{background:var(--red);color:var(--ink);border:1px solid var(--red);border-radius:9px;min-height:39px;padding:9px 15px;font-size:12px;font-weight:700}
+.fc-calendar-page .fc-cal-primary:hover{background:#ff647e;color:var(--ink)}
+.fc-calendar-page .fc-cal-secondary{background:transparent;border:1px solid var(--line);border-radius:8px;color:var(--silver);min-height:39px;padding:8px 12px}
+.fc-calendar-page .fc-cal-secondary:hover{background:rgba(88,75,82,.28);border-color:var(--mauve)}
+.fc-calendar-page .fc-cal-notice{border:1px solid rgba(205,215,220,.22);border-radius:9px;background:rgba(51,42,48,.35);padding:12px 14px;font-size:12px;margin-bottom:13px;color:var(--silver)}
+.fc-calendar-page .fc-cal-notice.is-error{color:#ffb1bd;border-color:rgba(250,47,76,.35)}
+.fc-calendar-page .fc-cal-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:11px}
+.fc-calendar-page .fc-cal-stat{background:linear-gradient(140deg,rgba(88,75,82,.13),rgba(51,42,48,.43));border:1px solid var(--line);border-radius:11px;min-width:0;padding:14px 16px}
+.fc-calendar-page .fc-cal-stat small,.fc-calendar-page .fc-cal-stat span{display:block;color:var(--slate);line-height:1.4}
+.fc-calendar-page .fc-cal-stat small{font-size:11px}
+.fc-calendar-page .fc-cal-stat span{font-size:10px}
+.fc-calendar-page .fc-cal-stat strong{display:block;font-size:clamp(20px,2vw,27px);font-weight:650;letter-spacing:-.045em;line-height:1.15;margin:6px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fc-calendar-page .fc-cal-alert.has-overdue{border-color:rgba(250,47,76,.55);background:rgba(171,43,65,.12)}
+.fc-calendar-page .fc-cal-alert.has-overdue strong{color:#ff9daf}
+.fc-calendar-page .fc-cal-layout{display:grid;grid-template-columns:minmax(0,1.64fr) minmax(310px,.86fr);gap:11px;align-items:start}
+.fc-calendar-page .fc-cal-card{background:linear-gradient(145deg,rgba(88,75,82,.09),rgba(51,42,48,.35));border:1px solid var(--line);border-radius:12px;padding:17px 18px;min-width:0;margin:0 0 11px}
+.fc-calendar-page .fc-cal-card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;min-width:0;margin-bottom:14px}
+.fc-calendar-page .fc-cal-card-head h2{font-size:19px;font-weight:600;letter-spacing:-.03em;margin:0}
+.fc-calendar-page .fc-cal-card-head h3{font-size:14px;font-weight:600;margin:0}
+.fc-calendar-page .fc-cal-eyebrow{font-size:9px;color:var(--slate);letter-spacing:.14em;margin:0 0 4px;font-weight:650}
+.fc-calendar-page .fc-cal-navigation{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+.fc-calendar-page .fc-cal-arrow{border:1px solid var(--line);background:transparent;color:var(--silver);border-radius:8px;min-width:33px;padding:6px;min-height:34px;font-size:23px;line-height:1}
+.fc-calendar-page .fc-cal-arrow:hover{background:rgba(88,75,82,.25)}
+.fc-calendar-page .fc-cal-navigation .fc-cal-secondary{min-height:34px;padding:7px 11px;font-size:11px}
+.fc-calendar-page .fc-cal-weekdays,.fc-calendar-page .fc-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.fc-calendar-page .fc-cal-weekdays{margin-bottom:7px;color:var(--slate);font-size:10px;text-align:center;font-weight:600}
+.fc-calendar-page .fc-cal-grid .fc-cal-blank{min-height:100px}
+.fc-calendar-page .fc-cal-day{min-width:0;min-height:102px;border:1px solid rgba(155,165,167,.17);background:rgba(19,26,32,.65);border-radius:8px;padding:7px 7px 6px;text-align:left;color:var(--silver);display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:5px;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.fc-calendar-page .fc-cal-day:hover{border-color:var(--mauve);background:rgba(51,42,48,.55)}
+.fc-calendar-page .fc-cal-day.is-today{border-color:rgba(250,47,76,.86);background:rgba(171,43,65,.12)}
+.fc-calendar-page .fc-cal-day.is-today .fc-cal-day-num{color:#ff8092}
+.fc-calendar-page .fc-cal-day.is-selected{box-shadow:inset 0 0 0 1.5px var(--red);background:rgba(171,43,65,.2)}
+.fc-calendar-page .fc-cal-day.is-today.is-selected{box-shadow:inset 0 0 0 2px var(--red)}
+.fc-calendar-page .fc-cal-day:focus-visible{outline:2px solid var(--silver);outline-offset:2px}
+.fc-calendar-page .fc-cal-day-head{display:flex;align-items:center;justify-content:space-between;gap:2px}
+.fc-calendar-page .fc-cal-day-num{font-size:12px;font-weight:700}
+.fc-calendar-page .fc-cal-day-flag{font-size:8px;white-space:nowrap;color:var(--red);letter-spacing:.02em}
+.fc-calendar-page .fc-cal-day-list{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fc-calendar-page .fc-cal-day-chip{display:flex;gap:4px;align-items:center;border-radius:5px;background:rgba(88,75,82,.2);font-size:9px;line-height:1.35;min-width:0;max-width:100%;padding:3px 4px;text-align:left}
+.fc-calendar-page .fc-cal-day-chip .fc-cal-chip-dot{width:5px;height:5px;border-radius:50%;background:var(--slate);flex:0 0 5px}
+.fc-calendar-page .fc-cal-day-chip .fc-cal-chip-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.fc-calendar-page .fc-cal-day-chip.is-income .fc-cal-chip-dot,.fc-calendar-page .fc-cal-legend i.is-income{background:#82d8b8}
+.fc-calendar-page .fc-cal-day-chip.is-expense .fc-cal-chip-dot,.fc-calendar-page .fc-cal-legend i.is-expense{background:#FA2F4C}
+.fc-calendar-page .fc-cal-day-chip.is-credit .fc-cal-chip-dot,.fc-calendar-page .fc-cal-legend i.is-credit{background:#edae79}
+.fc-calendar-page .fc-cal-day-chip.is-reserve .fc-cal-chip-dot,.fc-calendar-page .fc-cal-legend i.is-reserve{background:#8eaee5}
+.fc-calendar-page .fc-cal-day-chip.is-done{opacity:.5}
+.fc-calendar-page .fc-cal-day-chip.is-done .fc-cal-chip-dot,.fc-calendar-page .fc-cal-legend i.is-done{background:var(--slate)}
+.fc-calendar-page .fc-cal-day-more{font-size:9px;color:var(--slate)}
+.fc-calendar-page .fc-cal-legend{display:flex;flex-wrap:wrap;align-items:center;gap:9px 15px;color:var(--slate);font-size:10px;margin-top:13px}
+.fc-calendar-page .fc-cal-legend span{display:flex;align-items:center;gap:6px}
+.fc-calendar-page .fc-cal-legend i{height:6px;width:6px;background:var(--slate);border-radius:50%;display:inline-block}
+.fc-calendar-page .fc-cal-footnote{font-size:11px;color:var(--slate);line-height:1.5;margin:12px 0 0}
+.fc-calendar-page .fc-cal-count{font-size:11px;font-variant-numeric:tabular-nums;color:var(--slate);border:1px solid var(--line);padding:4px 9px;border-radius:20px}
+.fc-calendar-page .fc-cal-event-list{display:grid;gap:7px}
+.fc-calendar-page .fc-cal-item{display:flex;align-items:flex-start;gap:10px;padding:11px;border:1px solid var(--line);background:rgba(19,26,32,.44);border-radius:9px;min-width:0}
+.fc-calendar-page .fc-cal-item-icon{width:29px;height:29px;border-radius:8px;display:grid;place-items:center;flex:0 0 29px;background:rgba(88,75,82,.3);color:var(--silver);font-size:14px}
+.fc-calendar-page .fc-cal-item-icon.is-income,.fc-calendar-page .fc-cal-template-icon.is-income{color:#82d8b8;background:rgba(130,216,184,.1)}
+.fc-calendar-page .fc-cal-item-icon.is-expense,.fc-calendar-page .fc-cal-template-icon.is-expense{color:#ff8296;background:rgba(250,47,76,.12)}
+.fc-calendar-page .fc-cal-item-icon.is-credit,.fc-calendar-page .fc-cal-template-icon.is-credit{color:#edae79;background:rgba(237,174,121,.1)}
+.fc-calendar-page .fc-cal-item-icon.is-reserve,.fc-calendar-page .fc-cal-template-icon.is-reserve{color:#8eaee5;background:rgba(142,174,229,.12)}
+.fc-calendar-page .fc-cal-item-body{min-width:0;flex:1}
+.fc-calendar-page .fc-cal-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+.fc-calendar-page .fc-cal-item strong{font-size:12px;font-weight:600;overflow-wrap:anywhere}
+.fc-calendar-page .fc-cal-item-amount{white-space:nowrap;font-size:12px!important;font-variant-numeric:tabular-nums}
+.fc-calendar-page .fc-cal-item-amount.is-income{color:#82d8b8}
+.fc-calendar-page .fc-cal-item-amount.is-expense,.fc-calendar-page .fc-cal-item-amount.is-credit{color:#ff9daf}
+.fc-calendar-page .fc-cal-item-amount.is-reserve{color:#8eaee5}
+.fc-calendar-page .fc-cal-item-meta{display:flex;flex-wrap:wrap;align-items:center;gap:5px 10px;font-size:10px;color:var(--slate);line-height:1.4;margin-top:5px}
+.fc-calendar-page .fc-cal-item-note{font-size:10px;color:var(--slate);line-height:1.45;margin:6px 0 0;overflow-wrap:anywhere}
+.fc-calendar-page .fc-cal-item-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.fc-calendar-page .fc-cal-item-actions button,.fc-calendar-page .fc-cal-item-actions a{border:0;background:transparent;color:var(--silver);font-size:11px;text-decoration:underline;text-decoration-color:var(--mauve);min-height:30px;padding:4px 1px;border-radius:0;cursor:pointer}
+.fc-calendar-page .fc-cal-item-actions button:hover,.fc-calendar-page .fc-cal-item-actions a:hover{color:var(--red);background:transparent}
+.fc-calendar-page .fc-cal-item.is-done{opacity:.65}
+.fc-calendar-page .fc-cal-item.is-done strong{text-decoration:line-through;text-decoration-color:var(--slate)}
+.fc-calendar-page .fc-cal-empty{padding:20px 12px;background:rgba(19,26,32,.27);border:1px dashed var(--line);border-radius:9px;text-align:center;color:var(--slate);font-size:12px;line-height:1.6}
+.fc-calendar-page .fc-cal-day-note{color:var(--slate);font-size:11px;line-height:1.55;margin-top:11px}
+.fc-calendar-page .fc-cal-divider{border-top:1px solid var(--line);margin:16px 0}
+.fc-calendar-page .fc-cal-next-head{margin-bottom:10px}
+.fc-calendar-page .fc-cal-upcoming,.fc-calendar-page .fc-cal-overdue-list{display:grid;gap:6px}
+.fc-calendar-page .fc-cal-upcoming-row{display:flex;align-items:center;gap:9px;text-align:left;background:rgba(19,26,32,.4);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:52px;color:var(--silver);width:100%;cursor:pointer}
+.fc-calendar-page .fc-cal-upcoming-row:hover{border-color:var(--mauve);background:rgba(51,42,48,.55)}
+.fc-calendar-page .fc-cal-upcoming-date{min-width:50px;color:var(--slate);font-size:10px}
+.fc-calendar-page .fc-cal-upcoming-text{min-width:0;flex:1;display:grid;gap:3px}
+.fc-calendar-page .fc-cal-upcoming-text strong{font-weight:600;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fc-calendar-page .fc-cal-upcoming-text small{font-size:9px;color:var(--slate)}
+.fc-calendar-page .fc-cal-upcoming-row .fc-cal-item-amount{font-size:11px!important}
+.fc-calendar-page .fc-cal-overdue{border-color:rgba(250,47,76,.26)}
+.fc-calendar-page .fc-cal-overdue .fc-cal-card-head h2{font-size:16px}
+.fc-calendar-page .fc-cal-overdue-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fc-calendar-page .fc-cal-quick-card .fc-cal-card-head{margin-bottom:10px}
+.fc-calendar-page .fc-cal-templates{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.fc-calendar-page .fc-cal-template{display:flex;align-items:center;gap:10px;text-align:left;background:rgba(19,26,32,.52);border:1px solid var(--line);color:var(--silver);border-radius:10px;padding:11px;min-height:65px}
+.fc-calendar-page .fc-cal-template:hover{border-color:var(--mauve);background:rgba(51,42,48,.5)}
+.fc-calendar-page .fc-cal-template-icon{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:9px;font-size:19px}
+.fc-calendar-page .fc-cal-template strong{display:block;font-size:12px}
+.fc-calendar-page .fc-cal-template small{display:block;color:var(--slate);font-size:10px;margin-top:3px}
+.fc-calendar-page .fc-cal-disclosure{padding:0}
+.fc-calendar-page .fc-cal-disclosure>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 17px;font-size:12px;font-weight:650;cursor:pointer;list-style:none}
+.fc-calendar-page .fc-cal-disclosure>summary::-webkit-details-marker{display:none}
+.fc-calendar-page .fc-cal-disclosure[open]>summary{border-bottom:1px solid var(--line)}
+.fc-calendar-page .fc-cal-disclosure[open]>summary span:last-child{transform:rotate(180deg)}
+.fc-calendar-page .fc-cal-quick-card .fc-cal-disclosure{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:rgba(19,26,32,.3)}
+.fc-calendar-page .fc-cal-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;padding:16px}
+.fc-calendar-page .fc-cal-fields label{font-size:11px;color:var(--slate);display:grid;gap:6px;min-width:0}
+.fc-calendar-page .fc-cal-fields input,.fc-calendar-page .fc-cal-fields select{min-width:0;width:100%;height:40px;color:var(--silver);font-size:13px}
+.fc-calendar-page .fc-cal-form-actions{display:flex;align-items:end;gap:8px;flex-wrap:wrap;grid-column:1/-1}
+.fc-calendar-page #form-message{margin:0 16px 14px}
+.fc-calendar-page .fc-cal-settings>.fc-cal-footnote{padding:0 17px;margin:15px 0}
+.fc-calendar-page .fc-cal-forecast-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 17px 14px}
+.fc-calendar-page .fc-cal-forecast-grid>div{min-width:0;border:1px solid var(--line);background:rgba(19,26,32,.45);border-radius:9px;padding:10px}
+.fc-calendar-page .fc-cal-forecast-grid small{display:block;color:var(--slate);font-size:10px}
+.fc-calendar-page .fc-cal-forecast-grid strong{display:block;font-size:clamp(14px,1.7vw,22px);font-weight:600;letter-spacing:-.03em;margin-top:7px;overflow-wrap:anywhere}
+.fc-calendar-page .fc-cal-forecast-grid strong.is-danger{color:#ff9daf}
+.fc-calendar-page .fc-cal-opening{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;padding:0 17px 17px}
+.fc-calendar-page .fc-cal-opening label{display:grid;gap:6px;font-size:11px;color:var(--slate)}
+.fc-calendar-page .fc-cal-opening input{min-width:140px;font-size:14px}
+.fc-calendar-page .fc-cal-table-actions{padding:0 17px 11px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.fc-calendar-page .fc-cal-table-actions .fc-cal-footnote{margin:0}
+.fc-calendar-page .fc-cal-table-scroll{max-height:400px;overflow:auto;border-top:1px solid var(--line)}
+.fc-calendar-page .fc-cal-table-scroll table{min-width:670px;border-collapse:collapse;width:100%;font-size:12px}
+.fc-calendar-page .fc-cal-table-scroll th,.fc-calendar-page .fc-cal-table-scroll td{padding:10px 12px;text-align:left;vertical-align:middle;border-bottom:1px solid var(--line)}
+.fc-calendar-page .fc-cal-table-scroll th{font-size:10px;color:var(--slate);background:var(--ink);position:sticky;top:0}
+.fc-calendar-page .fc-cal-table-scroll button{font-size:11px;min-height:32px;padding:4px 9px;background:transparent;border:1px solid var(--line);color:var(--silver)}
+.fc-calendar-page .fc-cal-safety{font-size:11px;line-height:1.6;color:var(--slate);margin:14px 0}
+.fc-calendar-page .fc-cal-safety a{color:var(--silver)}
+@media(max-width:1150px){.fc-calendar-page .fc-cal-layout{grid-template-columns:minmax(0,1.2fr) minmax(285px,.9fr)}.fc-calendar-page .fc-cal-day{min-height:95px;padding:5px}.fc-calendar-page .fc-cal-day-chip{font-size:8px}}
+@media(max-width:920px){.fc-calendar-page .fc-cal-layout{grid-template-columns:1fr}.fc-calendar-page .fc-cal-day{min-height:102px}.fc-calendar-page .fc-cal-event-list{grid-template-columns:repeat(2,minmax(0,1fr))}.fc-calendar-page .fc-cal-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){
+ .fc-calendar-page main{padding:18px 12px calc(92px + env(safe-area-inset-bottom))}
+ .fc-calendar-page .fc-cal-heading{gap:9px;align-items:flex-start;margin:4px 0 13px}
+ .fc-calendar-page .fc-cal-heading h1{font-size:23px}
+ .fc-calendar-page .fc-cal-heading .eyebrow{font-size:8px}
+ .fc-calendar-page .fc-cal-heading-actions{justify-content:flex-end;gap:5px}
+ .fc-calendar-page .fc-cal-heading-actions button{min-height:35px;padding:7px 10px;font-size:11px}
+ .fc-calendar-page .fc-cal-today{font-size:10px}
+ .fc-calendar-page .fc-cal-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .fc-calendar-page .fc-cal-stat{padding:11px 12px}
+ .fc-calendar-page .fc-cal-stat small{font-size:10px}
+ .fc-calendar-page .fc-cal-stat strong{font-size:23px;margin:5px 0}
+ .fc-calendar-page .fc-cal-stat span{font-size:9px}
+ .fc-calendar-page .fc-cal-card{padding:12px 10px;margin-bottom:9px}
+ .fc-calendar-page .fc-cal-card-head h2{font-size:17px}
+ .fc-calendar-page .fc-cal-navigation{gap:3px}
+ .fc-calendar-page .fc-cal-navigation .fc-cal-secondary{font-size:10px;min-height:31px;padding:5px 7px}
+ .fc-calendar-page .fc-cal-arrow{min-height:31px;min-width:30px}
+ .fc-calendar-page .fc-cal-grid,.fc-calendar-page .fc-cal-weekdays{gap:3px}
+ .fc-calendar-page .fc-cal-grid .fc-cal-blank{min-height:67px}
+ .fc-calendar-page .fc-cal-day{min-height:67px;padding:5px 3px 4px;gap:4px;border-radius:6px}
+ .fc-calendar-page .fc-cal-day-head{justify-content:center}
+ .fc-calendar-page .fc-cal-day-num{font-size:12px}
+ .fc-calendar-page .fc-cal-day-flag{display:none}
+ .fc-calendar-page .fc-cal-day-list{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:3px}
+ .fc-calendar-page .fc-cal-day-chip{padding:0;display:block;width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--slate)}
+ .fc-calendar-page .fc-cal-day-chip.is-income{background:#82d8b8}
+ .fc-calendar-page .fc-cal-day-chip.is-expense{background:#FA2F4C}
+ .fc-calendar-page .fc-cal-day-chip.is-credit{background:#edae79}
+ .fc-calendar-page .fc-cal-day-chip.is-reserve{background:#8eaee5}
+ .fc-calendar-page .fc-cal-day-chip.is-done{background:var(--slate)}
+ .fc-calendar-page .fc-cal-day-chip .fc-cal-chip-dot,.fc-calendar-page .fc-cal-day-chip .fc-cal-chip-text{display:none}
+ .fc-calendar-page .fc-cal-day-more{font-size:8px}
+ .fc-calendar-page .fc-cal-legend{font-size:9px;gap:7px 10px}
+ .fc-calendar-page .fc-cal-footnote{font-size:10px}
+ .fc-calendar-page .fc-cal-event-list,.fc-calendar-page .fc-cal-overdue-list{grid-template-columns:1fr}
+ .fc-calendar-page .fc-cal-templates{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .fc-calendar-page .fc-cal-template{padding:9px;min-height:58px}
+ .fc-calendar-page .fc-cal-fields{grid-template-columns:1fr;padding:13px}
+ .fc-calendar-page .fc-cal-fields label{font-size:12px}
+ .fc-calendar-page .fc-cal-forecast-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .fc-calendar-page .fc-cal-forecast-grid strong{font-size:18px}
+ .fc-calendar-page .fc-cal-disclosure>summary{padding:13px 10px}
+ .fc-calendar-page .fc-cal-table-actions{padding:0 10px 10px}
+}
+@media(max-width:370px){.fc-calendar-page .fc-cal-heading{flex-wrap:wrap}.fc-calendar-page .fc-cal-heading-actions{width:100%;justify-content:flex-end}.fc-calendar-page .fc-cal-day{min-height:62px}.fc-calendar-page .fc-cal-navigation .fc-cal-secondary{padding:5px}}
+@media(prefers-reduced-motion:reduce){.fc-calendar-page .fc-cal-day{transition:none}}
