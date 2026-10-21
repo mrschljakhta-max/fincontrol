@@ -61,8 +61,10 @@ function extraValidation(k,v){
    throw Error('Некоректна структура розумних правил.');
  }
  if(k==='fincontrol-calendar-v1'){
-  if(v.events.length>50000||v.events.some(x=>!isObject(x)||!validDate(x.date)||!Number.isSafeInteger(x.cents)||x.cents<=0||!['income','expense'].includes(x.kind)||!['once','monthly'].includes(x.repeat)))
+  if(v.events.length>50000||v.events.some(x=>!isObject(x)||typeof x.id!=='string'||typeof x.name!=='string'||!validDate(x.date)||!Number.isSafeInteger(x.cents)||x.cents<=0||!['income','expense','reserve_deposit','debt_payment'].includes(x.kind)||!['once','monthly'].includes(x.repeat)))
    throw Error('Некоректні події фінансового календаря.');
+  if(v.done!==undefined&&(!isObject(v.done)||Object.keys(v.done).length>50000||Object.entries(v.done).some(([key,value])=>!/^.{1,160}\\|\\d{4}-\\d{2}-\\d{2}$/.test(key)||value!==true)))
+   throw Error('Некоректні позначки виконання в календарі.');
  }
  if(k==='fincontrol-goals-v1'){
   if(!isObject(v)||['monthly','extra','buffer'].some(field=>!Number.isFinite(v[field])||v[field]<0)||(v.buffer>80))
