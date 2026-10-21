@@ -1,0 +1,157 @@
+/* FINCONTROL — autonomous crystalline core (2.0).
+   The core breathes, rocks and glows while scroll is completely still.
+   Transform loops are independent of the existing scroll-linked shape interpolation. */
+.ex-morph-shell{
+  --ex-stone-visible:1;
+  --ex-phone-visible:0;
+  --ex-orbit-visible:1;
+  isolation:isolate;
+  filter:drop-shadow(0 0 21px rgba(250,47,76,.20));
+}
+.ex-morph-shell .ex-core-svg{
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  transform:translateZ(0);
+}
+.ex-morph-shell #ex-rock-idle{
+  opacity:var(--ex-stone-visible,1);
+  transform-origin:140px 140px;
+  transform-box:view-box;
+  animation:ex-rock-breathe 14s ease-in-out infinite;
+}
+.ex-morph-shell #ex-morph-body{
+  transform-origin:140px 140px;
+  transform-box:view-box;
+  transform:rotate(var(--ex-orb-rotate,0deg));
+  filter:drop-shadow(3px 8px 7px rgba(0,0,0,.38));
+}
+.ex-morph-shell .ex-aura-breath{
+  transform-origin:140px 140px;
+  animation:ex-aura-breathe 5.5s ease-in-out infinite;
+}
+.ex-morph-shell .ex-crack-glow{
+  animation:ex-crack-blink 6.5s ease-in-out infinite;
+}
+.ex-morph-shell .ex-rock-cracks{
+  animation:ex-crack-blink 6.5s ease-in-out infinite reverse;
+}
+.ex-morph-shell .ex-energy-heart{
+  transform-origin:144px 144px;
+  animation:ex-heartbeat 4.8s cubic-bezier(.2,.4,.4,1) infinite;
+}
+.ex-morph-shell .ex-orbit{
+  transform-origin:140px 140px;
+  transform-box:view-box;
+  opacity:var(--ex-orbit-visible,1);
+  will-change:transform;
+}
+.ex-morph-shell .ex-orbit-back{
+  animation:ex-orbit-clockwise 29s linear infinite;
+}
+.ex-morph-shell .ex-orbit-front{
+  animation:ex-orbit-counter 21s linear infinite;
+}
+.ex-morph-shell .ex-shard{
+  transform-box:view-box;
+  transform-origin:140px 140px;
+  animation:ex-shard-drift 7s ease-in-out infinite;
+  animation-delay:var(--ex-shard-delay,0s);
+}
+.ex-morph-shell .ex-shard-1{animation-duration:9s}
+.ex-morph-shell .ex-shard-2{animation-duration:11s}
+.ex-morph-shell .ex-shard-3{animation-duration:6.5s}
+.ex-morph-shell .ex-spark{
+  animation:ex-spark-flash 4.2s ease-in-out infinite;
+  animation-delay:var(--ex-spark-delay,0s);
+}
+.ex-morph-shell .ex-device{
+  opacity:var(--ex-phone-visible,0);
+  transform-origin:140px 140px;
+  transform-box:view-box;
+  filter:drop-shadow(1px 12px 11px rgba(0,0,0,.52)) drop-shadow(0 0 12px rgba(250,47,76,.16));
+  pointer-events:none;
+}
+.ex-morph-shell .ex-phone-float{
+  transform-origin:140px 140px;
+  transform-box:view-box;
+  animation:ex-phone-hover 8.8s ease-in-out infinite;
+}
+.ex-morph-shell .ex-sparks{
+  opacity:var(--ex-orbit-visible,1);
+}
+@keyframes ex-rock-breathe{
+  0%,100%{transform:translate3d(0,0,0) rotate(-3.8deg) rotateY(-6deg) scale(.985)}
+  25%{transform:translate3d(0,-5px,0) rotate(.8deg) rotateY(5deg) scale(1.01)}
+  50%{transform:translate3d(0,-9px,0) rotate(4.2deg) rotateY(7deg) scale(1.025)}
+  75%{transform:translate3d(0,-3px,0) rotate(.6deg) rotateY(-2deg) scale(1.0)}
+}
+@keyframes ex-aura-breathe{
+  0%,100%{opacity:.60;transform:scale(.95)}
+  50%{opacity:1;transform:scale(1.16)}
+}
+@keyframes ex-heartbeat{
+  0%,100%{opacity:.78;transform:scale(.94)}
+  45%{opacity:1;transform:scale(1.09)}
+  52%{opacity:.88;transform:scale(1.03)}
+  58%{opacity:1;transform:scale(1.13)}
+}
+@keyframes ex-crack-blink{
+  0%,100%{opacity:.38}
+  20%{opacity:.63}
+  47%{opacity:.91}
+  64%{opacity:.52}
+  84%{opacity:.82}
+}
+@keyframes ex-orbit-clockwise{
+  from{transform:rotate(0)}
+  to{transform:rotate(360deg)}
+}
+@keyframes ex-orbit-counter{
+  from{transform:rotate(360deg)}
+  to{transform:rotate(0)}
+}
+@keyframes ex-shard-drift{
+  0%,100%{transform:translate3d(0,0,0) rotate(0)}
+  50%{transform:translate3d(4px,-3px,0) rotate(5deg)}
+}
+@keyframes ex-spark-flash{
+  0%,100%{opacity:.2}
+  50%{opacity:.92}
+}
+@keyframes ex-phone-hover{
+  0%,100%{transform:translate3d(0,0,0) rotate(-2deg) rotateY(-4deg)}
+  50%{transform:translate3d(0,-5px,0) rotate(2deg) rotateY(4deg)}
+}
+/* All loops stop when the site's motion toggle is off, or when the user prefers reduced motion. */
+.ex-motion-off .ex-morph-shell .ex-rock-idle,
+.ex-motion-off .ex-morph-shell .ex-phone-float,
+.ex-motion-off .ex-morph-shell .ex-orbit,
+.ex-motion-off .ex-morph-shell .ex-aura-breath,
+.ex-motion-off .ex-morph-shell .ex-energy-heart,
+.ex-motion-off .ex-morph-shell .ex-crack-glow,
+.ex-motion-off .ex-morph-shell .ex-rock-cracks,
+.ex-motion-off .ex-morph-shell .ex-shard,
+.ex-motion-off .ex-morph-shell .ex-spark{
+  animation:none!important;
+  transform:none!important;
+}
+@media(max-width:850px){
+ .ex-morph-shell{filter:drop-shadow(0 0 11px rgba(250,47,76,.20))}
+}
+@media(max-width:600px){
+ /* Keep the translucent backdrop readable on phones. */
+ .ex-morph-shell{opacity:calc(var(--ex-orb-opacity,.85) * .48)}
+}
+@media(prefers-reduced-motion:reduce){
+ .ex-morph-shell .ex-rock-idle,
+ .ex-morph-shell .ex-phone-float,
+ .ex-morph-shell .ex-orbit,
+ .ex-morph-shell .ex-aura-breath,
+ .ex-morph-shell .ex-energy-heart,
+ .ex-morph-shell .ex-crack-glow,
+ .ex-morph-shell .ex-rock-cracks,
+ .ex-morph-shell .ex-shard,
+ .ex-morph-shell .ex-spark{animation:none!important;transform:none!important;will-change:auto}
+}
