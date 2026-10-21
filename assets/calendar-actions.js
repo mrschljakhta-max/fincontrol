@@ -37,6 +37,45 @@ function book(data,K,p){
  if(p.finalize)s.settled[item.key]=[...item.operationIds,entry.id];else delete s.settled[item.key];
  return entry;
 }
+
+/* Convert a journal plan in place: retain its ID, never append a duplicate fact. */
+function confirmPlanned(data,K,p){
+ const ledger=data[K.ledger];
+ const entry=ledger?.entries?.find(x=>x.id===p.entryId);
+ if(!entry||entry.status!=='planned')throw Error('План вже виконано або видалено. Онови календар.');
+ const snapshot=JSON.stringify([entry.id,entry.date,entry.kind,entry.cents,entry.category,entry.note,entry.status,entry.calendarKey||'']);
+ if(snapshot!==p.expected)throw Error('План змінився в іншій вкладці. Відкрий його повторно.');
+ if(entry.calendarKey)throw Error('Пов’язаний із календарем план слід завершити через відповідну подію.');
+ if(['debt_payment','review'].includes(entry.kind))throw Error('Кредитні платежі проводь у реєстрі кредитів, невизначені операції — після уточнення.');
+ if(!M.validDate(p.date)||p.date>(p.today||M.today()))throw Error('Факт не може бути датований майбутнім.');
+ if(!Number.isSafeInteger(p.cents)||p.cents<=0)throw Error('Введи правильну фактичну суму.');
+ if(entry.kind==='reserve_withdrawal'){
+  const opening=Number(data[K.reserve]?.saved||0),initial=Math.round(opening*100);
+  if(!Number.isSafeInteger(initial)||initial<0)throw Error('Перевір початкову суму фінподушки.');
+  const net=ledger.entries.filter(x=>x.status==='actual').reduce((sum,x)=>sum+(x.kind==='reserve_deposit'?x.cents:x.kind==='reserve_withdrawal'?-x.cents:0),0);
+  if(initial+net-p.cents<0)throw Error('Недостатньо коштів у фінансовій подушці.');
+ }
+ if(ledger.entries.some(x=>x.id!==entry.id&&x.status==='actual'&&entry.sourceKey&&x.sourceKey===entry.sourceKey&&x.source===entry.source))
+  throw Error('Фактична операція з цього джерела вже є в журналі. Не створюй дубль.');
+ entry.plannedDate=entry.date;
+ entry.plannedCents=entry.cents;
+ entry.status='actual';
+ entry.date=p.date;
+ entry.cents=p.cents;
+ entry.confirmedFromPlanAt=new Date().toISOString();
+ return entry;
+}
+/* Unlink a booked fact without deleting a real payment or changing credit balances. */
+function unlink(data,K,p){
+ const item=fresh(data,K,p),ledger=data[K.ledger],s=data[K.calendar];
+ const entry=ledger?.entries?.find(x=>x.id===p.operationId&&x.status==='actual'&&x.calendarKey===item.key);
+ if(!entry)throw Error('Пов’язану операцію не знайдено. Онови сторінку.');
+ delete entry.calendarKey;
+ delete entry.calendarEventId;
+ delete entry.calendarOccurrence;
+ delete s.settled[item.key];
+ return entry;
+}
 function edit(data,K,p){
  const s=M.normalize(data[K.calendar]);data[K.calendar]=s;
  const v=p.values;
@@ -65,5 +104,5 @@ function remove(data,K,p){
   base.until=M.addDays(item.occurrence,-1);
  }else s.overrides[item.key]={...(s.overrides[item.key]||{}),cancelled:true};
 }
-root.FCCalendarActions={fresh,book,edit,remove};
+root.FCCalendarActions={fresh,book,confirmPlanned,unlink,edit,remove};
 })(globalThis);
