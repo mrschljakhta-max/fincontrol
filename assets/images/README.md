@@ -20,3 +20,14 @@ The actual code is already committed: `experience.html` loads `assets/experience
 **Asset fidelity:** These first-version wallpapers are reframed and resampled using existing FINCONTROL source images; pixel dimensions are 2560×1440 and 1080×1920, but native photographic detail is limited by the original images. They are not newly generated at full target resolution.
 
 Upload the images to GitHub without renaming. GitHub's website does not automatically unpack ZIP files into the repository.
+
+
+## Detailed moving hero crystal
+
+Upload `fincontrol-core-rock.webp` from `FINCONTROL_detailed_crystal_GitHub_upload.zip` into **this same assets/images folder**.
+
+The code in `experience.html` and `assets/experience-photo-core.css` switches to the high-detail transparent cutout only after loading succeeds. If it is missing, the old SVG still works.
+
+The full-bleed background fix is in `assets/experience-scenes.css`. Images now extend to the left and right screen edges, while text, cards and buttons remain confined to the readable content column.
+
+The stone is still a 2D graphical layer with simulated rotation, pulsation, glowing rings, drifting fragments, and a scroll-driven transition into the phone. A genuine perspective-correct 3D orbit would require a dedicated 3D asset later.
