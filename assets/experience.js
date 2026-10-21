@@ -38,7 +38,7 @@
  // Missing asset: old SVG device remains fully functional.
  const premiumImage=$('ex-premium-phone-image');
  if(premiumImage){
-  const onPremiumReady=()=>{document.body.classList.add('ex-premium-ready');requestVisualUpdate()};
+  const onPremiumReady=()=>document.body.classList.add('ex-premium-ready');
   const onPremiumError=()=>document.body.classList.remove('ex-premium-ready');
   premiumImage.addEventListener('load',onPremiumReady);
   premiumImage.addEventListener('error',onPremiumError);
