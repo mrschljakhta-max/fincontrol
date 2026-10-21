@@ -55,7 +55,7 @@ function fixture(){
  return {el,nav,classes,evDoc,evWin,document,window,click:id=>el(id).click()};
 }
 test('head loads one isolated design system after all visual assets',()=>{
- assert.match(html,/href="assets\/experience-design-system.css\?v=2"/);
+ assert.match(html,/href="assets\/experience-design-system.css\?v=3"/);
  assert.match(html,/src="assets\/experience-design-system.js\?v=1"/);
  assert.ok(html.indexOf('experience-design-system.css')>html.indexOf('experience-premium-phone.css'));
  assert.match(html,/src="assets\/experience.js\?v=8"/);
