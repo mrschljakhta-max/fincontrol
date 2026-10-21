@@ -54,6 +54,20 @@
   opacity:calc(var(--ex-phone-visible,0) * .58);
   animation:ex-premium-glint 10s ease-in-out infinite;
 }
+.ex-page .ex-premium-phone-frame img {
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  -webkit-user-select:none;
+  user-select:none;
+  pointer-events:none;
+}
+/* The approved render already has its own shadows and 3/4 perspective. */
+.ex-page.ex-premium-ready #ex-premium-phone {
+  filter:drop-shadow(0 22px 30px rgba(0,0,0,.57))
+         drop-shadow(0 0 19px rgba(250,47,76,.19));
+}
 @keyframes ex-premium-levitate{
   0%,100%{transform:translate3d(0,2px,0) rotate(-1.5deg) scale(.985)}
   50%{transform:translate3d(0,-9px,0) rotate(1.4deg) scale(1.015)}
