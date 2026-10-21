@@ -50,11 +50,11 @@
   function set(k,value,expected){return update([k],d=>{d[k]=value},expected===undefined?{}:{[k]:expected});}
   function download(name,content,type='application/json'){const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);}
   async function backup(){await ready;return lock(()=>{const data={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k?.startsWith('fincontrol-')&&k!==journal)data[k]=localStorage.getItem(k);}const full={format:'fincontrol-full-backup',version:2,createdAt:new Date().toISOString(),data};download('fincontrol-full-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(full,null,2));return full;});}
-  async function restore(v){
+  async function restore(v,expected={}){
     if(v?.format==='fincontrol-full-backup'&&v.version===2&&object(v.data)){
       const parsed={};for(const [k,raw] of Object.entries(v.data)){if(!k.startsWith('fincontrol-')||k===journal||typeof raw!=='string')throw Error('Некоректний формат копії');parsed[k]=JSON.parse(raw);validate(k,parsed[k]);}
       const keys=new Set(Object.keys(parsed));for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k?.startsWith('fincontrol-')&&k!==journal)keys.add(k);}
-      return update([...keys],d=>{for(const k of keys)d[k]=Object.hasOwn(parsed,k)?parsed[k]:null;},{},true);
+      return update([...keys],d=>{for(const k of keys)d[k]=Object.hasOwn(parsed,k)?parsed[k]:null;},expected,true);
     }
     validate(K.ledger,v);if(!v||v.entries.some(e=>e.creditId))throw Error('Для кредитних платежів потрібна повна копія разом із кредитним реєстром.');return update([K.ledger],d=>{if(d[K.ledger]?.entries.some(e=>e.creditId))throw Error("Поточний журнал містить кредитні платежі. Віднови повну копію.");d[K.ledger]=v});
   }
