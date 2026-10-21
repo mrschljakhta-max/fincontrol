@@ -37,3 +37,21 @@ body.fc-unified,body.fc-premium{background:var(--ink);color:var(--silver);font-f
 @media print{.fc-mobile-nav,.fc-topbar,.fc-heading-actions,.fc-filterbar,.fc-viewbar,.fc-data-notice{display:none!important}.fc-premium .app-shell,.fc-unified .app-shell{margin-left:0}.fc-chart-scroll,.fc-flow-scroll{overflow:visible}.fc-panel,.fc-kpi{break-inside:avoid}}
 
 .fc-premium input[type=range]{appearance:none;-webkit-appearance:none;width:100%;height:24px;background:transparent;border:0;padding:0;cursor:pointer}.fc-premium input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--mauve);border-radius:4px}.fc-premium input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:15px;height:15px;margin-top:-5.5px;background:var(--red);border-radius:50%;box-shadow:0 0 0 4px rgba(250,47,76,.08)}.fc-premium input[type=range]::-moz-range-track{height:4px;background:var(--mauve);border-radius:4px}.fc-premium input[type=range]::-moz-range-thumb{width:15px;height:15px;background:var(--red);border:0;border-radius:50%}
+\n/* FINCONTROL 2.0 grouped navigation, shared by all modules. */\n/* Sidebar: five daily destinations visible; planning and tools are collapsible. */
+.fc-premium .sidebar .site-nav,.fc-unified .sidebar .site-nav{gap:3px}
+.fc-premium .sidebar .fc-nav-section,.fc-unified .sidebar .fc-nav-section{display:grid;gap:3px}
+.fc-premium .sidebar .fc-nav-section .nav-caption,.fc-unified .sidebar .fc-nav-section .nav-caption{margin:16px 12px 9px;font-size:9px}
+.fc-premium .sidebar .fc-nav-group,.fc-unified .sidebar .fc-nav-group{border-top:1px solid var(--line);margin-top:7px;padding-top:6px;min-width:0}
+.fc-premium .sidebar .fc-nav-group summary,.fc-unified .sidebar .fc-nav-group summary{display:flex;align-items:center;justify-content:space-between;gap:7px;cursor:pointer;list-style:none;padding:9px 12px;color:var(--slate);font-size:10px;font-weight:650;letter-spacing:.105em;border-radius:8px;user-select:none}
+.fc-premium .sidebar .fc-nav-group summary::-webkit-details-marker,.fc-unified .sidebar .fc-nav-group summary::-webkit-details-marker{display:none}
+.fc-premium .sidebar .fc-nav-group summary:hover,.fc-unified .sidebar .fc-nav-group summary:hover{background:rgba(88,75,82,.2);color:var(--silver)}
+.fc-premium .sidebar .fc-nav-chevron,.fc-unified .sidebar .fc-nav-chevron{font-size:17px;line-height:1;transition:transform .2s}
+.fc-premium .sidebar .fc-nav-group[open] .fc-nav-chevron,.fc-unified .sidebar .fc-nav-group[open] .fc-nav-chevron{transform:rotate(180deg)}
+.fc-premium .sidebar .fc-nav-group-links,.fc-unified .sidebar .fc-nav-group-links{display:grid;gap:3px;padding-top:4px}
+.fc-premium .sidebar .sidebar-note,.fc-unified .sidebar .sidebar-note{padding:12px 10px 8px}
+.fc-premium .sidebar .nav-link,.fc-unified .sidebar .nav-link{min-height:37px;padding:8px 11px}
+.fc-more-links{gap:13px}
+.fc-more-group{display:grid;gap:2px}
+.fc-more-title{color:var(--slate);font-size:10px;letter-spacing:.13em;font-weight:700;margin:7px 11px 3px}
+.fc-more-group a{display:block;padding:10px 12px;min-height:40px}
+.fc-more-group a[aria-current="page"]{color:var(--red);background:rgba(171,43,65,.12)}
