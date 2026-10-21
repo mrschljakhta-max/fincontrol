@@ -56,6 +56,16 @@ function dayCell(d,items,week=false){
  const mobile=`<div class="cal-mobile-dots" aria-hidden="true">${items.slice(0,4).map(e=>`<i class="is-${esc(e.category)}${e.done?' is-done':''}"></i>`).join('')}</div>${sum?'<span class="cal-mobile-total" aria-hidden="true">'+(sum>0?'+':'')+esc(compact(sum))+'</span>':''}`;
  return `<div class="cal-cell${today?' is-today':''}${d===selected?' is-selected':''}${other?' is-other':''}" data-cell-date="${d}" data-event-count="${items.length}" data-extra-count="${items.length>4?'+'+(items.length-4):''}">${head}${chips}${more}${mobile}</div>`;
 }
+let lastPeriodSignature='',lastDayAnimated='';
+const calendarReduced=window.matchMedia?.('(prefers-reduced-motion: reduce)');
+function animateSurface(node,day=false){
+ if(!node||typeof node.animate!=='function'||calendarReduced?.matches)return;
+ for(const previous of node.getAnimations?.()||[])previous.cancel();
+ node.animate([
+  {opacity:.42,transform:day?'translate3d(10px,4px,0)':'translate3d(0,14px,0) scale(.985)',filter:'blur(5px)'},
+  {opacity:1,transform:'translate3d(0,0,0) scale(1)',filter:'blur(0px)'}
+ ],{duration:day?310:490,easing:'cubic-bezier(.22,1,.36,1)'});
+}
 function renderCalendar(){
  const [start,end]=range();let title=view==='week'?(start.slice(0,7)===end.slice(0,7)?Number(start.slice(8))+'–'+shortDate(end):shortDate(start)+' – '+shortDate(end)):monthText(start);
  if(status==='overdue'&&view==='list')title='Потребують уваги';
@@ -75,6 +85,9 @@ function renderCalendar(){
   if(!host.querySelector('.cal-day-button[tabindex="0"]'))host.querySelector('.cal-day-button')?.setAttribute('tabindex','0');
  }
  $('mobile-agenda').hidden=view==='list';
+ const periodSignature=[view,start,end,kind,status].join('|');
+ if(lastPeriodSignature&&periodSignature!==lastPeriodSignature)animateSurface(host);
+ lastPeriodSignature=periodSignature;
 }
 function daySummary(events){const ins=events.reduce((s,e)=>s+Math.max(0,M.cashDelta(e)),0),outs=events.reduce((s,e)=>s+Math.max(0,-M.cashDelta(e)),0);return`<div><small>Очікується</small>↓ ${esc(money(ins))}</div><div><small>До сплати / переказу</small>↑ ${esc(money(outs))}</div>`}
 function dayBalance(){if(!forecast.known)return'<span>Додай стартову суму для прогнозу</span><button class="cal-quiet" data-opening>＋</button>';if(selected<now)return'<span>Минула дата · переглядай факти в подіях</span>';const p=selected<=M.addDays(now,30)?forecast:M.project(input(),now,selected),point=p.rows.find(x=>x.date===selected);return point?`<span>За планом на кінець дня</span><strong class="${point.balance<0?'cal-danger':''}">${esc(money(point.balance))}</strong>`:'<span>Немає прогнозу на цю дату</span>'}
@@ -84,6 +97,11 @@ function renderSelected(){
  $('mobile-agenda').innerHTML=`<div class="cal-agenda-head"><h2>${esc(title)}</h2><button class="cal-icon" data-new-day aria-label="Додати подію на обраний день">＋</button></div><div class="cal-day-summary">${daySummary(events)}</div>${events.length?events.map(e=>row(e)).join(''):empty()}<div class="cal-balance">${dayBalance()}</div>`;
  const upcoming=collect(M.addDays(now,1),M.addDays(now,7),false).filter(pending).slice(0,4);
  $('upcoming-events').innerHTML=upcoming.length?upcoming.map(e=>row(e,true)).join(''):'<p class="cal-footnote">На наступні 7 днів нових справ немає.</p>';
+ if(lastDayAnimated&&lastDayAnimated!==selected){
+  animateSurface($('day-events'),true);
+  animateSurface($('mobile-agenda'),true);
+ }
+ lastDayAnimated=selected;
 }
 function renderForecast(){
  $('stat-income').textContent=money(forecast.income);$('stat-outgoing').textContent=money(forecast.outgoing);
