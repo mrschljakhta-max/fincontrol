@@ -106,10 +106,18 @@ function showDetail(e,focusBooking=false){
  $('event-detail').innerHTML=`<span class="cal-event-symbol is-${esc(e.category)}" aria-hidden="true">${icons[e.category]||'↔'}</span><h2 id="drawer-title">${esc(e.name)}</h2><p class="cal-muted">${esc(date)}</p><div class="cal-detail-meta"><span>${esc(kindLabel[e.kind]||'Операція')}</span><span>${esc(statusText)}</span>${cal&&e.repeat!=='once'?'<span>↻ '+esc(repeatLabel[e.repeat])+'</span>':''}</div><div class="cal-detail-totals"><div><small>${actual?'Фактична сума':'План'}</small><strong>${esc(money(e.cents))}</strong></div>${cal?'<div><small>Внесено фактично</small><strong>'+esc(money(e.paid))+'</strong></div><p>'+(e.settled?'Різниця з планом: '+(e.difference>0?'+':'')+esc(money(e.difference)):'Залишилось за планом: '+esc(money(e.remaining)))+'</p>':''}</div>${e.note?'<p class="cal-detail-note">'+esc(e.note)+'</p>':''}<div id="detail-notice" class="cal-form-message" role="status"></div>`;
  const host=$('event-detail');
  if(cal){
-  if(e.operationIds.length)host.insertAdjacentHTML('beforeend','<div class="cal-payment-list"><h3>Пов’язані факти</h3>'+e.payments.map(p=>'<div class="cal-payment-row"><span>'+esc(shortDate(p.date))+'</span><strong>'+esc(money(p.cents))+'</strong></div>').join('')+'<a class="cal-quiet" href="ledger.html">Відкрити журнал ↗</a></div>');
+  if(e.operationIds.length)host.insertAdjacentHTML('beforeend','<div class="cal-payment-list"><h3>Пов’язані факти</h3>'+e.payments.map(p=>'<div class="cal-payment-row"><span>'+esc(shortDate(p.date))+'</span><strong>'+esc(money(p.cents))+'</strong><button class="cal-quiet" type="button" data-unlink-id="'+esc(p.id)+'" aria-label="Відв’язати факт від календаря">Відв’язати</button></div>').join('')+'<a class="cal-quiet" href="ledger.html">Відкрити журнал ↗</a></div>');
   host.insertAdjacentHTML('beforeend',`<div class="cal-detail-actions">${!e.settled?'<button id="record-fact" class="cal-primary">Внести факт</button>':''}<button id="edit-detail" class="cal-secondary">Змінити подію</button></div>`);
   $('edit-detail').onclick=()=>openForm(null,e);
   if(!e.settled){$('record-fact').onclick=()=>showBooking(e);}
+  host.querySelectorAll('[data-unlink-id]').forEach(button=>button.onclick=ev=>run(ev.currentTarget,async()=>{
+   const operationId=ev.currentTarget.dataset.unlinkId;
+   if(!confirm('Відв’язати факт від цієї події? Фінансова операція, баланс кредиту й резерв залишаться без змін.'))return;
+   await transaction(d=>A.unlink(d,K,{...payload(e),operationId}));
+   const updated=M.occurrence(state,state.events.find(x=>x.id===e.id),e.occurrence,ledger);
+   if(updated)showDetail(updated);else $('event-drawer').close();
+   notice('Факт відв’язано. Фінансова операція залишилась у журналі, списання не скасовано.');
+  },'detail-notice'));
   if(!e.done)host.insertAdjacentHTML('beforeend',`<form id="move-form" class="cal-form cal-move-form"><label>Перенести лише цю подію<div class="cal-two"><input id="move-date" aria-label="Нова дата події" type="date" value="${e.date}" required><button class="cal-secondary" type="submit">Перенести</button></div></label></form>`);
   if($('move-form'))$('move-form').onsubmit=ev=>{ev.preventDefault();run(ev.submitter,async()=>{await moveEvent(e,$('move-date').value);$('event-drawer').close()},'detail-notice')};
   host.insertAdjacentHTML('beforeend',`<details class="cal-detail-secondary"><summary>Інші дії</summary>${!e.paid?`<button id="close-reminder" class="cal-quiet">${e.reminderDone?'Повернути нагадування':'Закрити без запису в журналі'}</button><p class="cal-footnote">Гроші не змінюються. Подія перестає враховуватись у прогнозі.</p><button id="skip-event" class="cal-quiet cal-danger">Пропустити цю подію</button>${e.repeat!=='once'?'<button id="stop-series" class="cal-quiet cal-danger">Зупинити серію від цієї дати</button>':''}`:'<p class="cal-footnote">Подія з фактом залишається в історії. Виправлення операцій — у журналі або кредитному реєстрі.</p>'}</details>`);
@@ -118,6 +126,11 @@ function showDetail(e,focusBooking=false){
  }else{
   const href=e.origin==='debt'?'debts.html':'ledger.html';host.insertAdjacentHTML('beforeend',`<p class="cal-detail-note">${e.origin==='debt'?'Термін із кредитного реєстру. Створи пов’язану подію, щоб включити платіж у прогноз і внести факт тут.':actual?'Це підтверджена операція з журналу.':'Це план із журналу. Керування цією операцією доступне в журналі.'}</p><div class="cal-detail-actions"><a class="cal-secondary" href="${href}">Відкрити ${e.origin==='debt'?'кредити':'журнал'} ↗</a>${e.origin==='debt'?'<button id="plan-credit" class="cal-primary">Запланувати платіж</button>':''}</div>`);
   if($('plan-credit'))$('plan-credit').onclick=()=>{openForm('credit');$('name').value=e.name;$('date').value=e.date;$('amount').value=(e.cents/100).toFixed(2);$('credit').value=e.id;$('repeat').value='once'};
+  if(e.origin==='ledger'&&e.status==='planned'&&!['debt_payment','review'].includes(e.kind)){
+   const actions=host.querySelector('.cal-detail-actions');
+   actions.insertAdjacentHTML('beforeend','<button id="confirm-journal" class="cal-primary" type="button">Підтвердити як факт</button>');
+   $('confirm-journal').onclick=()=>showLedgerBooking(e);
+  }
  }
  if(!$('event-drawer').open){closeDialogs();$('event-drawer').showModal()}
  if(focusBooking&&!e.settled)showBooking(e);
@@ -140,6 +153,22 @@ function showBooking(e){
   await transaction(d=>A.book(d,K,p));const current=M.occurrence(state,state.events.find(x=>x.id===e.id),e.occurrence,ledger);showDetail(current);notice(existingId?'Операцію прив’язано. Додатковий фінансовий запис не створювався.':'Факт збережено. Календар і журнал оновлено.');
  },'booking-message')};
  $('fact-amount').focus();form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth',block:'nearest'});
+}
+
+function showLedgerBooking(e){
+ if($('confirm-journal-form')){$('journal-fact-amount')?.focus();return}
+ const button=$('confirm-journal'),form=document.createElement('form');
+ button.hidden=true;form.id='confirm-journal-form';form.className='cal-form cal-booking';
+ form.innerHTML='<h3>План → Факт</h3><p class="cal-footnote">Це змінить статус <strong>цього самого</strong> запису журналу з «План» на «Факт», не створюючи додаткової транзакції. Перевір, чи сума вже не внесена окремо через імпорт.</p><div class="cal-two"><label>Дата факту<input id="journal-fact-date" type="date" max="'+now+'" value="'+(e.date>now?now:e.date)+'" required></label><label>Фактична сума, грн<input id="journal-fact-amount" type="number" step=".01" min=".01" inputmode="decimal" value="'+(e.cents/100).toFixed(2)+'" required></label></div><p class="cal-footnote">Якщо сума або дата змінилася, початковий план залишиться в метаданих операції для звірки.</p><p id="journal-booking-message" class="cal-form-message" role="status"></p><div class="cal-form-actions"><button id="cancel-journal-booking" type="button" class="cal-secondary">Скасувати</button><button type="submit" class="cal-primary">Підтвердити факт</button></div>';
+ $('event-detail').querySelector('.cal-detail-actions').after(form);
+ $('cancel-journal-booking').onclick=()=>{form.remove();button.hidden=false;button.focus()};
+ form.onsubmit=ev=>{ev.preventDefault();run(ev.submitter,async()=>{
+  const p={entryId:e.id,expected:JSON.stringify([e.id,e.date,e.kind,e.cents,e.category,e.note,e.status,e.calendarKey||'']),date:$('journal-fact-date').value,cents:parseMoney($('journal-fact-amount').value),today:now};
+  await S.update([K.ledger,K.reserve],d=>A.confirmPlanned(d,K,p));
+  refresh();render();$('event-drawer').close();
+  notice('План підтверджено. Замість другого запису операція в журналі стала фактичною.');
+ },'journal-booking-message')};
+ $('journal-fact-amount').focus();
 }
 function parseMoney(value,zero=false,throws=true){const n=Number(value),c=Math.round(n*100);if(value===''||!Number.isFinite(n)||!Number.isSafeInteger(c)||(zero?c<0:c<=0)||Math.abs(n*100-c)>1e-6){if(throws)throw Error('Введи коректну суму у гривнях, до двох знаків після коми.');return 0}return c}
 function populateCredits(id=''){$('credit').innerHTML='<option value="">Не прив’язано</option>'+(debts?.credits||[]).map(c=>`<option value="${esc(c.id)}">${esc(c.name+' · залишок '+money(c.balance))}</option>`).join('');$('credit').value=id}
