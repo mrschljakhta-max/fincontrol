@@ -35,6 +35,19 @@
  const motionKey='fincontrol-experience-motion-v1';
  const motionButton=$('ex-motion-toggle');
  const reducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)');
+ // The photo is a progressive enhancement: fallback vector stays in place
+ // until the real user-supplied file is present at its precise GitHub path.
+ const photoAsset='assets/images/fincontrol-core-rock.webp?v=1';
+ if($('ex-rock-photo') && typeof Image!=='undefined'){
+  const preview=new Image();
+  preview.onload=()=>{
+   document.body.classList.add('ex-photoreal-core');
+   requestVisualUpdate();
+  };
+  preview.onerror=()=>document.body.classList.remove('ex-photoreal-core');
+  preview.src=photoAsset;
+ }
+
  try{motionEnabled=localStorage.getItem(motionKey)!=='off'}catch{}
  if(reducedMotion?.matches)motionEnabled=false;
  function setMotion(on,persist=true){
@@ -279,12 +292,17 @@
    const intoPhone=smoothstep((at-5.3)/1.7);
    morphShell.style.setProperty('--ex-stone-visible',(1-intoPhone).toFixed(3));
    morphShell.style.setProperty('--ex-phone-visible',intoPhone.toFixed(3));
+   const photoRatio=1-smoothstep((at-3.2)/2.2);
+   morphShell.style.setProperty('--ex-photo-visible',photoRatio.toFixed(3));
    morphShell.style.setProperty('--ex-orbit-visible',(1-intoPhone*.63).toFixed(3));
    morphShell.style.setProperty('--ex-orb-scale',(1-at*.025).toFixed(3));
    morphShell.style.setProperty('--ex-orb-x',(Math.sin(at*.78)*16).toFixed(1)+'px');
    morphShell.style.setProperty('--ex-orb-y',(Math.sin(at*1.2)*23).toFixed(1)+'px');
    morphShell.style.setProperty('--ex-orb-rotate',(at*31).toFixed(1)+'deg');
-   morphShell.style.setProperty('--ex-orb-opacity',Math.max(.35,.95-at*.08).toFixed(2));
+   // Full-size cinematic core in hero, unobtrusive near finance glass panels,
+   // and a strong appearance again for the completed smartphone in the finale.
+   const presence=at<.65?.98:at<1.55?.98-.77*smoothstep((at-.65)/.9):at<5.75?.21:.21+.68*smoothstep((at-5.75)/1.25);
+   morphShell.style.setProperty('--ex-orb-opacity',presence.toFixed(2));
   }
   const index=Math.max(0,Math.min(N-1,Math.round(at)));
   if(index!==activeIndex){
