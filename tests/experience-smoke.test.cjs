@@ -175,3 +175,36 @@ test('detailed crystal activates only after image load; SVG fallback, phone and 
  assert.match(page,/id="ex-morph-outline"/);
  assert.match(page,/id="ex-device"/);
 });
+
+test('approved premium smartphone photo is included in the static website and loaded over SVG',()=>{
+ const image=read('assets/experience-premium-phone.css');
+ const file=fs.readFileSync(path.join(__dirname,'..','assets/images/fincontrol-phone-premium.webp'));
+ assert.ok(file.length>40000);
+ assert.equal(file.toString('ascii',0,4),'RIFF');
+ assert.equal(file.toString('ascii',8,12),'WEBP');
+ assert.match(page,/id="ex-premium-phone-image"/);
+ assert.match(page,/assets\/images\/fincontrol-phone-premium.webp/);
+ assert.match(page,/assets\/experience-premium-phone.css/);
+ assert.match(image,/ex-premium-ready \.ex-device/);
+ assert.match(script,/premiumImage\.addEventListener\('load'/);
+});
+test('premium handset starts invisible and emerges with full scale at the end of the scroll',async()=>{
+ const f=fixture();await f.start();
+ assert.equal(f.el('ex-morph-shell').style.values['--ex-phone-visible'],'0.000');
+ f.el('ex-premium-phone-image').dispatch('load');
+ assert.ok(f.body.classList.contains('ex-premium-ready'));
+ f.scrollTo(9000);
+ assert.equal(f.el('ex-morph-shell').style.values['--ex-phone-visible'],'1.000');
+ assert.equal(f.el('ex-morph-shell').style.values['--ex-phone-scale'],'1.000');
+ assert.equal(f.el('ex-morph-shell').style.values['--ex-phone-rise'],'0.0px');
+ assert.equal(f.el('ex-morph-shell').style.values['--ex-phone-tilt'],'0.0deg');
+ assert.equal(f.mutationCount(),0);
+});
+test('no-motion setting still displays final premium phone rather than hiding it',async()=>{
+ const f=fixture();await f.start();
+ f.el('ex-motion-toggle').dispatch('click');
+ f.scrollTo(9000);
+ assert.ok(f.body.classList.contains('ex-motion-off'));
+ assert.equal(f.el('ex-morph-shell').style.values['--ex-phone-visible'],'1.000');
+ assert.equal(f.mutationCount(),0);
+});
