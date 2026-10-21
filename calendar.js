@@ -16,6 +16,22 @@ const templates={salary:{name:'Зарплата',kind:'income',repeat:'monthly'}
 let now=M.today(),selected=now,anchor=now,view='month',kind='all',status='all';
 let state=M.normalize(),ledger=null,debts=null,editing=null,detail=null,forecast=null;
 const refs=new Map();
+// Visual preference is separate from finance data and never changes calculations.
+const SCENE_KEY='fincontrol-calendar-scene-v1';
+const sceneToggle=$('cal-scene-toggle');
+function applyScene(enabled){
+ document.body.classList.toggle('cal-scene-off',!enabled);
+ sceneToggle.setAttribute('aria-pressed',String(enabled));
+ sceneToggle.setAttribute('aria-label',enabled?'Вимкнути атмосферне тло':'Увімкнути атмосферне тло');
+ sceneToggle.textContent=enabled?'◐ Тло':'◑ Тло';
+}
+let sceneOn=true;
+try{sceneOn=localStorage.getItem(SCENE_KEY)!=='off'}catch{}
+applyScene(sceneOn);
+sceneToggle.onclick=()=>{
+ sceneOn=!sceneOn;applyScene(sceneOn);
+ try{localStorage.setItem(SCENE_KEY,sceneOn?'on':'off')}catch{}
+};
 function notice(text,error=false){$('calendar-notice').textContent=text;$('calendar-notice').hidden=!text;$('calendar-notice').classList.toggle('is-error',error)}
 function refresh(){state=M.normalize(S.read(K.calendar));ledger=S.read(K.ledger);debts=S.read(K.debts)}
 const input=()=>({state,ledger,debts});
@@ -33,12 +49,12 @@ function row(e,upcoming=false){
 }
 function empty(text='На цей день усе вільно',sub='Заплануй надходження, рахунок або поповнення резерву.'){return `<div class="cal-empty"><span class="cal-empty-symbol" aria-hidden="true">◇</span><strong>${esc(text)}</strong>${esc(sub)}</div>`}
 function dayCell(d,items,week=false){
- const alerts=items.filter(e=>pending(e)&&e.date<now).length,today=d===now,other=d.slice(0,7)!==anchor.slice(0,7),sum=items.reduce((s,e)=>s+M.cashDelta(e),0);
- const head=`<button class="cal-day-button" data-date="${d}" aria-pressed="${d===selected}" ${today?'aria-current="date"':''} aria-label="${esc(dateText(d)+(today?', сьогодні':'')+', подій: '+items.length+(alerts?', прострочених: '+alerts:''))}" tabindex="${d===selected?0:-1}">${week?'<span>'+M.day(d).toLocaleDateString('uk-UA',{weekday:'short'})+'</span>':''}<span class="cal-date-number">${Number(d.slice(8))}</span>${alerts?'<span class="cal-day-alert" title="Є прострочені події">!</span>':''}</button>`;
+ const alerts=items.filter(e=>pending(e)&&e.date<now).length,today=d===now,other=d.slice(0,7)!==anchor.slice(0,7),sum=items.reduce((s,e)=>s+M.cashDelta(e),0),preview=items.slice(0,5).map(e=>e.name).join(' · ');
+ const head=`<button class="cal-day-button" data-date="${d}" aria-pressed="${d===selected}" ${today?'aria-current="date"':''} aria-label="${esc(dateText(d)+(today?', сьогодні':'')+', подій: '+items.length+(alerts?', прострочених: '+alerts:''))}" title="${esc(dateText(d)+(preview?' · '+preview:' · Подій немає'))}" tabindex="${d===selected?0:-1}">${week?'<span>'+M.day(d).toLocaleDateString('uk-UA',{weekday:'short'})+'</span>':''}<span class="cal-date-number">${Number(d.slice(8))}</span>${alerts?'<span class="cal-day-alert" title="Є прострочені події">!</span>':''}</button>`;
  const chips=items.slice(0,week?7:3).map(e=>`<button class="cal-chip is-${esc(e.category)}${e.done?' is-done':''}" data-event="${ref(e)}" ${e.origin==='calendar'&&!e.done?'draggable="true"':''} title="${esc(e.name+' · '+money(e.cents)+' · '+M.describeStatus(e,now))}"><span class="cal-chip-icon" aria-hidden="true">${e.done?'✓':icons[e.category]||'•'}</span><span class="cal-chip-title">${esc(e.name)}</span><span class="cal-chip-sum">${esc(compact(e.origin==='calendar'&&e.settled?e.paid:e.cents))}</span></button>`).join('');
  const max=week?7:3,more=items.length>max?`<button class="cal-more" data-date="${d}">Ще ${items.length-max}</button>`:'';
  const mobile=`<div class="cal-mobile-dots" aria-hidden="true">${items.slice(0,4).map(e=>`<i class="is-${esc(e.category)}${e.done?' is-done':''}"></i>`).join('')}</div>${sum?'<span class="cal-mobile-total" aria-hidden="true">'+(sum>0?'+':'')+esc(compact(sum))+'</span>':''}`;
- return `<div class="cal-cell${today?' is-today':''}${d===selected?' is-selected':''}${other?' is-other':''}" data-cell-date="${d}">${head}${chips}${more}${mobile}</div>`;
+ return `<div class="cal-cell${today?' is-today':''}${d===selected?' is-selected':''}${other?' is-other':''}" data-cell-date="${d}" data-event-count="${items.length}" data-extra-count="${items.length>4?'+'+(items.length-4):''}">${head}${chips}${more}${mobile}</div>`;
 }
 function renderCalendar(){
  const [start,end]=range();let title=view==='week'?(start.slice(0,7)===end.slice(0,7)?Number(start.slice(8))+'–'+shortDate(end):shortDate(start)+' – '+shortDate(end)):monthText(start);
