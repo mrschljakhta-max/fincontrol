@@ -92,7 +92,7 @@ body.fc-premium.fc-density-compact .page-footer{margin-top:18px;padding-top:12px
  body.fc-premium.fc-density-compact .fc-heading .fc-subtitle{display:none}
  body.fc-premium.fc-density-compact .fc-heading-actions{width:auto;margin-left:auto;gap:6px}
  body.fc-premium.fc-density-compact .fc-heading-actions button{font-size:11px;min-height:38px;padding:8px 10px}
- body.fc-premium.fc-density-compact .fc-heading-actions #full-backup{display:none}
+ body.fc-premium.fc-density-compact .fc-heading-actions #full-backup{font-size:0;width:38px;padding:0;display:grid;place-items:center}body.fc-premium.fc-density-compact .fc-heading-actions #full-backup::before{content:'⇩';font-size:19px;line-height:1}
  body.fc-premium.fc-density-compact .fc-viewbar{align-items:center}
  body.fc-premium.fc-density-compact .fc-tabs{gap:14px;min-width:0}
  body.fc-premium.fc-density-compact .fc-tabs button{font-size:11px;min-height:40px}
