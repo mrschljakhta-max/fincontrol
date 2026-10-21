@@ -304,6 +304,11 @@
   const intoPhone=smoothstep((at-5.3)/1.7);
   morphShell.style.setProperty('--ex-stone-visible',(1-intoPhone).toFixed(3));
   morphShell.style.setProperty('--ex-phone-visible',intoPhone.toFixed(3));
+  // The premium handset assembles out of the crystal at the end of the scroll:
+  // glide into place, right itself, and smoothly attain its full physical size.
+  morphShell.style.setProperty('--ex-phone-scale',(.72+.28*intoPhone).toFixed(3));
+  morphShell.style.setProperty('--ex-phone-rise',(22*(1-intoPhone)).toFixed(1)+'px');
+  morphShell.style.setProperty('--ex-phone-tilt',(-14*(1-intoPhone)).toFixed(1)+'deg');
   if(motionEnabled){
    // CSS independently handles idle rotation, lights and particles.
    const photoRatio=1-smoothstep((at-3.2)/2.2);
