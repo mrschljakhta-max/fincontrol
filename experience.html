@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#131A20">
+<meta name="description" content="FINCONTROL Motion — єдиний панорамний фінансовий простір із живими даними вашого браузера.">
+<title>FINCONTROL · Motion Experience</title>
+<link rel="stylesheet" href="assets/experience.css?v=1">
+<script src="assets/store.js?v=5"></script>
+<script src="assets/finance.js?v=4"></script>
+<script src="assets/calendar-model.js?v=3"></script>
+<script src="assets/experience.js?v=1" defer></script>
+</head>
+<body class="ex-page">
+<a class="ex-skip" href="#main-content">Перейти до фінансового огляду</a>
+<div class="ex-world" aria-hidden="true"></div>
+<div class="ex-ambient" aria-hidden="true"></div>
+<div class="ex-morph-shell" id="ex-morph-shell" aria-hidden="true">
+ <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <radialGradient id="ex-core-glow"><stop offset="0" stop-color="#FA2F4C" stop-opacity=".44"/><stop offset=".45" stop-color="#AB2B41" stop-opacity=".18"/><stop offset="1" stop-color="#FA2F4C" stop-opacity="0"/></radialGradient>
+  <linearGradient id="ex-shape-edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#CDD7DC" stop-opacity=".44"/><stop offset=".5" stop-color="#FA2F4C"/><stop offset="1" stop-color="#AB2B41" stop-opacity=".7"/></linearGradient>
+ </defs>
+ <circle cx="140" cy="140" r="130" fill="url(#ex-core-glow)" />
+ <g id="ex-morph-body">
+  <path id="ex-morph-outline" stroke="url(#ex-shape-edge)" stroke-width="2.5" fill="#332A30" fill-opacity=".18" stroke-linejoin="round"/>
+  <path id="ex-morph-inner" stroke="#FA2F4C" stroke-width="1.2" fill="none" opacity=".4"/>
+  <circle cx="140" cy="140" r="7" fill="#FA2F4C" opacity=".7"/>
+  <circle cx="140" cy="140" r="37" stroke="#CDD7DC" fill="none" stroke-opacity=".1" stroke-dasharray="2 8"/>
+ </g>
+ <circle cx="140" cy="140" r="116" fill="none" stroke="#CDD7DC" stroke-opacity=".11" stroke-dasharray="3 11"/>
+ <circle cx="140" cy="24" r="3" fill="#FA2F4C"/>
+ </svg>
+</div>
+<header class="ex-header">
+ <a class="ex-brand" href="#intro" aria-label="FINCONTROL — на початок"><span class="ex-brand-mark">F<span>.</span></span><span>FIN<span>CONTROL</span></span></a>
+ <nav class="ex-navigation" aria-label="Розділи панорами">
+  <a href="#overview" data-chapter-nav="overview">Огляд</a>
+  <a href="#calendar" data-chapter-nav="calendar">Календар</a>
+  <a href="#credits" data-chapter-nav="credits">Кредити</a>
+  <a href="#reserve" data-chapter-nav="reserve">Резерв</a>
+  <a href="#housing" data-chapter-nav="housing">Житло</a>
+  <a href="#analytics" data-chapter-nav="analytics">Аналітика</a>
+ </nav>
+ <div class="ex-header-actions">
+  <button id="ex-motion-toggle" type="button" class="ex-motion-button" aria-pressed="true" title="Увімкнути або вимкнути анімації"><span aria-hidden="true">◉</span><span>Рух</span></button>
+  <a class="ex-workspace" href="analytics.html">Кабінет <span aria-hidden="true">↗</span></a>
+ </div>
+</header>
+<div class="ex-scroll-progress" aria-hidden="true"><span id="ex-scroll-fill"></span></div>
+<main id="main-content" tabindex="-1">
+ <section id="intro" class="ex-scene ex-hero" data-stage="0" aria-labelledby="ex-hero-title">
+  <div class="ex-hero-copy ex-reveal">
+   <p class="ex-kicker"><i></i> FINCONTROL / НОВИЙ ВИМІР</p>
+   <h1 id="ex-hero-title">Фінанси.<br><span>У гармонії.</span></h1>
+   <p class="ex-hero-description">Не просто цифри — цілісний фінансовий простір. Усі твої події, зобов’язання та плани поступово відкриваються в одному потоці.</p>
+   <div class="ex-hero-actions"><a href="#overview" class="ex-button ex-button-primary">Дослідити фінанси <span aria-hidden="true">↘</span></a><a class="ex-text-link" href="analytics.html">Відкрити робочий кабінет ↗</a></div>
+   <p class="ex-private"><span aria-hidden="true">◈</span> Використовуються лише дані цього браузера · без надсилання на сервер</p>
+  </div>
+  <div class="ex-hero-rail ex-reveal" aria-hidden="true"><span>01 / 07</span><i></i><span>ПРОКРУЧУЙ, ЩОБ ВІДКРИВАТИ</span></div>
+  <div class="ex-hero-side ex-reveal" aria-hidden="true"><span class="ex-orbit-tag">↗ Надходження</span><span class="ex-orbit-tag">◈ Резерв</span><span class="ex-orbit-tag">◎ Фінансові цілі</span></div>
+ </section>
+ <section id="overview" class="ex-scene" data-stage="1" aria-labelledby="ex-overview-title">
+  <div class="ex-story ex-reveal">
+   <p class="ex-chapter">01 <i></i> ВІД ДАНИХ ДО РОЗУМІННЯ</p>
+   <h2 id="ex-overview-title">Усе починається<br>з повної картини.</h2>
+   <p>Доходи, витрати й зобов’язання — не розрізнені записи, а одна історія. Показники оновлюються з твого журналу.</p>
+   <a href="analytics.html" class="ex-section-link">Детальний дашборд <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="ex-glass ex-glass-wide ex-reveal" data-reveal-child aria-label="Огляд фінансових показників">
+   <div class="ex-glass-heading"><span>Фінансова картина</span><span class="ex-mini-tag" id="ex-overview-period">Поточний місяць</span></div>
+   <div class="ex-overview-content">
+    <div class="ex-overview-numbers">
+     <small>Операцій цього місяця</small><strong class="ex-metric-xl" id="ex-operations-count">—</strong>
+     <div class="ex-value-line"><span><i class="ex-dot ex-dot-red"></i> Надходження</span><strong id="ex-month-income">—</strong></div>
+     <div class="ex-value-line"><span><i class="ex-dot"></i> Витрати та кредити</span><strong id="ex-month-expenses">—</strong></div>
+     <div class="ex-value-line"><span><i class="ex-dot ex-dot-muted"></i> Поповнення резерву</span><strong id="ex-month-reserve">—</strong></div>
+    </div>
+    <div class="ex-donut-block">
+     <div class="ex-donut" id="ex-overview-donut"><div><strong id="ex-donut-value">—</strong><span>Частка витрат</span></div></div>
+     <small>Співвідношення витрат до надходжень за місяць</small>
+    </div>
+   </div>
+   <p class="ex-card-note" id="ex-overview-note">Показуємо лише фактичні операції, без повторного обліку власних переказів.</p>
+  </div>
+ </section>
+ <section id="calendar" class="ex-scene" data-stage="2" aria-labelledby="ex-calendar-title">
+  <div class="ex-story ex-reveal">
+   <p class="ex-chapter">02 <i></i> ЧАС ТА РІШЕННЯ</p>
+   <h2 id="ex-calendar-title">Фінансовий<br>календар.</h2>
+   <p>Числа залишаються легкими. Події з’являються там, де вони справді потрібні: зарплата, рахунки, платежі й поповнення подушки.</p>
+   <a href="calendar.html" class="ex-section-link">Повний календар · План → Факт <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="ex-glass ex-glass-calendar ex-reveal" data-reveal-child>
+   <div class="ex-glass-heading"><span id="ex-calendar-month">Поточний місяць</span><span class="ex-mini-tag">Зараз</span></div>
+   <div class="ex-calendar-layout">
+    <div class="ex-month-wrap">
+     <div class="ex-weekdays" aria-hidden="true"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span></div>
+     <div id="ex-calendar-grid" class="ex-calendar-grid" role="group" aria-label="Поточний фінансовий місяць"></div>
+    </div>
+    <div class="ex-day-panel">
+     <p class="ex-eyebrow">ОБРАНИЙ ДЕНЬ</p><h3 id="ex-day-label">Сьогодні</h3>
+     <div id="ex-day-events" class="ex-day-events" aria-live="polite"><p class="ex-empty">Завантаження подій…</p></div>
+     <a href="calendar.html" class="ex-text-link">Планувати подію ↗</a>
+    </div>
+   </div>
+   <p class="ex-card-note">Колірні точки позначають події. Натисни дату, щоб переглянути деталі. Фінансові операції підтверджуються в основному календарі.</p>
+  </div>
+ </section>
+ <section id="credits" class="ex-scene" data-stage="3" aria-labelledby="ex-credits-title">
+  <div class="ex-story ex-reveal">
+   <p class="ex-chapter">03 <i></i> КОНТРОЛЬ ЗОБОВ'ЯЗАНЬ</p>
+   <h2 id="ex-credits-title">Кредити.<br>Без хаосу.</h2>
+   <p>Залишок кожного кредиту та найближчі строки — в одному спокійному вигляді, без зайвих таблиць на першому екрані.</p>
+   <a href="debts.html" class="ex-section-link">Усі кредити та платежі <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="ex-glass ex-reveal" data-reveal-child>
+   <div class="ex-glass-heading"><span>Кредитний портфель</span><span class="ex-mini-tag" id="ex-credit-count">— кредитів</span></div>
+   <div class="ex-credit-total"><small>Непогашений залишок</small><strong id="ex-debt-total">—</strong></div>
+   <div id="ex-credit-list" class="ex-credit-list"><p class="ex-empty">Завантаження даних…</p></div>
+   <a class="ex-card-link" href="debts.html">Керувати кредитами <span aria-hidden="true">↗</span></a>
+  </div>
+ </section>
+ <section id="reserve" class="ex-scene" data-stage="4" aria-labelledby="ex-reserve-title">
+  <div class="ex-story ex-reveal">
+   <p class="ex-chapter">04 <i></i> ФІНАНСОВА БЕЗПЕКА</p>
+   <h2 id="ex-reserve-title">Резерв.<br>Точка опори.</h2>
+   <p>Фінансова подушка росте з кожним підтвердженим поповненням. Прогрес — один чіткий акцент, а не десятки цифр.</p>
+   <a href="reserve.html" class="ex-section-link">Управління резервом <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="ex-glass ex-glass-reserve ex-reveal" data-reveal-child>
+   <div class="ex-glass-heading"><span>Фінансова подушка</span><span class="ex-mini-tag">Ціль</span></div>
+   <small>Накопичено</small><strong class="ex-metric-xl" id="ex-reserve-amount">—</strong>
+   <div class="ex-progress-track"><span id="ex-reserve-progress" style="width:0%"></span></div>
+   <div class="ex-progress-caption"><span id="ex-reserve-target">Ціль не задана</span><strong id="ex-reserve-percent">—</strong></div>
+   <div class="ex-insight"><span aria-hidden="true">◈</span><div><small>Залишилося до цілі</small><strong id="ex-reserve-left">—</strong></div></div>
+   <a class="ex-card-link" href="reserve.html">Поповнити резерв <span aria-hidden="true">↗</span></a>
+  </div>
+ </section>
+ <section id="housing" class="ex-scene" data-stage="5" aria-labelledby="ex-housing-title">
+  <div class="ex-story ex-reveal">
+   <p class="ex-chapter">05 <i></i> ДОВГОСТРОКОВА ЦІЛЬ</p>
+   <h2 id="ex-housing-title">Власне житло.<br>Крок за кроком.</h2>
+   <p>Одна велика мета стає зрозумілим маршрутом. Бачиш не лише вартість, а й відстань до бажаного результату.</p>
+   <a href="home.html" class="ex-section-link">Моя ціль: житло <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="ex-glass ex-glass-house ex-reveal" data-reveal-child>
+   <div class="ex-glass-heading"><span>Ціль: житло</span><span class="ex-mini-tag">Прогрес</span></div>
+   <div class="ex-house-symbol" aria-hidden="true"><svg viewBox="0 0 220 160"><path d="M31 77 108 26 186 77v68H31z" fill="rgba(51,42,48,.4)" stroke="#CDD7DC" stroke-opacity=".48" stroke-width="2"/><path d="M15 83 108 17 202 83" fill="none" stroke="#FA2F4C" stroke-width="3"/><path d="M85 145v-48h43v48" fill="none" stroke="#FA2F4C" stroke-opacity=".65" stroke-width="2"/><rect x="144" y="89" width="27" height="27" fill="#FA2F4C" fill-opacity=".15" stroke="#CDD7DC" stroke-opacity=".4"/><path d="M2 151h216" stroke="#FA2F4C" stroke-opacity=".35"/><ellipse cx="110" cy="143" rx="92" ry="14" stroke="#FA2F4C" fill="none" stroke-opacity=".3"/></svg></div>
+   <small>Вже накопичено</small><strong class="ex-metric-xl" id="ex-house-saved">—</strong>
+   <div class="ex-progress-track"><span id="ex-house-progress" style="width:0%"></span></div>
+   <div class="ex-progress-caption"><span id="ex-house-target">Ціль не задана</span><strong id="ex-house-percent">—</strong></div>
+   <a class="ex-card-link" href="home.html">Відкрити житловий план <span aria-hidden="true">↗</span></a>
+  </div>
+ </section>
+ <section id="analytics" class="ex-scene" data-stage="6" aria-labelledby="ex-analytics-title">
+  <div class="ex-story ex-reveal">
+   <p class="ex-chapter">06 <i></i> ЗВ'ЯЗКИ ТА ЗАКОНОМІРНОСТІ</p>
+   <h2 id="ex-analytics-title">Аналітика.<br>Бачити більше.</h2>
+   <p>Ритм фінансів формується з реальних операцій. Динаміка перетворюється на візуальну історію, яку легко прочитати.</p>
+   <a href="analytics.html#analysis" class="ex-section-link">Детальна аналітика <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="ex-glass ex-reveal" data-reveal-child>
+   <div class="ex-glass-heading"><span>Надходження й витрати</span><span class="ex-mini-tag">Останні 6 місяців</span></div>
+   <div class="ex-chart-legend"><span><i class="ex-dot ex-dot-red"></i> Надходження</span><span><i class="ex-dot"></i> Витрати й кредити</span></div>
+   <div id="ex-chart" class="ex-chart" role="img" aria-label="Динаміка доходів і витрат за останні шість місяців"></div>
+   <p class="ex-card-note" id="ex-analytics-note">Дані беруться з фактичних записів журналу.</p>
+   <a href="analytics.html#analysis" class="ex-card-link">Досліджувати графіки <span aria-hidden="true">↗</span></a>
+  </div>
+ </section>
+ <section id="finish" class="ex-scene ex-finish" data-stage="7" aria-labelledby="ex-finish-title">
+  <div class="ex-finish-copy ex-reveal">
+   <p class="ex-kicker"><i></i> КОЖЕН КРОК МАЄ ЗНАЧЕННЯ</p>
+   <h2 id="ex-finish-title">Фінансова свобода<br><span>починається сьогодні.</span></h2>
+   <p>Панорама — для цілісного погляду. У повному кабінеті доступні всі робочі інструменти, редагування, імпорт і резервні копії.</p>
+   <div class="ex-hero-actions"><a class="ex-button ex-button-primary" href="analytics.html">Перейти до кабінету <span aria-hidden="true">↗</span></a><a class="ex-text-link" href="data-center.html">Резервні копії ↗</a></div>
+  </div>
+ </section>
+</main>
+<footer class="ex-footer"><span>FINCONTROL · MOTION</span><span>Локальні фінансові дані · 2026</span><a href="#intro">Нагору ↑</a></footer>
+</body></html>
