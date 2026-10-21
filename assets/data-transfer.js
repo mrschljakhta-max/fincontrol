@@ -80,7 +80,7 @@ function inspectBackup(data,store){
  let bytes=0;
  const parsed=Object.create(null),warnings=[];
  for(const k of keys){
-  if(!k.startsWith('fincontrol-')||k.length>128||/[\\u0000-\\u001f]/.test(k)||k===JOURNAL)
+  if(!k.startsWith('fincontrol-')||k.length>128||/[\u0000-\u001f]/.test(k)||k===JOURNAL)
    throw Error('У копії є невідомий або службовий ключ: '+k);
   const raw=rawData[k];
   if(typeof raw!=='string')throw Error('Некоректні дані модуля: '+label(k));
