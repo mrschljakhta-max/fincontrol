@@ -1,0 +1,32 @@
+/* FINCONTROL Photoreal Core v1: original crystal artwork above panoramic scenes.
+   Image is enabled only after a successful load, so no broken placeholders before
+   the user uploads assets/images/fincontrol-core-rock.webp. */
+.ex-page .ex-morph-shell{
+  z-index:2; /* Above scene art, below sticky navigation. Pointer-events stays none. */
+}
+.ex-page #ex-rock-photo{
+  opacity:0;
+  pointer-events:none;
+  image-rendering:auto;
+}
+.ex-page.ex-photoreal-core #ex-rock-photo{
+  opacity:var(--ex-photo-visible,1);
+}
+.ex-page.ex-photoreal-core .ex-rock-facets{
+  opacity:calc(1 - var(--ex-photo-visible,1));
+}
+.ex-page .ex-core-svg{
+  shape-rendering:geometricPrecision;
+}
+.ex-page .ex-morph-shell{
+  filter:drop-shadow(0 0 28px rgba(250,47,76,.24));
+}
+@media(max-width:850px){
+ .ex-page .ex-morph-shell{filter:drop-shadow(0 0 14px rgba(250,47,76,.16))}
+}
+/* Photo does not animate independently: it follows the already existing
+   breathing/rotating SVG group, while phone morphology remains scroll-linked.
+   Turning off motion also pauses these effects. */
+@media(prefers-reduced-motion:reduce){
+  .ex-page .ex-morph-shell{filter:none}
+}
