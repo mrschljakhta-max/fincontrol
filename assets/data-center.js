@@ -1,7 +1,7 @@
 (async function(){
 'use strict';
 const S=globalThis.FCStore,X=globalThis.FCDataTransfer,$=id=>document.getElementById(id);
-const MAX_SIZE=25*1024*1024,KEYS_WITH_FINANCES=new Set([
+const MAX_SIZE=25*1024*1024,UI_KEYS=new Set(['fincontrol-nav-groups-v1','fincontrol-ui-compact-v1','fincontrol-dashboard-v2']),KEYS_WITH_FINANCES=new Set([
  'fincontrol-offline-v1','fincontrol-debts-v1','fincontrol-plan-v1','fincontrol-emergency-v1',
  'fincontrol-home-v1','fincontrol-calendar-v1','fincontrol-goals-v1','fincontrol-smart-rules-v1',
  'fincontrol-privat-rules-v1','fincontrol-audit-changelog-v1'
@@ -23,7 +23,7 @@ function snapshot(){
 }
 function sameSnapshot(a,b){
  const keys=new Set([...Object.keys(a),...Object.keys(b)]);
- return [...keys].every(k=>Object.hasOwn(a,k)===Object.hasOwn(b,k)&&a[k]===b[k]);
+ return [...keys].filter(k=>!UI_KEYS.has(k)).every(k=>Object.hasOwn(a,k)===Object.hasOwn(b,k)&&a[k]===b[k]);
 }
 function refreshCurrent(){
  const summary=X.outline(snapshot());
@@ -101,7 +101,7 @@ async function parseFile(file){
  catch{throw Error('Не вдалося прочитати JSON. Перевір цілісність резервної копії.')}
  const inspected=X.inspectBackup(backup,S),current=snapshot(),diff=X.compare(current,backup.data);
  baseline=current;
- hasCurrent=Object.keys(current).some(k=>KEYS_WITH_FINANCES.has(k)||!['fincontrol-nav-groups-v1','fincontrol-ui-compact-v1','fincontrol-dashboard-v2'].includes(k));
+ hasCurrent=Object.keys(current).some(k=>KEYS_WITH_FINANCES.has(k)||!UI_KEYS.has(k));
  pending={inspected,diff,name:file.name};
  $('backup-confirmed').checked=false;$('confirm-text').value='';exportStarted=false;
  renderPreview();
@@ -133,14 +133,14 @@ $('backup-confirmed').addEventListener('change',setRestoreEnabled);
 $('confirm-text').addEventListener('input',setRestoreEnabled);
 $('backup-file').addEventListener('change',async e=>{
  try{await parseFile(e.target.files?.[0])}
- catch(err){resetPreview();$('selected-file').textContent='Файл не прийнято.';errorMessage(err.message)}
+ catch(err){resetPreview(true);$('selected-file').textContent='Файл не прийнято.';errorMessage(err.message)}
 });
 const drop=$('backup-drop');
 for(const evt of ['dragenter','dragover'])drop.addEventListener(evt,e=>{e.preventDefault();drop.classList.add('is-dragover')});
 for(const evt of ['dragleave','drop'])drop.addEventListener(evt,e=>{e.preventDefault();drop.classList.remove('is-dragover')});
 drop.addEventListener('drop',async e=>{
  try{await parseFile(e.dataTransfer?.files?.[0])}
- catch(err){resetPreview();$('selected-file').textContent='Файл не прийнято.';errorMessage(err.message)}
+ catch(err){resetPreview(true);$('selected-file').textContent='Файл не прийнято.';errorMessage(err.message)}
 });
 $('cancel-preview').addEventListener('click',()=>{
  resetPreview(true);
@@ -163,7 +163,7 @@ $('restore-confirm').addEventListener('click',async()=>{
  try{
   const expected=Object.create(null);
   for(const k of new Set([...Object.keys(baseline),...Object.keys(pending.inspected.backup.data)])){
-   expected[k]=Object.hasOwn(baseline,k)?baseline[k]:null;
+   if(!UI_KEYS.has(k))expected[k]=Object.hasOwn(baseline,k)?baseline[k]:null;
   }
   await S.restore(pending.inspected.backup,expected);
   status('Дані відновлено. Перезавантажуємо FINCONTROL…');
