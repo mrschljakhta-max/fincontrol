@@ -325,3 +325,7 @@ body.ex-page{
  .ex-page .ex-morph-shell{will-change:auto;opacity:.18!important;transform:none!important}
  .ex-scroll-progress>span{transition:none}
 }
+
+/* Optional privacy view never changes financial calculations or stored entries. */
+.ex-private-on .ex-glass .ex-progress-track span{box-shadow:none}
+.ex-private-on .ex-chart-bar{opacity:.19;box-shadow:none}
