@@ -1,0 +1,648 @@
+/* FINCONTROL — Scenic Minimal Calendar 3.0
+   Purely visual. All calendar events, plan→fact actions and storage remain unchanged.
+   No external images or network requests: the landscape is an SVG in this repo. */
+
+/* Stage: sunset mountains, readable night overlay and translucent chrome. */
+.fc-calendar-page .app-shell{
+  background-color:#101820;
+  background-image:
+    linear-gradient(180deg,rgba(13,21,31,.50) 0%,rgba(15,23,32,.34) 34%,rgba(12,20,30,.60) 100%),
+    url("calendar-atmosphere.svg");
+  background-position:center top,center center;
+  background-size:cover,cover;
+  background-attachment:fixed,fixed;
+  background-repeat:no-repeat,no-repeat;
+}
+.fc-calendar-page.cal-scene-off .app-shell{
+  background:#131A20;
+}
+.fc-calendar-page .fc-topbar{
+  background:rgba(14,22,32,.64);
+  border-color:rgba(205,215,220,.10);
+  -webkit-backdrop-filter:blur(16px);
+  backdrop-filter:blur(16px);
+}
+.fc-calendar-page .sidebar{
+  background:linear-gradient(165deg,#111b28 0%,#111921 60%,#131A20 100%);
+  border-right-color:rgba(205,215,220,.1);
+}
+.fc-calendar-page .cal-heading{
+  margin-bottom:19px;
+}
+.fc-calendar-page .cal-heading h1{
+  font-size:clamp(27px,2.9vw,39px);
+  font-weight:650;
+  letter-spacing:-.05em;
+  text-shadow:0 3px 18px rgba(0,0,0,.2);
+}
+.fc-calendar-page .cal-heading .cal-muted{
+  color:#b0bac1;
+}
+.fc-calendar-page .cal-heading>.cal-primary{
+  border-radius:11px;
+  min-height:43px;
+  padding:10px 17px;
+  box-shadow:0 7px 27px rgba(171,43,65,.24);
+}
+.fc-calendar-page .cal-heading>.cal-primary:hover{
+  box-shadow:0 8px 32px rgba(250,47,76,.28);
+}
+
+/* Four precise, smaller glass KPI cards instead of one tall striped block. */
+.fc-calendar-page .cal-stats{
+  border:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:0 0 17px;
+}
+.fc-calendar-page .cal-stats .cal-stat{
+  padding:14px 16px;
+  min-width:0;
+  min-height:94px;
+  background:linear-gradient(155deg,rgba(39,49,64,.53),rgba(23,29,41,.52));
+  border:1px solid rgba(205,215,220,.14);
+  border-radius:13px;
+  box-shadow:inset 0 1px rgba(255,255,255,.035),0 12px 32px rgba(8,16,24,.12);
+  color:var(--cal-silver);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  transition:background .18s ease,border-color .18s ease;
+}
+.fc-calendar-page .cal-stats .cal-stat:first-child{
+  padding-left:16px;
+}
+.fc-calendar-page .cal-stats .cal-stat:last-child{
+  border:1px solid rgba(205,215,220,.14);
+}
+.fc-calendar-page .cal-stats button.cal-stat:hover{
+  border-color:rgba(250,47,76,.45);
+  background:linear-gradient(150deg,rgba(51,42,48,.75),rgba(20,29,41,.65));
+}
+.fc-calendar-page .cal-stat strong{
+  margin:5px 0 3px;
+  font-weight:650;
+  font-size:clamp(23px,2vw,29px);
+  letter-spacing:-.045em;
+}
+.fc-calendar-page .cal-stat span{
+  font-size:11px;
+  color:#b2bac1;
+}
+.fc-calendar-page .cal-stat small{
+  font-size:10px;
+  line-height:1.3;
+}
+.fc-calendar-page .cal-stat.has-overdue{
+  border-color:rgba(250,47,76,.40);
+}
+
+/* Calendar and selected-day detail float above the same scenery. */
+.fc-calendar-page .cal-workspace{
+  grid-template-columns:minmax(0,1fr) minmax(300px,325px);
+  gap:15px;
+  align-items:start;
+}
+.fc-calendar-page .cal-board{
+  min-width:0;
+  padding:22px 24px 17px;
+  background:linear-gradient(150deg,rgba(18,28,43,.71),rgba(18,23,34,.52) 53%,rgba(35,28,42,.56));
+  border:1px solid rgba(205,215,220,.21);
+  border-radius:22px;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.065),
+    0 18px 52px rgba(6,13,21,.28),
+    0 0 65px rgba(171,43,65,.045);
+  -webkit-backdrop-filter:blur(17px) saturate(105%);
+  backdrop-filter:blur(17px) saturate(105%);
+}
+.fc-calendar-page .cal-agenda{
+  top:15px;
+  max-height:calc(100dvh - 30px);
+  padding:23px 20px;
+  border:1px solid rgba(205,215,220,.19);
+  border-radius:22px;
+  background:linear-gradient(157deg,rgba(44,33,49,.74),rgba(18,27,39,.78) 50%,rgba(49,29,43,.69));
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 18px 55px rgba(6,13,21,.25);
+  -webkit-backdrop-filter:blur(20px);
+  backdrop-filter:blur(20px);
+}
+.fc-calendar-page .cal-agenda-head{
+  margin-bottom:20px;
+}
+.fc-calendar-page .cal-agenda h2{
+  font-size:23px;
+  font-weight:610;
+  letter-spacing:-.045em;
+}
+.fc-calendar-page .cal-day-summary{
+  padding-bottom:18px;
+  border-bottom:1px solid rgba(205,215,220,.12);
+}
+.fc-calendar-page .cal-empty{
+  padding:27px 14px;
+  line-height:1.7;
+  font-size:12px;
+}
+.fc-calendar-page .cal-empty-symbol{
+  font-size:29px;
+  color:#b3a5ba;
+}
+.fc-calendar-page .cal-upcoming-heading{
+  border-top-color:rgba(205,215,220,.13);
+}
+.fc-calendar-page .cal-event-row{
+  border-bottom-color:rgba(205,215,220,.10);
+  padding:13px 5px;
+  border-radius:8px;
+}
+.fc-calendar-page .cal-event-row:hover{
+  background:rgba(88,75,82,.24);
+}
+.fc-calendar-page .cal-quick-actions{
+  gap:9px;
+}
+.fc-calendar-page .cal-quick-actions button{
+  background:rgba(19,26,32,.45);
+  border-color:rgba(205,215,220,.17);
+  min-height:42px;
+  border-radius:10px;
+  font-size:11px;
+  color:var(--cal-silver);
+}
+.fc-calendar-page .cal-quick-actions button:hover{
+  border-color:rgba(250,47,76,.38);
+  background:rgba(171,43,65,.16);
+}
+.fc-calendar-page .cal-balance{
+  border-color:rgba(205,215,220,.12);
+}
+
+/* Refined control bar: month is the visual hero. */
+.fc-calendar-page .cal-toolbar{
+  margin-bottom:13px;
+  gap:12px;
+}
+.fc-calendar-page .cal-period{
+  gap:9px;
+}
+.fc-calendar-page .cal-period h2{
+  min-width:0;
+  text-align:left;
+  font-size:clamp(20px,2vw,27px);
+  font-weight:640;
+  letter-spacing:-.04em;
+  white-space:nowrap;
+  margin:0 11px 0 0;
+}
+.fc-calendar-page .cal-period .cal-icon{
+  width:32px;
+  min-height:32px;
+  padding:2px;
+  border:1px solid rgba(205,215,220,.13);
+  border-radius:50%;
+  background:rgba(30,39,52,.35);
+  font-size:24px;
+}
+.fc-calendar-page .cal-period .cal-icon:hover{
+  border-color:rgba(250,47,76,.5);
+}
+.fc-calendar-page .cal-period .cal-quiet{
+  border:1px solid rgba(205,215,220,.12);
+  border-radius:22px;
+  background:rgba(30,39,52,.43);
+  color:var(--cal-silver);
+  padding:6px 14px;
+}
+.fc-calendar-page .cal-segment{
+  padding:4px;
+  gap:2px;
+  border-radius:12px;
+  border-color:rgba(205,215,220,.13);
+  background:rgba(12,20,30,.48);
+}
+.fc-calendar-page .cal-segment button{
+  min-height:32px;
+  border-radius:8px;
+  font-size:11px;
+  padding:7px 12px;
+  color:#afb9c2;
+}
+.fc-calendar-page .cal-segment button[aria-pressed=true]{
+  color:#fff;
+  background:linear-gradient(135deg,rgba(171,43,65,.7),rgba(93,32,48,.8));
+  border-color:var(--cal-red);
+  box-shadow:0 0 16px rgba(250,47,76,.16),inset 0 1px rgba(255,255,255,.09);
+}
+.fc-calendar-page .cal-filters{
+  gap:10px;
+  margin:0 0 14px;
+  flex-wrap:wrap;
+}
+.fc-calendar-page .cal-kind-filters{
+  gap:4px;
+}
+.fc-calendar-page .cal-kind-filters button{
+  padding:7px 10px;
+  min-height:30px;
+  border-radius:8px;
+}
+.fc-calendar-page .cal-kind-filters button[aria-pressed=true]{
+  border-color:rgba(250,47,76,.25);
+  background:rgba(171,43,65,.25);
+}
+.fc-calendar-page .cal-display-options{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-left:auto;
+}
+.fc-calendar-page .cal-status-label select{
+  color:var(--cal-silver);
+  background-color:rgba(19,26,32,.75);
+  border-radius:9px;
+  min-height:35px;
+  font-size:11px;
+}
+.fc-calendar-page .cal-scene-toggle{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:6px;
+  color:#b5bfc5;
+  background:rgba(19,26,32,.35);
+  border:1px solid rgba(205,215,220,.13);
+  border-radius:9px;
+  padding:7px 10px;
+  min-height:35px;
+  white-space:nowrap;
+  font-size:11px;
+}
+.fc-calendar-page .cal-scene-toggle:hover,
+.fc-calendar-page .cal-scene-toggle[aria-pressed=true]{
+  color:var(--cal-silver);
+  border-color:rgba(250,47,76,.34);
+  background:rgba(171,43,65,.14);
+}
+
+/* Numbers-only month: no day rectangles, no chips over the scenery. */
+.fc-calendar-page .cal-weekdays{
+  padding:11px 0 14px;
+  color:#b6bec8;
+  font-weight:550;
+  font-size:12px;
+  letter-spacing:.025em;
+}
+.fc-calendar-page .cal-month-grid{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  grid-auto-rows:minmax(82px,auto);
+  gap:4px 7px;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  overflow:visible;
+  padding:0 2px 8px;
+}
+.fc-calendar-page .cal-month-grid .cal-cell{
+  background:transparent;
+  border:0;
+  border-radius:17px;
+  box-shadow:none;
+  padding:7px 4px 6px;
+  min-height:82px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:4px;
+  transition:background .18s,filter .18s;
+}
+.fc-calendar-page .cal-month-grid .cal-cell:hover{
+  background:rgba(205,215,220,.055);
+}
+.fc-calendar-page .cal-month-grid .cal-cell.is-selected,
+.fc-calendar-page .cal-month-grid .cal-cell.is-today{
+  background:transparent;
+  box-shadow:none;
+  z-index:auto;
+}
+.fc-calendar-page .cal-month-grid .cal-cell.is-selected:hover,
+.fc-calendar-page .cal-month-grid .cal-cell.is-today:hover{
+  background:rgba(171,43,65,.065);
+}
+.fc-calendar-page .cal-month-grid .cal-cell.is-other{
+  opacity:.37;
+}
+.fc-calendar-page .cal-month-grid .cal-cell.is-drop{
+  background:rgba(171,43,65,.22);
+  outline:1px dashed rgba(250,47,76,.7);
+  box-shadow:none;
+}
+.fc-calendar-page .cal-month-grid .cal-day-button{
+  margin:0;
+  padding:0;
+  width:54px;
+  min-width:43px;
+  min-height:52px;
+  border-radius:50%;
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  background:transparent;
+  color:var(--cal-silver);
+  transition:transform .16s;
+}
+.fc-calendar-page .cal-month-grid .cal-day-button:hover{
+  background:transparent;
+  transform:translateY(-1px);
+}
+.fc-calendar-page .cal-month-grid .cal-date-number{
+  width:49px;
+  height:49px;
+  display:grid;
+  place-items:center;
+  color:#E3E8EC;
+  font-size:clamp(17px,1.33vw,21px);
+  line-height:1;
+  font-weight:530;
+  letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums;
+  border:1px solid transparent;
+  border-radius:50%;
+  text-shadow:0 2px 9px rgba(0,0,0,.4);
+  transition:background .16s,border-color .16s,box-shadow .16s,color .16s;
+}
+.fc-calendar-page .cal-month-grid .cal-cell:not(.is-today):not(.is-selected) .cal-day-button:hover .cal-date-number{
+  background:rgba(88,75,82,.55);
+  border-color:rgba(205,215,220,.22);
+}
+.fc-calendar-page .cal-month-grid .cal-cell.is-selected:not(.is-today) .cal-date-number{
+  background:rgba(171,43,65,.32);
+  border-color:rgba(250,47,76,.9);
+  box-shadow:0 0 0 4px rgba(250,47,76,.06),0 0 28px rgba(250,47,76,.18),inset 0 1px rgba(255,255,255,.06);
+  color:#fff;
+  font-weight:660;
+}
+.fc-calendar-page .cal-month-grid .cal-cell.is-today .cal-date-number{
+  background:var(--cal-red);
+  border-color:#ff7188;
+  color:#131A20;
+  text-shadow:none;
+  font-weight:760;
+  box-shadow:0 0 0 5px rgba(250,47,76,.10),0 0 27px rgba(250,47,76,.42),0 0 54px rgba(250,47,76,.13);
+}
+.fc-calendar-page .cal-month-grid .cal-cell.is-today.is-selected .cal-date-number{
+  box-shadow:0 0 0 5px rgba(250,47,76,.17),0 0 34px rgba(250,47,76,.53),0 0 69px rgba(250,47,76,.17);
+}
+.fc-calendar-page .cal-month-grid .cal-day-alert{
+  position:absolute;
+  top:1px;
+  right:-1px;
+  color:var(--cal-red);
+  font-size:12px;
+  font-weight:800;
+  line-height:1;
+  padding:1px 4px;
+  border-radius:50%;
+  background:rgba(19,26,32,.65);
+  box-shadow:0 0 10px rgba(250,47,76,.12);
+}
+.fc-calendar-page .cal-month-grid .cal-chip,
+.fc-calendar-page .cal-month-grid .cal-more,
+.fc-calendar-page .cal-month-grid .cal-mobile-total{
+  display:none!important;
+}
+/* Existing dots are generated directly from the real events and keep the
+   event category without duplicating or modifying any financial amounts. */
+.fc-calendar-page .cal-month-grid .cal-mobile-dots{
+  display:flex!important;
+  flex-direction:row;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:nowrap;
+  gap:5px;
+  min-height:10px;
+  padding:0;
+}
+.fc-calendar-page .cal-month-grid .cal-mobile-dots i{
+  display:block;
+  width:6px;
+  height:6px;
+  min-width:6px;
+  border-radius:50%;
+  background:#b6bbc9;
+  box-shadow:0 0 10px rgba(205,215,220,.15);
+}
+.fc-calendar-page .cal-month-grid .cal-mobile-dots i.is-income{
+  background:#82d8b8;
+  box-shadow:0 0 9px rgba(130,216,184,.36);
+}
+.fc-calendar-page .cal-month-grid .cal-mobile-dots i.is-expense{
+  background:#dc8798;
+  box-shadow:0 0 9px rgba(220,135,152,.34);
+}
+.fc-calendar-page .cal-month-grid .cal-mobile-dots i.is-credit{
+  background:#FA2F4C;
+  box-shadow:0 0 12px rgba(250,47,76,.48);
+}
+.fc-calendar-page .cal-month-grid .cal-mobile-dots i.is-reserve{
+  background:#9eaccf;
+  box-shadow:0 0 10px rgba(158,172,207,.27);
+}
+.fc-calendar-page .cal-month-grid .cal-mobile-dots i.is-done{
+  opacity:.42;
+  box-shadow:none;
+}
+.fc-calendar-page .cal-month-grid .cal-cell[data-event-count]::after{
+  content:attr(data-extra-count);
+  position:absolute;
+  right:4px;
+  bottom:7px;
+  color:#b5bbc5;
+  font-size:9px;
+  font-variant-numeric:tabular-nums;
+  opacity:.8;
+}
+.fc-calendar-page .cal-month-grid .cal-cell[data-extra-count=""]::after{
+  content:none;
+}
+
+/* The week and list views keep full event details, but adopt the glass styling. */
+.fc-calendar-page .cal-week-grid{
+  background:transparent;
+  border:0;
+  border-radius:0;
+  overflow:visible;
+  gap:8px;
+}
+.fc-calendar-page .cal-week-grid .cal-cell{
+  min-width:0;
+  padding:10px 7px 13px;
+  border:1px solid rgba(205,215,220,.13);
+  border-radius:14px;
+  background:rgba(19,26,32,.42);
+}
+.fc-calendar-page .cal-week-grid .cal-cell.is-selected{
+  background:rgba(171,43,65,.16);
+  border-color:rgba(250,47,76,.40);
+  box-shadow:0 0 19px rgba(250,47,76,.055);
+}
+.fc-calendar-page .cal-week-grid .cal-cell.is-today .cal-date-number{
+  background:var(--cal-red);
+  color:#131A20;
+  box-shadow:0 0 18px rgba(250,47,76,.28);
+}
+.fc-calendar-page .cal-week-grid .cal-chip{
+  border-radius:8px;
+  border-left-color:var(--cal-red);
+  background:rgba(51,42,48,.48);
+}
+.fc-calendar-page .cal-week-grid .cal-chip:hover{
+  background:rgba(88,75,82,.65);
+}
+.fc-calendar-page .cal-list .cal-list-group{
+  padding:4px 9px 8px;
+  border-radius:12px;
+  background:rgba(19,26,32,.35);
+  margin-bottom:11px;
+}
+.fc-calendar-page .cal-board-footer{
+  margin-top:12px;
+  color:#aab6c0;
+}
+.fc-calendar-page .cal-forecast,
+.fc-calendar-page .cal-templates{
+  background:linear-gradient(145deg,rgba(19,26,32,.65),rgba(51,42,48,.4));
+  border:1px solid rgba(205,215,220,.15);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+  border-radius:16px;
+  box-shadow:inset 0 1px rgba(255,255,255,.025);
+}
+.fc-calendar-page .cal-templates{
+  padding:14px 18px;
+}
+
+/* Fallback without the scenic image, useful for clarity or slower devices. */
+.fc-calendar-page.cal-scene-off .cal-board{
+  background:linear-gradient(155deg,rgba(20,30,43,.95),rgba(28,28,39,.95));
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+}
+.fc-calendar-page.cal-scene-off .cal-agenda{
+  background:linear-gradient(155deg,rgba(37,31,42,.96),rgba(20,28,40,.96));
+}
+.fc-calendar-page.cal-scene-off .cal-stats .cal-stat{
+  background:rgba(30,36,47,.94);
+}
+
+/* Tablet and mobile: preserve spacious tap targets, no dense event chips. */
+@media(max-width:1250px) and (min-width:701px){
+ .fc-calendar-page .cal-workspace{grid-template-columns:minmax(0,1fr) 285px;gap:12px}
+ .fc-calendar-page .cal-board{padding:19px 17px 16px}
+ .fc-calendar-page .cal-agenda{padding:18px 14px}
+ .fc-calendar-page .cal-period h2{font-size:22px;margin-right:3px}
+ .fc-calendar-page .cal-month-grid{grid-auto-rows:minmax(74px,auto);gap:3px}
+ .fc-calendar-page .cal-month-grid .cal-cell{min-height:74px}
+ .fc-calendar-page .cal-month-grid .cal-date-number{width:43px;height:43px;font-size:18px}
+ .fc-calendar-page .cal-month-grid .cal-day-button{width:46px;min-height:47px}
+ .fc-calendar-page .cal-stats .cal-stat{padding:12px;min-height:88px}
+ .fc-calendar-page .cal-stats .cal-stat:first-child{padding-left:12px}
+ .fc-calendar-page .cal-stat small{font-size:9px}
+}
+@media(max-width:900px) and (min-width:701px){
+ .fc-calendar-page .cal-workspace{grid-template-columns:1fr}
+ .fc-calendar-page .cal-agenda{position:static;max-height:none}
+}
+@media(max-width:700px){
+ .fc-calendar-page .app-shell{
+   background-attachment:scroll,scroll;
+   background-position:58% top,58% top;
+   background-size:auto 100%,auto 100%;
+ }
+ .fc-calendar-page main{padding:18px 12px calc(112px + env(safe-area-inset-bottom))}
+ .fc-calendar-page .cal-heading{gap:9px;margin-bottom:14px}
+ .fc-calendar-page .cal-heading h1{font-size:25px}
+ .fc-calendar-page .cal-heading>.cal-primary{min-height:39px;padding:8px 12px;font-size:11px}
+ .fc-calendar-page .cal-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:12px}
+ .fc-calendar-page .cal-stats .cal-stat,
+ .fc-calendar-page .cal-stats .cal-stat:first-child{
+   padding:12px;
+   min-height:84px;
+   border:1px solid rgba(205,215,220,.13);
+ }
+ .fc-calendar-page .cal-stat strong{font-size:24px}
+ .fc-calendar-page .cal-stat span{font-size:10px}
+ .fc-calendar-page .cal-stat small{font-size:9px}
+ .fc-calendar-page .cal-board{
+   padding:17px 12px 16px;
+   border-radius:17px;
+   background:linear-gradient(155deg,rgba(18,28,43,.77),rgba(18,23,34,.60));
+ }
+ .fc-calendar-page .cal-toolbar{gap:10px;margin-bottom:10px}
+ .fc-calendar-page .cal-period h2{font-size:21px;margin:0 5px 0 0}
+ .fc-calendar-page .cal-period .cal-icon{width:34px;min-height:34px}
+ .fc-calendar-page .cal-period .cal-quiet{font-size:11px;min-height:34px;padding:7px 10px}
+ .fc-calendar-page .cal-filters{margin:0 0 9px;gap:7px}
+ .fc-calendar-page .cal-kind-filters{max-width:100%;overflow:auto;flex-wrap:nowrap}
+ .fc-calendar-page .cal-kind-filters button{min-height:34px;padding:6px 8px}
+ .fc-calendar-page .cal-display-options{margin-left:0;width:100%;justify-content:space-between}
+ .fc-calendar-page .cal-status-label select{min-height:36px}
+ .fc-calendar-page .cal-weekdays{padding:7px 0 13px;font-size:10px}
+ .fc-calendar-page .cal-month-grid{gap:1px;grid-auto-rows:minmax(58px,auto);padding:0}
+ .fc-calendar-page .cal-month-grid .cal-cell{min-height:58px;padding:3px 0 5px;gap:0}
+ .fc-calendar-page .cal-month-grid .cal-day-button{
+   min-height:42px;
+   width:43px;
+   min-width:0;
+ }
+ .fc-calendar-page .cal-month-grid .cal-date-number{
+   width:36px;
+   height:36px;
+   font-size:16px;
+ }
+ .fc-calendar-page .cal-month-grid .cal-day-alert{font-size:10px;top:-1px;right:1px}
+ .fc-calendar-page .cal-month-grid .cal-mobile-dots{
+   min-height:10px;
+   gap:3px;
+   padding:0 0 1px;
+ }
+ .fc-calendar-page .cal-month-grid .cal-mobile-dots i{
+   width:4px;height:4px;min-width:4px;
+ }
+ .fc-calendar-page .cal-month-grid .cal-cell[data-event-count]::after{
+   font-size:8px;
+   bottom:0;right:0;
+ }
+ .fc-calendar-page .cal-mobile-agenda{
+   margin-top:15px;
+   border-top:1px solid rgba(205,215,220,.16);
+   padding-top:16px;
+ }
+ .fc-calendar-page .cal-forecast{padding:16px 14px}
+ .fc-calendar-page .cal-week-grid{gap:5px}
+ .fc-calendar-page .cal-week-grid .cal-cell{padding:7px 3px;min-height:72px}
+}
+@media(max-width:370px){
+ .fc-calendar-page .cal-board{padding:13px 8px}
+ .fc-calendar-page .cal-month-grid .cal-day-button{width:39px}
+ .fc-calendar-page .cal-month-grid .cal-date-number{width:34px;height:34px;font-size:15px}
+ .fc-calendar-page .cal-period h2{font-size:18px}
+}
+@media(prefers-reduced-motion:reduce){
+ .fc-calendar-page .cal-month-grid .cal-cell,
+ .fc-calendar-page .cal-month-grid .cal-day-button,
+ .fc-calendar-page .cal-month-grid .cal-date-number,
+ .fc-calendar-page .cal-stats .cal-stat{
+   transition:none;
+ }
+}
+@media(prefers-reduced-transparency:reduce){
+ .fc-calendar-page .cal-board,
+ .fc-calendar-page .cal-agenda{background:#1b2330;-webkit-backdrop-filter:none;backdrop-filter:none}
+}
