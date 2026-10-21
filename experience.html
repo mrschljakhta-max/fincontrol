@@ -17,20 +17,130 @@
 <div class="ex-world" aria-hidden="true"></div>
 <div class="ex-ambient" aria-hidden="true"></div>
 <div class="ex-morph-shell" id="ex-morph-shell" aria-hidden="true">
- <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+ <svg class="ex-core-svg" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
  <defs>
-  <radialGradient id="ex-core-glow"><stop offset="0" stop-color="#FA2F4C" stop-opacity=".44"/><stop offset=".45" stop-color="#AB2B41" stop-opacity=".18"/><stop offset="1" stop-color="#FA2F4C" stop-opacity="0"/></radialGradient>
-  <linearGradient id="ex-shape-edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#CDD7DC" stop-opacity=".44"/><stop offset=".5" stop-color="#FA2F4C"/><stop offset="1" stop-color="#AB2B41" stop-opacity=".7"/></linearGradient>
+  <radialGradient id="ex-core-glow"><stop offset="0" stop-color="#FA2F4C" stop-opacity=".65"/><stop offset=".38" stop-color="#AB2B41" stop-opacity=".24"/><stop offset="1" stop-color="#FA2F4C" stop-opacity="0"/></radialGradient>
+  <radialGradient id="ex-lava-core"><stop offset="0" stop-color="#fff1f0"/><stop offset=".11" stop-color="#ffbdc5"/><stop offset=".35" stop-color="#ff344f"/><stop offset=".75" stop-color="#6d152a" stop-opacity=".78"/><stop offset="1" stop-color="#FA2F4C" stop-opacity="0"/></radialGradient>
+  <linearGradient id="ex-rock-base" x1=".05" y1="0" x2=".86" y2="1"><stop stop-color="#7c7180"/><stop offset=".18" stop-color="#353443"/><stop offset=".45" stop-color="#151b2a"/><stop offset=".72" stop-color="#32313b"/><stop offset="1" stop-color="#0b1420"/></linearGradient>
+  <linearGradient id="ex-rock-metal" x1=".1" y1="0" x2=".8" y2="1"><stop stop-color="#c8c1c5"/><stop offset=".14" stop-color="#6e6774"/><stop offset=".47" stop-color="#292838"/><stop offset="1" stop-color="#0a1521"/></linearGradient>
+  <linearGradient id="ex-shape-edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#CDD7DC" stop-opacity=".95"/><stop offset=".5" stop-color="#FA2F4C"/><stop offset="1" stop-color="#AB2B41"/></linearGradient>
+  <linearGradient id="ex-laser-orbit"><stop offset="0" stop-color="#FA2F4C" stop-opacity="0"/><stop offset=".22" stop-color="#FA2F4C" stop-opacity=".76"/><stop offset=".62" stop-color="#ff9da8"/><stop offset="1" stop-color="#FA2F4C" stop-opacity=".08"/></linearGradient>
+  <linearGradient id="ex-phone-rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c2abb1"/><stop offset=".23" stop-color="#4b303a"/><stop offset=".57" stop-color="#FA2F4C"/><stop offset=".82" stop-color="#646471"/><stop offset="1" stop-color="#ddd6d7"/></linearGradient>
+  <linearGradient id="ex-phone-glass" x1=".2" y1="0" x2=".8" y2="1"><stop stop-color="#18212e"/><stop offset=".55" stop-color="#0e1520"/><stop offset="1" stop-color="#211923"/></linearGradient>
+  <filter id="ex-bloom" x="-65%" y="-65%" width="230%" height="230%"><feGaussianBlur stdDeviation="5"/></filter>
+  <clipPath id="ex-rock-clip"><use href="#ex-morph-outline"/></clipPath>
  </defs>
- <circle cx="140" cy="140" r="130" fill="url(#ex-core-glow)" />
- <g id="ex-morph-body">
-  <path id="ex-morph-outline" stroke="url(#ex-shape-edge)" stroke-width="2.5" fill="#332A30" fill-opacity=".18" stroke-linejoin="round"/>
-  <path id="ex-morph-inner" stroke="#FA2F4C" stroke-width="1.2" fill="none" opacity=".4"/>
-  <circle cx="140" cy="140" r="7" fill="#FA2F4C" opacity=".7"/>
-  <circle cx="140" cy="140" r="37" stroke="#CDD7DC" fill="none" stroke-opacity=".1" stroke-dasharray="2 8"/>
+ <g class="ex-aura-breath"><circle cx="140" cy="140" r="137" fill="url(#ex-core-glow)" /></g>
+ <g id="ex-orbit-back" class="ex-orbit ex-orbit-back">
+  <ellipse cx="140" cy="140" rx="119" ry="44" transform="rotate(-23 140 140)" stroke="url(#ex-laser-orbit)" stroke-width="1.8" fill="none" stroke-dasharray="8 4 76 21"/>
+  <ellipse cx="140" cy="140" rx="109" ry="36" transform="rotate(37 140 140)" stroke="#CDD7DC" stroke-width=".65" fill="none" opacity=".25"/>
  </g>
- <circle cx="140" cy="140" r="116" fill="none" stroke="#CDD7DC" stroke-opacity=".11" stroke-dasharray="3 11"/>
- <circle cx="140" cy="24" r="3" fill="#FA2F4C"/>
+ <g id="ex-rock-idle" class="ex-rock-idle">
+  <g id="ex-morph-body">
+   <path id="ex-morph-outline" d="M223 140A83 83 0 1 0 57 140A83 83 0 1 0 223 140Z" stroke="url(#ex-shape-edge)" stroke-width="2" stroke-opacity=".9" fill="url(#ex-rock-base)" stroke-linejoin="round"/>
+   <g clip-path="url(#ex-rock-clip)" class="ex-rock-facets">
+    <rect x="34" y="34" width="212" height="212" fill="url(#ex-rock-metal)" opacity=".62"/>
+    <path d="M37 91 123 45 98 101 72 146 47 179Z" fill="#6d6976" opacity=".92"/>
+    <path d="M123 45 178 43 198 93 154 98 98 101Z" fill="#aaa0a4" opacity=".63"/>
+    <path d="M178 43 241 104 198 93Z" fill="#292c3b"/>
+    <path d="M47 179 72 146 105 167 97 230 51 197Z" fill="#202432" opacity=".92"/>
+    <path d="M98 101 154 98 170 157 105 167 72 146Z" fill="#312b35" stroke="#58505e" stroke-width=".5"/>
+    <path d="M154 98 198 93 239 116 190 139 170 157Z" fill="#1b202d"/>
+    <path d="M239 116 234 185 190 139Z" fill="#847580" opacity=".76"/>
+    <path d="M105 167 170 157 183 216 144 242 97 230Z" fill="#171e2b"/>
+    <path d="M170 157 190 139 234 185 202 219 183 216Z" fill="#51404d"/>
+    <path d="M97 230 144 242 183 216 133 210Z" fill="#55505b" opacity=".82"/>
+    <path d="M57 78 123 45 98 101 82 116Z" fill="#b0a8ad" opacity=".38"/>
+    <path d="M183 216 202 219 234 185 214 215Z" fill="#a49ba7" opacity=".52"/>
+    <path d="M76 150 105 167 130 128 98 101Z" fill="#1a1925"/>
+    <path d="M130 128 154 98 170 157 143 181 105 167Z" fill="#3a2633"/>
+    <path d="M130 128 170 157 162 180 142 190 111 161Z" fill="#a2253c" opacity=".46"/>
+    <g class="ex-crack-glow" filter="url(#ex-bloom)" fill="none" stroke="#FA2F4C" stroke-width="3.8" opacity=".72">
+     <path d="M99 100 129 129 106 161 144 185 178 165 199 195"/>
+     <path d="M141 53 155 98 133 126 170 157 195 130 231 118"/>
+     <path d="M99 229 106 180 91 158 72 151"/>
+    </g>
+    <g class="ex-rock-cracks" fill="none" stroke="#ff6476" stroke-width="1.25" stroke-linejoin="round">
+     <path d="M99 100 129 129 106 161 144 185 178 165 199 195"/>
+     <path d="M141 53 155 98 133 126 170 157 195 130 231 118"/>
+     <path d="M99 229 106 180 91 158 72 151"/>
+    </g>
+    <g class="ex-energy-heart">
+     <circle cx="144" cy="144" r="39" fill="url(#ex-lava-core)" filter="url(#ex-bloom)"/>
+     <circle cx="144" cy="144" r="23" fill="url(#ex-lava-core)"/>
+     <circle cx="144" cy="144" r="6" fill="#ffe1e4" opacity=".95"/>
+     <path d="M119 145H167M143 120V170" stroke="#ffdbe1" stroke-width="1" opacity=".55"/>
+    </g>
+    <path d="M68 138 104 163 144 186 189 143 224 177" stroke="#d8d2d9" stroke-width=".8" fill="none" opacity=".38"/>
+   </g>
+   <path id="ex-morph-inner" stroke="#FA2F4C" stroke-width=".7" stroke-opacity=".3" fill="none"/>
+  </g>
+  <g class="ex-debris"><path class="ex-shard ex-shard-0" d="M59 91 L66 83 L74 91Z" fill="#9b5961" stroke="#fa6274" stroke-width=".7" opacity="0.44" style="--ex-shard-delay:0s;--ex-shard-phase:1"/>
+  <path class="ex-shard ex-shard-1" d="M216 74 L223 81 L216 88Z" fill="#252b39" stroke="#858e9b" stroke-width=".7" opacity="0.60" style="--ex-shard-delay:-0.7s;--ex-shard-phase:-1"/>
+  <path class="ex-shard ex-shard-2" d="M45 168 L58 162 L54 175Z" fill="#252b39" stroke="#858e9b" stroke-width=".7" opacity="0.76" style="--ex-shard-delay:-1.4s;--ex-shard-phase:1"/>
+  <path class="ex-shard ex-shard-3" d="M219 195 L232 191 L227 203Z" fill="#9b5961" stroke="#858e9b" stroke-width=".7" opacity="0.44" style="--ex-shard-delay:-2.0999999999999996s;--ex-shard-phase:-1"/>
+  <path class="ex-shard ex-shard-0" d="M102 34 L109 23 L117 33Z" fill="#252b39" stroke="#fa6274" stroke-width=".7" opacity="0.60" style="--ex-shard-delay:-2.8s;--ex-shard-phase:1"/>
+  <path class="ex-shard ex-shard-1" d="M154 239 L163 231 L168 246Z" fill="#252b39" stroke="#858e9b" stroke-width=".7" opacity="0.76" style="--ex-shard-delay:-3.5s;--ex-shard-phase:-1"/>
+  <path class="ex-shard ex-shard-2" d="M35 125 L43 120 L47 130Z" fill="#9b5961" stroke="#858e9b" stroke-width=".7" opacity="0.44" style="--ex-shard-delay:0s;--ex-shard-phase:1"/>
+  <path class="ex-shard ex-shard-3" d="M246 133 L252 125 L256 139Z" fill="#252b39" stroke="#858e9b" stroke-width=".7" opacity="0.60" style="--ex-shard-delay:-0.7s;--ex-shard-phase:-1"/>
+  <path class="ex-shard ex-shard-0" d="M82 222 L89 215 L94 232Z" fill="#252b39" stroke="#fa6274" stroke-width=".7" opacity="0.76" style="--ex-shard-delay:-1.4s;--ex-shard-phase:1"/>
+  <path class="ex-shard ex-shard-1" d="M205 35 L211 26 L216 39Z" fill="#9b5961" stroke="#858e9b" stroke-width=".7" opacity="0.44" style="--ex-shard-delay:-2.0999999999999996s;--ex-shard-phase:-1"/>
+  <path class="ex-shard ex-shard-2" d="M190 242 L197 230 L204 245Z" fill="#252b39" stroke="#858e9b" stroke-width=".7" opacity="0.60" style="--ex-shard-delay:-2.8s;--ex-shard-phase:1"/>
+  <path class="ex-shard ex-shard-3" d="M28 207 L35 200 L40 212Z" fill="#252b39" stroke="#858e9b" stroke-width=".7" opacity="0.76" style="--ex-shard-delay:-3.5s;--ex-shard-phase:-1"/></g>
+ </g>
+ <g class="ex-orbit ex-orbit-front">
+  <ellipse cx="140" cy="140" rx="120" ry="39" transform="rotate(28 140 140)" stroke="url(#ex-laser-orbit)" stroke-width="1.65" fill="none" stroke-dasharray="62 10 7 22"/>
+  <ellipse cx="140" cy="140" rx="103" ry="67" transform="rotate(-65 140 140)" stroke="#FA2F4C" stroke-width=".8" fill="none" stroke-opacity=".46" stroke-dasharray="2 10"/>
+  <circle cx="241" cy="179" r="2" fill="#ff97a4"/>
+ </g>
+ <g id="ex-device" class="ex-device">
+  <g class="ex-phone-float">
+   <rect x="76" y="31" width="128" height="218" rx="24" fill="url(#ex-phone-rim)" stroke="#ffadb5" stroke-width="1.5"/>
+   <rect x="81" y="36" width="118" height="207" rx="20" fill="#111824" stroke="#FF6476" stroke-width=".65"/>
+   <rect x="85" y="42" width="110" height="196" rx="16" fill="url(#ex-phone-glass)"/>
+   <path d="M88 201Q142 164 192 101" fill="none" stroke="#FA2F4C" stroke-opacity=".20" stroke-width="10" filter="url(#ex-bloom)"/>
+   <path d="M88 201Q142 164 192 101" fill="none" stroke="#FA2F4C" stroke-opacity=".45" stroke-width="1.1"/>
+   <rect x="118" y="47" width="44" height="10" rx="5" fill="#020811" stroke="#4d303a" stroke-width=".4"/>
+   <circle cx="152" cy="52" r="2" fill="#3a3b49"/>
+   <text x="96" y="75" fill="#CDD7DC" font-size="8.5" font-weight="750" letter-spacing="-.3">FINCONTROL</text>
+   <text x="96" y="97" fill="#9BA5A7" font-size="6">ОГЛЯД ФІНАНСІВ</text>
+   <path d="M97 107H183" stroke="#CDD7DC" stroke-opacity=".25"/>
+   <path d="M98 130A39 39 0 0 1 173 116" stroke="#FA2F4C" stroke-width="7" fill="none" opacity=".87" stroke-linecap="round"/>
+   <path d="M98 130A39 39 0 1 0 173 116" stroke="#CDD7DC" stroke-width="7" fill="none" opacity=".11"/>
+   <circle cx="136" cy="131" r="6" fill="#FA2F4C" opacity=".6"/>
+   <g fill="#9BA5A7" opacity=".58">
+    <rect x="97" y="176" width="22" height="4" rx="2"/><rect x="97" y="187" width="36" height="3" rx="1.5"/>
+    <rect x="97" y="198" width="25" height="3" rx="1.5"/>
+   </g>
+   <g fill="#FA2F4C" opacity=".85">
+    <rect x="142" y="184" width="5" height="17" rx="2"/><rect x="151" y="174" width="5" height="27" rx="2"/>
+    <rect x="160" y="180" width="5" height="21" rx="2"/><rect x="169" y="164" width="5" height="37" rx="2"/>
+    <rect x="178" y="172" width="5" height="29" rx="2"/>
+   </g>
+   <rect x="117" y="224" width="46" height="2" rx="1" fill="#CDD7DC" opacity=".40"/>
+   <path d="M200 96h2v31h-2M79 94h-2v20h2" stroke="#FF6476" stroke-opacity=".48" stroke-width="2"/>
+  </g>
+ </g>
+ <g class="ex-sparks"><circle cx="32" cy="72" r="1.6" fill="#CDD7DC" opacity="0.27" class="ex-spark" style="--ex-spark-delay:0s"/>
+  <circle cx="51" cy="42" r="0.6" fill="#FA2F4C" opacity="0.37" class="ex-spark" style="--ex-spark-delay:-0.28s"/>
+  <circle cx="84" cy="37" r="0.6" fill="#FA2F4C" opacity="0.47" class="ex-spark" style="--ex-spark-delay:-0.56s"/>
+  <circle cx="174" cy="23" r="0.6" fill="#CDD7DC" opacity="0.57" class="ex-spark" style="--ex-spark-delay:-0.8400000000000001s"/>
+  <circle cx="227" cy="60" r="0.6" fill="#FA2F4C" opacity="0.67" class="ex-spark" style="--ex-spark-delay:-1.12s"/>
+  <circle cx="256" cy="99" r="0.6" fill="#FA2F4C" opacity="0.77" class="ex-spark" style="--ex-spark-delay:-1.4000000000000001s"/>
+  <circle cx="238" cy="166" r="1.6" fill="#CDD7DC" opacity="0.27" class="ex-spark" style="--ex-spark-delay:-1.6800000000000002s"/>
+  <circle cx="242" cy="210" r="0.6" fill="#FA2F4C" opacity="0.37" class="ex-spark" style="--ex-spark-delay:-1.9600000000000002s"/>
+  <circle cx="206" cy="231" r="0.6" fill="#FA2F4C" opacity="0.47" class="ex-spark" style="--ex-spark-delay:-2.24s"/>
+  <circle cx="140" cy="260" r="0.6" fill="#CDD7DC" opacity="0.57" class="ex-spark" style="--ex-spark-delay:-2.5200000000000005s"/>
+  <circle cx="79" cy="248" r="0.6" fill="#FA2F4C" opacity="0.67" class="ex-spark" style="--ex-spark-delay:-2.8000000000000003s"/>
+  <circle cx="39" cy="222" r="0.6" fill="#FA2F4C" opacity="0.77" class="ex-spark" style="--ex-spark-delay:-3.08s"/>
+  <circle cx="23" cy="158" r="1.6" fill="#CDD7DC" opacity="0.27" class="ex-spark" style="--ex-spark-delay:-3.3600000000000003s"/>
+  <circle cx="121" cy="17" r="0.6" fill="#FA2F4C" opacity="0.37" class="ex-spark" style="--ex-spark-delay:-3.6400000000000006s"/>
+  <circle cx="264" cy="178" r="0.6" fill="#FA2F4C" opacity="0.47" class="ex-spark" style="--ex-spark-delay:-3.9200000000000004s"/>
+  <circle cx="64" cy="194" r="0.6" fill="#CDD7DC" opacity="0.57" class="ex-spark" style="--ex-spark-delay:-4.2s"/>
+  <circle cx="211" cy="122" r="0.6" fill="#FA2F4C" opacity="0.67" class="ex-spark" style="--ex-spark-delay:-4.48s"/>
+  <circle cx="143" cy="36" r="0.6" fill="#FA2F4C" opacity="0.77" class="ex-spark" style="--ex-spark-delay:-4.760000000000001s"/>
+  <circle cx="163" cy="251" r="1.6" fill="#CDD7DC" opacity="0.27" class="ex-spark" style="--ex-spark-delay:-5.040000000000001s"/>
+  <circle cx="51" cy="112" r="0.6" fill="#FA2F4C" opacity="0.37" class="ex-spark" style="--ex-spark-delay:-5.32s"/></g>
  </svg>
 </div>
 <header class="ex-header">
