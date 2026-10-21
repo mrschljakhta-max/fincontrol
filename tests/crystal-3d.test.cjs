@@ -26,8 +26,9 @@ function harness(hasWebGL=true){
   deleteProgram(){},useProgram(){},createBuffer(){return {}},bindBuffer(){},
   bufferData(){},getAttribLocation(){return 0},enableVertexAttribArray(){},
   vertexAttribPointer(){},enable(){},depthFunc(){},disable(){},clearColor(){},
-  viewport(){},clear(){},getUniformLocation(_program,key){return key},
-  uniform1f(name,value){uniforms.push({name,value})},getError(){return 0},
+  viewport(){},clear(){},activeTexture(){},bindTexture(){},
+  getUniformLocation(_program,key){return key},
+  uniform1i(){},uniform1f(name,value){uniforms.push({name,value})},getError(){return 0},
   drawArrays(_shape,_start,count){stats.draws++;stats.vertices=count},deleteBuffer(){}
  };
  const canvas={
@@ -112,4 +113,13 @@ test('unsupported or lost WebGL returns cleanly to detailed image/vector fallbac
  live.fire('canvas:webglcontextlost');
  assert.equal(live.states.has('ex-webgl-ready'),false);
  assert.equal(live.pending.size,0);
+});
+
+test('optional photographic rock texture remains mapped onto the 3D mesh, never as a rotating billboard',()=>{
+ assert.match(source,/attribute vec2 aUV/);
+ assert.match(source,/uRockTexture/);
+ assert.match(source,/texture2D\(uRockTexture,vUV\)/);
+ assert.match(source,/loadTexture\(\)/);
+ assert.match(source,/fincontrol-core-rock.webp/);
+ assert.match(source,/rockTextureReady\?1:0/);
 });
