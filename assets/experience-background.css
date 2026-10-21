@@ -1,0 +1,51 @@
+/* FINCONTROL panoramic artwork integration.
+   Original user-approved landscape, optimized as WebP in assets/images.
+   The old vector world remains as a fallback until the image is uploaded.
+   Unlike background-attachment:fixed this artwork travels with the long scroll. */
+.ex-page .ex-world{
+  background-color:#0b131d;
+  background-image:
+    linear-gradient(90deg,
+      rgba(7,12,20,.56) 0%,
+      rgba(7,12,20,.36) 24%,
+      rgba(7,12,20,.12) 55%,
+      rgba(7,12,20,.12) 100%),
+    linear-gradient(180deg,
+      rgba(5,10,17,.32) 0%,
+      rgba(5,10,17,.04) 13%,
+      rgba(5,10,17,.03) 72%,
+      rgba(5,10,17,.23) 100%),
+    url("images/fincontrol-world.webp?v=1"),
+    url("experience-world.svg?v=1");
+  background-size:100% 100%,100% 100%,100% 100%,100% 100%;
+  background-position:center top;
+  background-repeat:no-repeat;
+}
+/* When motion is disabled, the detailed landscape stays visible.
+   The switch only affects orbit/stone/UI animations. */
+.ex-page.ex-motion-off .ex-world{
+  background-image:
+    linear-gradient(90deg,
+      rgba(7,12,20,.57) 0%,
+      rgba(7,12,20,.36) 24%,
+      rgba(7,12,20,.13) 55%,
+      rgba(7,12,20,.13) 100%),
+    linear-gradient(180deg,
+      rgba(5,10,17,.32) 0%,
+      rgba(5,10,17,.04) 13%,
+      rgba(5,10,17,.03) 72%,
+      rgba(5,10,17,.23) 100%),
+    url("images/fincontrol-world.webp?v=1"),
+    url("experience-world.svg?v=1");
+}
+/* Extra separation is needed only in narrow viewports where text fills the width.
+   Glass surfaces remain separate and independently interactive. */
+@media(max-width:600px){
+  .ex-page .ex-world,
+  .ex-page.ex-motion-off .ex-world{
+    background-position:center top;
+  }
+  .ex-page .ex-scene:not(.ex-hero) .ex-story{
+    text-shadow:0 2px 20px rgba(3,8,14,.42);
+  }
+}
