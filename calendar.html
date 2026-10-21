@@ -9,11 +9,12 @@
 <link rel="stylesheet" href="assets/fincontrol.css?v=4">
 <link rel="stylesheet" href="assets/premium.css?v=6">
 <link rel="stylesheet" href="assets/calendar-v2.css?v=4">
+<link rel="stylesheet" href="assets/calendar-minimal.css?v=1">
 <script src="assets/store.js?v=5"></script>
 <script src="assets/calendar-model.js?v=3" defer></script>
 <script src="assets/calendar-actions.js?v=4" defer></script>
 <script src="assets/shell.js?v=7" defer></script>
-<script src="calendar.js?v=8" defer></script>
+<script src="calendar.js?v=9" defer></script>
 </head>
 <body class="fc-premium fc-calendar-page" data-page="calendar">
 <a class="skip-link" href="#main-content">Перейти до вмісту</a>
@@ -32,9 +33,9 @@
  <div class="cal-workspace">
   <section class="cal-board" aria-labelledby="month-title">
    <div class="cal-toolbar"><div class="cal-period"><button id="prev" class="cal-icon" aria-label="Попередній період">‹</button><h2 id="month-title"></h2><button id="next" class="cal-icon" aria-label="Наступний період">›</button><button id="today" class="cal-quiet">Сьогодні</button></div><div class="cal-segment" role="group" aria-label="Вигляд календаря"><button data-view="month" aria-pressed="true">Місяць</button><button data-view="week" aria-pressed="false">Тиждень</button><button data-view="list" aria-pressed="false">Список</button></div></div>
-   <div class="cal-filters"><div class="cal-kind-filters" role="group" aria-label="Тип подій"><button data-kind="all" aria-pressed="true">Усі</button><button data-kind="income" aria-pressed="false">↓ Дохід</button><button data-kind="expense" aria-pressed="false">↑ Витрати</button><button data-kind="credit" aria-pressed="false">▣ Кредити</button><button data-kind="reserve" aria-pressed="false">◈ Резерв</button></div><label class="cal-status-label"><span class="sr-only">Статус подій</span><select id="status-filter"><option value="all">Усі статуси</option><option value="pending">Заплановані</option><option value="partial">Частково</option><option value="done">Завершені</option><option value="overdue">Прострочені</option></select></label></div>
+   <div class="cal-filters"><div class="cal-kind-filters" role="group" aria-label="Тип подій"><button data-kind="all" aria-pressed="true">Усі</button><button data-kind="income" aria-pressed="false">↓ Дохід</button><button data-kind="expense" aria-pressed="false">↑ Витрати</button><button data-kind="credit" aria-pressed="false">▣ Кредити</button><button data-kind="reserve" aria-pressed="false">◈ Резерв</button></div><div class="cal-display-options"><label class="cal-status-label"><span class="sr-only">Статус подій</span><select id="status-filter"><option value="all">Усі статуси</option><option value="pending">Заплановані</option><option value="partial">Частково</option><option value="done">Завершені</option><option value="overdue">Прострочені</option></select></label><button id="cal-scene-toggle" class="cal-scene-toggle" type="button" aria-pressed="true" aria-label="Показувати атмосферне тло календаря" title="Увімкнути або вимкнути фон">◐ Тло</button></div></div>
    <div id="calendar-content" aria-live="polite"></div>
-   <div class="cal-board-footer"><span><i class="cal-today-dot"></i> Сьогодні <i class="cal-selected-dot"></i> Обраний день</span><span id="period-count"></span></div>
+   <div class="cal-board-footer"><span><i class="cal-today-dot"></i> Сьогодні <i class="cal-selected-dot"></i> Обраний день · кольорові точки — фінансові події</span><span id="period-count"></span></div>
    <div class="cal-mobile-agenda" id="mobile-agenda"></div>
   </section>
   <aside class="cal-agenda" aria-labelledby="selected-title">
