@@ -15,7 +15,7 @@ const templates={
  credit:{name:'Платіж за кредитом',kind:'debt_payment',repeat:'monthly'}
 };
 let currentDate=M.today(),month=currentDate.slice(0,7),selected=currentDate,editing=null;
-let state={version:1,opening:0,events:[],done:{}},loaded=false;
+let state={version:1,opening:0,events:[],done:{}},sources={ledger:null,debts:null};
 const safeRead=k=>{try{return S.read(k)}catch(e){showNotice('Помилка даних: '+e.message,true);return null}};
 function showNotice(message,isError=false){
  const box=$('calendar-notice');box.textContent=message;box.hidden=false;box.classList.toggle('is-error',isError);
@@ -29,7 +29,6 @@ function normalizeState(v){
 }
 function refreshState(){
  state=normalizeState(safeRead(K.calendar));
- loaded=true;
 }
 function write(fn){
  const next=JSON.parse(JSON.stringify(state));
@@ -39,7 +38,7 @@ function write(fn){
  render();
 }
 function data(start,end,withActual=true){
- return M.collect({state,ledger:safeRead(K.ledger),debts:safeRead(K.debts)},start,end,{actual:withActual});
+ return M.collect({state,ledger:sources.ledger,debts:sources.debts},start,end,{actual:withActual});
 }
 function eventType(e){
  return M.category(e.kind);
@@ -192,6 +191,7 @@ function renderTable(){
  if(!state.events.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=6;td.textContent='Ще немає власних подій. Додай зарплату, кредит або поповнення резерву вище.';tr.append(td);tbody.append(tr)}
 }
 function render(){
+ sources={ledger:safeRead(K.ledger),debts:safeRead(K.debts)};
  currentDate=M.today();
  $('today-line').textContent='Сьогодні · '+M.day(currentDate).toLocaleDateString('uk-UA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
  $('date').value=editing?$('date').value:selected;
