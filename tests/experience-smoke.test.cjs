@@ -208,3 +208,20 @@ test('no-motion setting still displays final premium phone rather than hiding it
  assert.equal(f.el('ex-morph-shell').style.values['--ex-phone-visible'],'1.000');
  assert.equal(f.mutationCount(),0);
 });
+
+test('panorama calendar navigates next/previous months without changing source data',async()=>{
+ const f=fixture();await f.start();
+ const initial=f.el('ex-calendar-month').textContent;
+ f.el('ex-calendar-next').dispatch('click');
+ const next=f.el('ex-calendar-month').textContent;
+ assert.ok(next!==initial);
+ assert.ok([35,42].includes(f.el('ex-calendar-grid').children.length));
+ f.el('ex-privacy-toggle').dispatch('click');
+ assert.equal(f.el('ex-calendar-month').textContent,next);
+ f.el('ex-calendar-prev').dispatch('click');
+ assert.equal(f.el('ex-calendar-month').textContent,initial);
+ f.el('ex-calendar-next').dispatch('click');
+ f.el('ex-calendar-today').dispatch('click');
+ assert.equal(f.el('ex-calendar-month').textContent,initial);
+ assert.equal(f.mutationCount(),0);
+});
