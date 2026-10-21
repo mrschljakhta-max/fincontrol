@@ -249,7 +249,15 @@
    <a href="calendar.html" class="ex-section-link">Повний календар · План → Факт <span aria-hidden="true">↗</span></a>
   </div>
   <div class="ex-glass ex-glass-calendar ex-reveal" data-reveal-child>
-   <div class="ex-glass-heading"><span id="ex-calendar-month">Поточний місяць</span><span class="ex-mini-tag">Зараз</span></div>
+   <div class="ex-glass-heading ex-calendar-heading">
+    <span>Мій фінансовий місяць</span>
+    <div class="ex-calendar-controls" role="group" aria-label="Навігація календарем">
+     <button type="button" id="ex-calendar-prev" aria-label="Попередній місяць" title="Попередній місяць">‹</button>
+     <span id="ex-calendar-month" aria-live="polite">Поточний місяць</span>
+     <button type="button" id="ex-calendar-next" aria-label="Наступний місяць" title="Наступний місяць">›</button>
+     <button type="button" id="ex-calendar-today" title="Повернутися до поточного дня">Сьогодні</button>
+    </div>
+   </div>
    <div class="ex-calendar-layout">
     <div class="ex-month-wrap">
      <div class="ex-weekdays" aria-hidden="true"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span></div>
