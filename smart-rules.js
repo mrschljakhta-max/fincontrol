@@ -7,7 +7,7 @@ const safe=["income","expense","refund","review"];
 const labels={income:"Дохід",expense:"Витрата",refund:"Повернення",review:"На перевірці"};
 let rules=[];
 function load(){const v=read(KEY);rules=Array.isArray(v)?v.filter(x=>x&&typeof x.pattern==="string"&&safe.includes(x.kind)&&typeof x.category==="string"):[]}
-function save(){localStorage.setItem(KEY,JSON.stringify(rules))}
+function save(){FCStore.legacySet(KEY,JSON.stringify(rules))}
 function suggest(text){const q=normalize(text);if(!q)return null;const matches=rules.filter(r=>r.enabled!==false&&q.includes(r.pattern)&&r.pattern.length>=4).sort((a,b)=>b.pattern.length-a.pattern.length);return matches[0]||null}
 function row(tag,text){const e=document.createElement(tag);e.textContent=text;return e}
 function render(){load();const body=$("smart-body");body.replaceChildren();for(const r of rules){const tr=document.createElement("tr");tr.append(row("td",r.pattern),row("td",labels[r.kind]||r.kind),row("td",r.category));const actions=document.createElement("td"),toggle=document.createElement("button");toggle.className="secondary";toggle.textContent=r.enabled===false?"Увімкнути":"Вимкнути";toggle.onclick=()=>{r.enabled=r.enabled===false;save();render()};const del=document.createElement("button");del.className="secondary";del.textContent="Видалити";del.onclick=()=>{if(confirm("Видалити правило?")){rules=rules.filter(x=>x.id!==r.id);save();render()}};actions.append(toggle,del);tr.append(actions);body.append(tr)}$("smart-count").textContent="Правил: "+rules.length+". Правила не змінюють минулі записи автоматично."}
