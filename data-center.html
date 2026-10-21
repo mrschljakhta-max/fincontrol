@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#131A20">
+<meta name="description" content="Безпечні локальні резервні копії та перенесення даних FINCONTROL між пристроями.">
+<title>FINCONTROL · Керування даними</title>
+<link rel="stylesheet" href="assets/fincontrol.css?v=4">
+<link rel="stylesheet" href="assets/premium.css?v=6">
+<link rel="stylesheet" href="assets/data-center.css?v=1">
+<script src="assets/store.js?v=5"></script>
+<script src="assets/data-transfer.js?v=1" defer></script>
+<script src="assets/shell.js?v=7" defer></script>
+<script src="assets/data-center.js?v=1" defer></script>
+</head>
+<body class="fc-premium fc-data-page" data-page="data-center">
+<a class="skip-link" href="#main-content">Перейти до вмісту</a>
+<aside class="sidebar" id="app-navigation" aria-label="Основна навігація"></aside>
+<div class="app-shell">
+<header class="fc-topbar">
+ <div class="fc-crumb">Особистий простір <span>/</span><strong>Керування даними</strong></div>
+ <div class="fc-top-actions"><span class="fc-local"><i></i> Цей браузер</span><button class="fc-icon-button" id="command-open" type="button" aria-label="Швидкі команди">⌘ <kbd>Ctrl K</kbd></button></div>
+</header>
+<main id="main-content" tabindex="-1">
+ <div class="fc-data-heading">
+  <div>
+   <p class="eyebrow">FINCONTROL / DATA CENTER</p>
+   <h1>Дані та резервні копії</h1>
+   <p class="fc-data-lead">Перенеси свій фінансовий простір між пристроями без сервера. Тільки ти вирішуєш, коли створювати копію або відновлювати записи.</p>
+  </div>
+  <a class="fc-data-text-link" href="diagnostics.html">Діагностика ↗</a>
+ </div>
+ <div id="global-status" class="fc-data-status" role="status" aria-live="polite" hidden></div>
+ <section class="fc-data-metrics" aria-label="Дані в цьому браузері">
+  <div class="fc-data-metric"><small>Локальних модулів</small><strong id="current-modules">—</strong><span>Доступні в цьому браузері</span></div>
+  <div class="fc-data-metric"><small>Записів журналу</small><strong id="current-entries">—</strong><span>Фактичні та заплановані</span></div>
+  <div class="fc-data-metric"><small>Кредитів у реєстрі</small><strong id="current-credits">—</strong><span>Без показу фінансових сум</span></div>
+ </section>
+ <div class="fc-data-grid">
+  <section class="fc-data-card" aria-labelledby="export-title">
+   <div class="fc-data-card-head"><span class="fc-data-icon">01</span><div><h2 id="export-title">Зберегти мої дані</h2><p>Експортуй усі модулі одним JSON-файлом.</p></div></div>
+   <p class="fc-data-muted">У копію ввійдуть журнал операцій, кредити, фінансові цілі, календар, налаштування та історія змін, що є в цьому браузері.</p>
+   <button class="fc-data-primary" id="backup-export" type="button">↓ Завантажити повну копію</button>
+   <p class="fc-data-hint" id="export-detail">Файл збережеться через браузер. Перевір папку завантажень перед відновленням на іншому пристрої.</p>
+  </section>
+  <section class="fc-data-card" aria-labelledby="import-title">
+   <div class="fc-data-card-head"><span class="fc-data-icon">02</span><div><h2 id="import-title">Перенести або відновити</h2><p>Спочатку перевіримо файл, нічого не змінюючи.</p></div></div>
+   <label class="fc-data-drop" id="backup-drop">
+    <span aria-hidden="true">⇧</span><strong>Обрати резервну копію JSON</strong>
+    <small>Файл FINCONTROL з іншого пристрою · до 25 МБ</small>
+    <input id="backup-file" type="file" accept=".json,application/json" aria-label="Обрати файл резервної копії FINCONTROL">
+   </label>
+   <p class="fc-data-hint" id="selected-file">Файл ще не вибрано.</p>
+   <p class="fc-data-error" id="file-error" role="alert" hidden></p>
+  </section>
+ </div>
+ <section class="fc-data-card fc-data-preview" id="backup-preview" aria-labelledby="preview-title" hidden>
+  <div class="fc-data-card-head"><span class="fc-data-icon">03</span><div><h2 id="preview-title">Попередня перевірка</h2><p>Поки що жоден запис не замінено.</p></div></div>
+  <div class="fc-data-preview-summary">
+   <div><small>Дата створення копії</small><strong id="preview-date">—</strong></div>
+   <div><small>Операцій у копії</small><strong id="preview-entries">—</strong></div>
+   <div><small>Кредитів у копії</small><strong id="preview-credits">—</strong></div>
+   <div><small>Модулів у копії</small><strong id="preview-modules">—</strong></div>
+  </div>
+  <p class="fc-data-muted">Що зміниться після повного відновлення:</p>
+  <div class="fc-data-diff-counters" id="preview-counters"></div>
+  <div class="fc-data-scroll" tabindex="0" role="region" aria-label="Таблиця змін модулів">
+   <table>
+    <thead><tr><th>Розділ</th><th>Зараз</th><th>У копії</th><th>Дія</th></tr></thead>
+    <tbody id="preview-rows"></tbody>
+   </table>
+  </div>
+  <div id="preview-warnings" class="fc-data-warnings" hidden></div>
+  <div class="fc-data-restore-box">
+   <h3>Підтвердження відновлення</h3>
+   <p class="fc-data-muted" id="restore-explanation"></p>
+   <div id="replace-guard" hidden>
+    <button id="backup-before-restore" class="fc-data-secondary" type="button">↓ Зберегти поточні дані перед заміною</button>
+    <label class="fc-data-check"><input type="checkbox" id="backup-confirmed"><span>Я перевірив, що поточна резервна копія завантажилася й збережена.</span></label>
+    <label class="fc-data-confirm-label" for="confirm-text">Для заміни введи <strong>ВІДНОВИТИ</strong></label>
+    <input type="text" id="confirm-text" autocomplete="off" spellcheck="false" placeholder="ВІДНОВИТИ">
+   </div>
+   <div class="fc-data-actions">
+    <button type="button" class="fc-data-primary" id="restore-confirm" disabled>Відновити дані з файлу</button>
+    <button type="button" class="fc-data-secondary" id="cancel-preview">Скасувати</button>
+   </div>
+  </div>
+ </section>
+ <details class="fc-data-card fc-data-help">
+  <summary><span>Як перенести FINCONTROL на телефон або комп'ютер</span><span aria-hidden="true">⌄</span></summary>
+  <ol>
+   <li>На пристрої, де вже є записи, натисни <strong>«Завантажити повну копію»</strong>.</li>
+   <li>Передай отриманий <code>.json</code> файл на інший пристрій через захищений спосіб, якому довіряєш.</li>
+   <li>Відкрий там FINCONTROL → «Керування даними» → обери файл.</li>
+   <li>Переглянь кількість записів і список змін, після чого підтвердь відновлення.</li>
+  </ol>
+  <p>Це ручне перенесення, <strong>не автоматична синхронізація</strong>. Якщо ти вносиш нові операції на двох пристроях, наступне повне відновлення замінить локальні дані одного з них.</p>
+ </details>
+ <p class="fc-data-privacy"><span aria-hidden="true">◈</span> Усе працює локально в браузері. Фінансові дані не надсилаються в GitHub або на сервер FINCONTROL. Файл копії містить конфіденційні відомості — зберігай його в захищеному місці.</p>
+</main></div>
+<noscript>Для резервного копіювання потрібно ввімкнути JavaScript.</noscript>
+</body></html>
