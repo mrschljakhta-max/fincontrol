@@ -125,6 +125,10 @@ function showDetail(e,focusBooking=false){
   for(const [id,scope] of [['skip-event','one'],['stop-series','future']])if($(id))$(id).onclick=ev=>run(ev.currentTarget,async()=>{if(!confirm(scope==='future'?'Зупинити цю та наступні події серії? Попередня історія збережеться.':'Пропустити цю подію? Фактичні операції не зміняться.'))return;await transaction(d=>A.remove(d,K,{...payload(e),scope}));$('event-drawer').close();notice('План оновлено.')},'detail-notice');
  }else{
   const href=e.origin==='debt'?'debts.html':'ledger.html';host.insertAdjacentHTML('beforeend',`<p class="cal-detail-note">${e.origin==='debt'?'Термін із кредитного реєстру. Створи пов’язану подію, щоб включити платіж у прогноз і внести факт тут.':actual?'Це підтверджена операція з журналу.':e.kind==='debt_payment'?'Для оплати цього планового кредиту користуйся реєстром «Кредити».':'Цей план можна підтвердити прямо тут. Запис у журналі стане фактичним без дублювання.'}</p><div class="cal-detail-actions"><a class="cal-secondary" href="${href}">Відкрити ${e.origin==='debt'?'кредити':'журнал'} ↗</a>${e.origin==='debt'?'<button id="plan-credit" class="cal-primary">Запланувати платіж</button>':''}</div>`);
+  if(e.origin==='actual'&&Number.isSafeInteger(e.plannedCents)&&M.validDate(e.plannedDate)){
+   const variance=e.cents-e.plannedCents;
+   host.insertAdjacentHTML('beforeend','<div class="cal-payment-list"><h3>План → Факт</h3><div class="cal-payment-row"><span>Спочатку заплановано · '+esc(shortDate(e.plannedDate))+'</span><strong>'+esc(money(e.plannedCents))+'</strong></div><div class="cal-payment-row"><span>Фактично внесено</span><strong>'+esc(money(e.cents))+'</strong></div><div class="cal-payment-row"><span>Різниця</span><strong>'+esc((variance>0?'+':'')+money(variance))+'</strong></div></div>');
+  }
   if($('plan-credit'))$('plan-credit').onclick=()=>{openForm('credit');$('name').value=e.name;$('date').value=e.date;$('amount').value=(e.cents/100).toFixed(2);$('credit').value=e.id;$('repeat').value='once'};
   if(e.origin==='ledger'&&e.status==='planned'&&!['debt_payment','review'].includes(e.kind)){
    const actions=host.querySelector('.cal-detail-actions');
