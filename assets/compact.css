@@ -128,3 +128,23 @@ body.fc-premium.fc-density-compact .page-footer{margin-top:18px;padding-top:12px
  body.fc-premium.fc-density-compact .fc-tabs button{font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){.fc-premium .fc-nav-chevron{transition:none}}
+
+/* Entry to the optional immersive motion experience. */
+.fc-premium .fc-experience-entry{
+ display:inline-flex;align-items:center;justify-content:center;gap:9px;
+ min-height:37px;padding:8px 13px;
+ border:1px solid rgba(250,47,76,.42);border-radius:10px;
+ background:linear-gradient(140deg,rgba(171,43,65,.19),rgba(51,42,48,.25));
+ color:#CDD7DC;text-decoration:none;white-space:nowrap;font-size:12px;font-weight:650;
+ box-shadow:0 0 22px rgba(250,47,76,.055);
+ transition:border-color .2s,background .2s,transform .2s;
+}
+.fc-premium .fc-experience-entry:hover{
+ transform:translateY(-2px);background:rgba(171,43,65,.29);border-color:rgba(250,47,76,.82);
+}
+.fc-premium .fc-experience-entry>span:first-child{color:#FA2F4C;font-size:18px;line-height:1}
+@media(max-width:620px){
+ .fc-premium .fc-experience-entry{width:38px;min-width:38px;height:38px;min-height:38px;padding:0;border-radius:10px}
+ .fc-premium .fc-experience-entry .fc-experience-label{display:none}
+}
+@media(prefers-reduced-motion:reduce){.fc-premium .fc-experience-entry{transition:none}}
