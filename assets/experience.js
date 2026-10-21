@@ -34,6 +34,16 @@
  let selectedDay=C.today(),lastError='',previousRenderDay='',motionEnabled=true,resizeObserver=null;
  const motionKey='fincontrol-experience-motion-v1';
  const motionButton=$('ex-motion-toggle');
+ // Premium render replaces the vector phone ONLY when its local image is loaded.
+ // Missing asset: old SVG device remains fully functional.
+ const premiumImage=$('ex-premium-phone-image');
+ if(premiumImage){
+  const onPremiumReady=()=>{document.body.classList.add('ex-premium-ready');requestVisualUpdate()};
+  const onPremiumError=()=>document.body.classList.remove('ex-premium-ready');
+  premiumImage.addEventListener('load',onPremiumReady);
+  premiumImage.addEventListener('error',onPremiumError);
+  if(premiumImage.complete && premiumImage.naturalWidth>0)onPremiumReady();
+ }
  const reducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)');
  // The photo is a progressive enhancement: fallback vector stays in place
  // until the real user-supplied file is present at its precise GitHub path.
@@ -288,13 +298,14 @@
   $('ex-scroll-fill').style.width=(max>0?percent(window.scrollY/max*100):0)+'%';
   const at=animationProgress();
   window.FCCrystal3D?.setStage(at);
+  // Scroll position sets shape and phone opacity even with Motion off:
+  // reduced-motion means no idle loops, not hiding the final phone.
+  drawMorph(at);
+  const intoPhone=smoothstep((at-5.3)/1.7);
+  morphShell.style.setProperty('--ex-stone-visible',(1-intoPhone).toFixed(3));
+  morphShell.style.setProperty('--ex-phone-visible',intoPhone.toFixed(3));
   if(motionEnabled){
-   drawMorph(at);
-   // CSS handles perpetual rotation, orbiting, sparkles and heartbeat even without
-   // further scroll events. JS owns only the scroll-controlled geometry and crossfade.
-   const intoPhone=smoothstep((at-5.3)/1.7);
-   morphShell.style.setProperty('--ex-stone-visible',(1-intoPhone).toFixed(3));
-   morphShell.style.setProperty('--ex-phone-visible',intoPhone.toFixed(3));
+   // CSS independently handles idle rotation, lights and particles.
    const photoRatio=1-smoothstep((at-3.2)/2.2);
    morphShell.style.setProperty('--ex-photo-visible',photoRatio.toFixed(3));
    morphShell.style.setProperty('--ex-orbit-visible',(1-intoPhone*.63).toFixed(3));
