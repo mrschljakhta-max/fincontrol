@@ -53,7 +53,8 @@ function fixture(){
   K:{ledger:'ledger',calendar:'calendar',debts:'debts',reserve:'reserve',home:'home'},ready:Promise.resolve(),
   read:key=>storeData[key]??null,update:()=>{mutationCount++;throw Error('financial write is not allowed')}
  };
- const w={innerHeight:900,scrollY:0,matchMedia:()=>({matches:false,addEventListener(){}}),addEventListener(){}};
+ const listeners={};
+ const w={innerHeight:900,scrollY:0,matchMedia:()=>({matches:false,addEventListener(){}}),addEventListener:(event,callback)=>{listeners[event]=callback}};
  const ctx={document:doc,window:w,FCStore:store,FCCalendarModel:model,localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,String(v))},requestAnimationFrame:fn=>{frames.push(fn);return frames.length}};
  vm.createContext(ctx);
  const start=async()=>{
@@ -61,7 +62,12 @@ function fixture(){
   await new Promise(setImmediate);
   for(const fn of frames.splice(0,10))fn();
  };
- return{nodes,el,frames,storage,storeData,start,mutationCount:()=>mutationCount};
+ const scrollTo=y=>{
+  w.scrollY=y;
+  listeners.scroll?.();
+  for(const fn of frames.splice(0,10))fn();
+ };
+ return{nodes,el,frames,storage,storeData,start,scrollTo,mutationCount:()=>mutationCount,body:doc.body};
 }
 test('all long-scroll chapters and module links are available',()=>{
  for(const id of ['intro','overview','calendar','credits','reserve','housing','analytics','finish'])
@@ -107,4 +113,40 @@ test('markup has a separate motion toggle and honors reduced-motion support',()=
  const css=read('assets/experience.css');
  assert.ok(css.includes('@media(prefers-reduced-motion:reduce)'));
  assert.ok(css.includes('url("experience-world.svg?v=1")'));
+});
+
+test('stone glows, turns and orbits continuously with zero scrolling',()=>{
+ const styles=read('assets/experience-core.css');
+ assert.match(page,/id="ex-rock-idle"/);
+ assert.match(page,/id="ex-orbit-back"/);
+ assert.match(page,/id="ex-device"/);
+ assert.match(styles,/ex-rock-breathe 14s ease-in-out infinite/);
+ assert.match(styles,/ex-orbit-clockwise 29s linear infinite/);
+ assert.match(styles,/ex-heartbeat 4\.8s/);
+ assert.match(styles,/ex-crack-blink 6\.5s/);
+ // Idle effects are CSS keyframes, not dependent on onscroll/requestAnimationFrame.
+ assert.match(styles,/@keyframes ex-rock-breathe/);
+ assert.match(styles,/@keyframes ex-aura-breathe/);
+});
+test('scrolling to the end completes the stone to phone crossfade',async()=>{
+ const f=fixture();
+ await f.start();
+ assert.equal(f.el('ex-morph-shell').style.values['--ex-phone-visible'],'0.000');
+ f.scrollTo(9000);
+ assert.equal(f.el('ex-morph-shell').style.values['--ex-phone-visible'],'1.000');
+ assert.equal(f.el('ex-morph-shell').style.values['--ex-stone-visible'],'0.000');
+ assert.equal(f.mutationCount(),0);
+});
+test('the motion toggle pauses all animations and never mutates finance records',async()=>{
+ const f=fixture();
+ await f.start();
+ f.el('ex-motion-toggle').dispatch('click');
+ assert.ok(f.body.classList.contains('ex-motion-off'));
+ assert.equal(f.el('ex-motion-toggle').getAttribute('aria-pressed'),'false');
+ assert.equal(f.storage.get('fincontrol-experience-motion-v1'),'off');
+ assert.equal(f.mutationCount(),0);
+ const styles=read('assets/experience-core.css');
+ assert.match(styles,/\.ex-motion-off \.ex-morph-shell \.ex-rock-idle/);
+ assert.match(styles,/animation:none!important/);
+ assert.match(styles,/@media\(prefers-reduced-motion:reduce\)/);
 });
