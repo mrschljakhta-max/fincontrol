@@ -11,16 +11,25 @@
  const originalMotion=document.getElementById('ex-motion-toggle');
  const originalPrivacy=document.getElementById('ex-privacy-toggle');
  if(!toggle||!nav)return;
+ function setTablerButton(button,label,icon){
+  const holder=button.querySelector?.('.ex-mobile-button-label');
+  if(holder)holder.textContent=label;
+  else button.textContent=label; // Compatibility with older markup/test shims.
+  button.querySelector?.('use')?.setAttribute?.(
+   'href','assets/icons/tabler-sprite.svg#ti-'+icon);
+ }
  function syncTools(){
   if(mobileMotion&&originalMotion){
    const enabled=originalMotion.getAttribute('aria-pressed')==='true';
    mobileMotion.setAttribute('aria-pressed',String(enabled));
-   mobileMotion.textContent=enabled?'◉ Анімація ввімкнена':'◎ Без анімації';
+   setTablerButton(mobileMotion,enabled?'Анімація ввімкнена':'Без анімації',
+    enabled?'player-pause':'player-play');
   }
   if(mobilePrivacy&&originalPrivacy){
    const hidden=originalPrivacy.getAttribute('aria-pressed')==='true';
    mobilePrivacy.setAttribute('aria-pressed',String(hidden));
-   mobilePrivacy.textContent=hidden?'◉ Показати суми':'◌ Приховати суми';
+   setTablerButton(mobilePrivacy,hidden?'Показати суми':'Приховати суми',
+    hidden?'eye':'eye-off');
   }
  }
  function setOpen(open,focusToggle=false){
