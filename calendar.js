@@ -161,13 +161,16 @@ function showBooking(e){
 
 function showLedgerBooking(e){
  if($('confirm-journal-form')){$('journal-fact-amount')?.focus();return}
+ const source=ledger?.entries.find(item=>item.id===e.id&&item.status==='planned');
+ if(!source){$('detail-notice').textContent='План змінено або вже підтверджено. Онови календар.';return}
+ const expected=JSON.stringify([source.id,source.date,source.kind,source.cents,source.category,source.note,source.status,source.calendarKey||'']);
  const button=$('confirm-journal'),form=document.createElement('form');
  button.hidden=true;form.id='confirm-journal-form';form.className='cal-form cal-booking';
  form.innerHTML='<h3>План → Факт</h3><p class="cal-footnote">Це змінить статус <strong>цього самого</strong> запису журналу з «План» на «Факт», не створюючи додаткової транзакції. Перевір, чи сума вже не внесена окремо через імпорт.</p><div class="cal-two"><label>Дата факту<input id="journal-fact-date" type="date" max="'+now+'" value="'+(e.date>now?now:e.date)+'" required></label><label>Фактична сума, грн<input id="journal-fact-amount" type="number" step=".01" min=".01" inputmode="decimal" value="'+(e.cents/100).toFixed(2)+'" required></label></div><p class="cal-footnote">Якщо сума або дата змінилася, початковий план залишиться в метаданих операції для звірки.</p><p id="journal-booking-message" class="cal-form-message" role="status"></p><div class="cal-form-actions"><button id="cancel-journal-booking" type="button" class="cal-secondary">Скасувати</button><button type="submit" class="cal-primary">Підтвердити факт</button></div>';
  $('event-detail').querySelector('.cal-detail-actions').after(form);
  $('cancel-journal-booking').onclick=()=>{form.remove();button.hidden=false;button.focus()};
  form.onsubmit=ev=>{ev.preventDefault();run(ev.submitter,async()=>{
-  const raw=ledger?.entries.find(item=>item.id===e.id&&item.status==='planned');if(!raw)throw Error('План змінено або вже підтверджено. Онови календар.');const p={entryId:e.id,expected:JSON.stringify([raw.id,raw.date,raw.kind,raw.cents,raw.category,raw.note,raw.status,raw.calendarKey||'']),date:$('journal-fact-date').value,cents:parseMoney($('journal-fact-amount').value),today:now};
+  const p={entryId:e.id,expected,date:$('journal-fact-date').value,cents:parseMoney($('journal-fact-amount').value),today:now};
   await S.update([K.ledger,K.reserve],d=>A.confirmPlanned(d,K,p));
   refresh();render();$('event-drawer').close();
   notice('План підтверджено. Замість другого запису операція в журналі стала фактичною.');
