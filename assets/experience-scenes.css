@@ -1,0 +1,91 @@
+/* FINCONTROL panorama v2.1 — eight independent aspect-correct cinematic scenes.
+   Artwork files are user-uploaded from FINCONTROL_8_SCENES_GitHub_upload.zip.
+   Scene backdrops use cover, never 100% 100% stretching.
+   UI, crystal/smartphone animations and finance state are unchanged. */
+
+.ex-page .ex-world,
+.ex-page.ex-motion-off .ex-world {
+  /* Low-intensity vector world stays as a graceful fallback before scene uploads. */
+  background-image:
+    linear-gradient(180deg,rgba(8,14,22,.82),rgba(8,14,22,.72)),
+    url("experience-world.svg?v=1");
+  background-size:100% 100%;
+  background-position:center top;
+  opacity:.86;
+}
+.ex-page .ex-scene{
+  position:relative;
+  isolation:isolate;
+  background:transparent;
+}
+.ex-page .ex-scene::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  pointer-events:none;
+  inset:-1px 0;
+  background-image:
+    linear-gradient(90deg,rgba(6,11,19,.76) 0%,rgba(6,11,19,.49) 24%,rgba(6,11,19,.18) 51%,rgba(6,11,19,.05) 100%),
+    linear-gradient(180deg,rgba(9,15,24,.34),rgba(9,15,24,.04) 30%,rgba(9,15,24,.08) 66%,rgba(9,15,24,.39)),
+    var(--ex-scene-image);
+  background-color:#101722;
+  background-size:cover,cover,cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 9%,#000 91%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,#000 9%,#000 91%,transparent 100%);
+}
+/* Each artwork is local in assets/images/.  The stone remains a separate
+   fixed decorative layer and morphs into a phone on the final scene. */
+.ex-page #intro{--ex-scene-image:url("images/fincontrol-bg-01-hero.webp?v=1");}
+.ex-page #overview{--ex-scene-image:url("images/fincontrol-bg-02-overview.webp?v=1");}
+.ex-page #calendar{--ex-scene-image:url("images/fincontrol-bg-03-calendar.webp?v=1");}
+.ex-page #credits{--ex-scene-image:url("images/fincontrol-bg-04-credits.webp?v=1");}
+.ex-page #reserve{--ex-scene-image:url("images/fincontrol-bg-05-reserve.webp?v=1");}
+.ex-page #housing{--ex-scene-image:url("images/fincontrol-bg-06-housing.webp?v=1");}
+.ex-page #analytics{--ex-scene-image:url("images/fincontrol-bg-07-analytics.webp?v=1");}
+.ex-page #finish{--ex-scene-image:url("images/fincontrol-bg-08-final.webp?v=1");}
+
+/* Original cards retain their live HTML controls and backdrop-filter.
+   No special scroll libraries or heavy GPU canvases are required. */
+.ex-page .ex-scene > .ex-story,
+.ex-page .ex-scene > .ex-hero-copy,
+.ex-page .ex-scene > .ex-finish-copy,
+.ex-page .ex-scene > .ex-glass { position:relative;z-index:1; }
+.ex-page .ex-scene .ex-glass {
+  background:linear-gradient(138deg,rgba(51,42,48,.70),rgba(19,26,32,.63) 53%,rgba(31,32,43,.69));
+}
+@media(max-width:850px){
+  .ex-page .ex-scene::after{
+    background-image:
+      linear-gradient(90deg,rgba(6,11,19,.70) 0%,rgba(6,11,19,.37) 100%),
+      linear-gradient(180deg,rgba(9,15,24,.34),rgba(9,15,24,.05) 30%,rgba(9,15,24,.34)),
+      var(--ex-scene-image);
+    background-position:center;
+  }
+}
+@media(max-width:700px){
+  .ex-page #intro{--ex-scene-image:url("images/fincontrol-bg-01-hero-mobile.webp?v=1");}
+  .ex-page #overview{--ex-scene-image:url("images/fincontrol-bg-02-overview-mobile.webp?v=1");}
+  .ex-page #calendar{--ex-scene-image:url("images/fincontrol-bg-03-calendar-mobile.webp?v=1");}
+  .ex-page #credits{--ex-scene-image:url("images/fincontrol-bg-04-credits-mobile.webp?v=1");}
+  .ex-page #reserve{--ex-scene-image:url("images/fincontrol-bg-05-reserve-mobile.webp?v=1");}
+  .ex-page #housing{--ex-scene-image:url("images/fincontrol-bg-06-housing-mobile.webp?v=1");}
+  .ex-page #analytics{--ex-scene-image:url("images/fincontrol-bg-07-analytics-mobile.webp?v=1");}
+  .ex-page #finish{--ex-scene-image:url("images/fincontrol-bg-08-final-mobile.webp?v=1");}
+
+  .ex-page .ex-scene::after{
+    background-size:cover,cover,cover;
+    background-position:center center;
+    -webkit-mask-image:linear-gradient(to bottom,transparent,#000 6%,#000 94%,transparent);
+    mask-image:linear-gradient(to bottom,transparent,#000 6%,#000 94%,transparent);
+  }
+  .ex-page .ex-scene .ex-glass{
+    background:linear-gradient(140deg,rgba(36,29,39,.80),rgba(12,19,29,.75));
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  /* Static image backgrounds remain available; motion preference affects
+     the independently animated stone and scroll reveals only. */
+  .ex-page .ex-scene::after{transition:none!important;}
+}
