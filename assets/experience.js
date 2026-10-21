@@ -33,7 +33,9 @@
   requestVisualUpdate();
  }
  motionButton.addEventListener('click',()=>setMotion(!motionEnabled));
- setMotion(motionEnabled,false);
+ document.body.classList.toggle('ex-motion-off',!motionEnabled);
+ motionButton.setAttribute('aria-pressed',String(motionEnabled));
+ if(!motionEnabled)motionButton.querySelector('span:last-child').textContent='Без руху';
  const read=k=>{try{return S.read(k)}catch(e){lastError=e.message;return null}};
  const el=(tag,cls='',str)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(str!==undefined)x.textContent=String(str);return x};
  const set=(id,v)=>{$(id).textContent=v};
@@ -65,7 +67,8 @@
  }
  function renderCalendar(calendar,ledger,debts,today){
   const first=C.monthStart(today),end=C.monthEnd(first),displayStart=C.weekStart(first);
-  const last=C.addDays(displayStart,Math.ceil((C.ordinal(end)-C.ordinal(displayStart)+1)/7)*7-1);
+  const distance=Math.round((Date.UTC(Number(end.slice(0,4)),Number(end.slice(5,7))-1,Number(end.slice(8)))-Date.UTC(Number(displayStart.slice(0,4)),Number(displayStart.slice(5,7))-1,Number(displayStart.slice(8))))/86400000)+1;
+  const last=C.addDays(displayStart,Math.ceil(distance/7)*7-1);
   const events=C.collect({state:C.normalize(calendar||{}),ledger,debts},displayStart,last);
   const byDay=new Map();
   for(const event of events){const a=byDay.get(event.date)||[];a.push(event);byDay.set(event.date,a)}
@@ -321,6 +324,7 @@
   refreshData();
  }
  initializeMotion();
+ setMotion(motionEnabled,false);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(C.today()!==previousRenderDay)refreshData();measure()}});
  window.addEventListener('storage',e=>{if(e.key?.startsWith('fincontrol-'))refreshData()});
  window.addEventListener('fincontrol:change',refreshData);
