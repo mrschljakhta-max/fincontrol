@@ -1,0 +1,170 @@
+/* FINCONTROL / Tabler Icons — locally hosted SVG sprite.
+ * Consistent thin 24x24 outline icons, sized to the typographic scale.
+ * Source and license: assets/icons/LICENSE.txt and tabler-sprite.svg.
+ * Motion and finance state remain controlled by the existing JavaScript. */
+.ex-page .ex-ti{
+ width:19px;height:19px;
+ flex:0 0 auto;
+ display:inline-block;
+ vertical-align:-.16em;
+ overflow:visible;
+ fill:none;
+ stroke:currentColor;
+ stroke-width:1.7;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ color:inherit;
+ pointer-events:none;
+}
+.ex-page .ex-navigation a{gap:8px}
+.ex-page .ex-navigation a>.ex-ti{
+ width:18px;height:18px;
+ color:#9faebc;
+ stroke-width:1.6;
+ transition:color .22s ease,transform .22s ease;
+}
+.ex-page .ex-navigation a:hover>.ex-ti,
+.ex-page .ex-navigation a[aria-current="location"]>.ex-ti{
+ color:#FF6279;
+ transform:translateY(-1px);
+}
+.ex-page .ex-workspace>.ex-ti,
+.ex-page .ex-motion-glyph .ex-ti{width:17px;height:17px}
+.ex-page #ex-privacy-toggle>.ex-ti{width:19px;height:19px}
+.ex-page .ex-motion-glyph{display:inline-flex;align-items:center}
+.ex-page .ex-menu-symbol{display:inline-flex;align-items:center}
+.ex-page .ex-menu-symbol .ex-ti{width:20px;height:20px}
+.ex-page .ex-menu-close{display:none}
+.ex-page .ex-menu-toggle[aria-expanded="true"] .ex-menu-open{display:none}
+.ex-page .ex-menu-toggle[aria-expanded="true"] .ex-menu-close{display:inline-flex}
+.ex-page .ex-mobile-nav-links a{
+ justify-content:flex-start;
+ gap:11px;
+}
+.ex-page .ex-mobile-nav-links a>.ex-ti:first-child{
+ width:20px;height:20px;
+ color:#B9C3CC;
+ stroke-width:1.75;
+}
+.ex-page .ex-mobile-nav-links a>span{
+ flex:1;
+ min-width:0;
+}
+.ex-page .ex-mobile-nav-links a>.ex-link-end{
+ width:15px;height:15px;
+ color:#FA6278;
+}
+.ex-page .ex-mobile-nav-links a[aria-current="location"]>.ex-ti:first-child{
+ color:#FF6F85;
+}
+.ex-page .ex-mobile-nav-tools button{
+ gap:8px;
+}
+.ex-page .ex-mobile-nav-tools button>.ex-ti{
+ width:19px;height:19px;color:#F06D82;
+}
+.ex-page .ex-mobile-button-label{min-width:0}
+.ex-page .ex-chapter-icon{
+ width:16px;height:16px;
+ color:#FB5D74;
+ stroke-width:1.6;
+ margin-left:3px;
+ filter:drop-shadow(0 0 6px rgba(250,47,76,.20));
+}
+.ex-page .ex-panel-label{
+ display:inline-flex;
+ align-items:center;
+ gap:11px;
+ min-width:0;
+ color:#EDF1F4;
+}
+.ex-page .ex-panel-label>.ex-ti{
+ width:22px;height:22px;
+ padding:2px;
+ color:#FF647A;
+ border-radius:5px;
+ filter:drop-shadow(0 0 7px rgba(250,47,76,.20));
+}
+.ex-page .ex-section-link,
+.ex-page .ex-card-link,
+.ex-page .ex-text-link,
+.ex-page .ex-button{
+ align-items:center;
+}
+.ex-page .ex-section-link>.ex-ti,
+.ex-page .ex-card-link>.ex-ti,
+.ex-page .ex-text-link>.ex-ti,
+.ex-page .ex-button>.ex-ti{
+ width:17px;height:17px;
+ transition:transform .24s ease,opacity .2s ease;
+}
+.ex-page .ex-button>.ex-ti{width:19px;height:19px}
+.ex-page .ex-card-link>.ex-ti{
+ margin-left:auto;
+ color:#FA6077;
+}
+.ex-page .ex-text-link:hover>.ex-ti,
+.ex-page .ex-section-link:hover>.ex-ti,
+.ex-page .ex-card-link:hover>.ex-ti,
+.ex-page .ex-button:hover>.ex-ti{
+ transform:translate(2px,-1px);
+}
+.ex-page .ex-private>.ex-ti{
+ width:15px;height:15px;
+ color:#FF6B80;
+ margin-right:5px;
+ vertical-align:-.21em;
+}
+.ex-page .ex-orbit-tag{
+ display:inline-flex;
+ align-items:center;
+ gap:10px;
+}
+.ex-page .ex-orbit-tag>.ex-ti{
+ width:16px;height:16px;
+ color:#FC5D74;
+ stroke-width:1.6;
+}
+.ex-page .ex-calendar-controls button{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:7px;
+}
+.ex-page .ex-calendar-controls button>.ex-ti{
+ width:19px;height:19px;
+}
+.ex-page .ex-calendar-controls #ex-calendar-today>.ex-ti{
+ width:17px;height:17px;color:#FA667F;
+}
+.ex-page .ex-credit-icon>.ex-ti{
+ width:24px;height:24px;
+ color:#FD6077;
+ filter:drop-shadow(0 0 8px rgba(250,47,76,.18));
+}
+.ex-page .ex-insight>span>.ex-ti{
+ width:25px;height:25px;
+ color:#FF647A;
+}
+.ex-page .ex-footer a{
+ display:inline-flex;
+ align-items:center;
+ gap:7px;
+}
+.ex-page .ex-footer a>.ex-ti{width:17px;height:17px}
+@media(min-width:1091px) and (max-width:1300px){
+ /* On mid-size laptops prioritize readability over decorative nav glyphs. */
+ .ex-page .ex-navigation a>.ex-ti{display:none}
+ .ex-page .ex-navigation{gap:clamp(9px,1vw,13px)}
+}
+@media(max-width:680px){
+ .ex-page .ex-panel-label{gap:9px}
+ .ex-page .ex-panel-label>.ex-ti{width:20px;height:20px}
+ .ex-page .ex-section-link>.ex-ti{width:18px;height:18px}
+ .ex-page .ex-chapter-icon{width:15px;height:15px}
+ .ex-page .ex-mobile-nav-links a>.ex-ti:first-child{width:19px;height:19px}
+ .ex-page .ex-mobile-nav-tools button{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+ .ex-page .ex-ti{transition:none!important}
+}
