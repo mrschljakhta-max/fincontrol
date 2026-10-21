@@ -31,7 +31,7 @@
  const stamp=d=>C.day(d).toLocaleDateString('uk-UA',{day:'numeric',month:'short'});
  const captionMonth=d=>C.day(d).toLocaleDateString('uk-UA',{month:'long',year:'numeric'});
  const signed={income:1,refund:1,expense:-1,debt_payment:-1,reserve_deposit:-1};
- let selectedDay=C.today(),lastError='',previousRenderDay='',motionEnabled=true,resizeObserver=null;
+ let selectedDay=C.today(),calendarAnchor=C.monthStart(C.today()),lastError='',previousRenderDay='',motionEnabled=true,resizeObserver=null;
  const motionKey='fincontrol-experience-motion-v1';
  const motionButton=$('ex-motion-toggle');
  // Premium render replaces the vector phone ONLY when its local image is loaded.
@@ -107,7 +107,7 @@
   note.textContent=ratio===null?'Без надходжень у цьому місяці відсоток витрат не розраховується.':'Витрати й кредитні платежі — як частка надходжень. Резерв показано окремо, власні перекази не включено.';
  }
  function renderCalendar(calendar,ledger,debts,today){
-  const first=C.monthStart(today),end=C.monthEnd(first),displayStart=C.weekStart(first);
+  const first=C.monthStart(calendarAnchor),end=C.monthEnd(first),displayStart=C.weekStart(first);
   const distance=Math.round((Date.UTC(Number(end.slice(0,4)),Number(end.slice(5,7))-1,Number(end.slice(8)))-Date.UTC(Number(displayStart.slice(0,4)),Number(displayStart.slice(5,7))-1,Number(displayStart.slice(8))))/86400000)+1;
   const last=C.addDays(displayStart,Math.ceil(distance/7)*7-1);
   const events=C.collect({state:C.normalize(calendar||{}),ledger,debts},displayStart,last);
@@ -137,10 +137,23 @@
    button.addEventListener('click',()=>{selectedDay=date;highlightCalendarDay();renderDay(byDay.get(date)||[],date,today)});
    container.append(button);
   }
-  if(!C.validDate(selectedDay)||selectedDay<displayStart||selectedDay>last)selectedDay=today;
+  if(!C.validDate(selectedDay)||selectedDay<displayStart||selectedDay>last)selectedDay=first;
   highlightCalendarDay();
   renderDay(byDay.get(selectedDay)||[],selectedDay,today);
  }
+ function changeCalendarMonth(delta){
+  const base=C.shiftMonth(calendarAnchor,delta);
+  calendarAnchor=C.monthStart(base);
+  selectedDay=calendarAnchor;
+  refreshData(); // Read-only rerender; never writes ledger or calendar.
+ }
+ $('ex-calendar-prev')?.addEventListener('click',()=>changeCalendarMonth(-1));
+ $('ex-calendar-next')?.addEventListener('click',()=>changeCalendarMonth(1));
+ $('ex-calendar-today')?.addEventListener('click',()=>{
+  selectedDay=C.today();
+  calendarAnchor=C.monthStart(selectedDay);
+  refreshData();
+ });
  function highlightCalendarDay(){
   document.querySelectorAll('.ex-calendar-day').forEach(button=>{
    button.setAttribute('aria-pressed',String(button.dataset.date===selectedDay));
@@ -239,7 +252,7 @@
  function refreshData(){
   lastError='';
   const today=C.today(),ledger=read(S.K.ledger),debts=read(S.K.debts),calendar=read(S.K.calendar),reserve=read(S.K.reserve),home=read(S.K.home);
-  if(previousRenderDay!==today)selectedDay=today;
+  if(previousRenderDay!==today){selectedDay=today;calendarAnchor=C.monthStart(today);}
   previousRenderDay=today;
   set('ex-overview-period',captionMonth(today+'').replace(/^./,c=>c.toUpperCase()));
   renderOverview(ledger,today);
