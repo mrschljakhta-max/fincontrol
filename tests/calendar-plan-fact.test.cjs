@@ -120,3 +120,16 @@ test('booking rejects future real dates and stale fingerprints',()=>{
  d.calendar.events[0].cents=50000;
  assert.throws(()=>A.book(d,K,{...stale,date:now,cents:50000,operationId:'stale',today:now,finalize:true}),/змінилися/);
 });
+
+test('journal confirmation uses original category, not normalized color category from calendar',()=>{
+ const d=sample();
+ d.ledger.entries.push({id:'rent-plan',date:now,kind:'expense',cents:65000,status:'planned',category:'Оренда квартири',note:'Жовтень'});
+ const shown=M.collect({state:d.calendar,ledger:d.ledger},now,now).find(e=>e.id==='rent-plan');
+ assert.equal(shown.category,'expense');
+ assert.equal(shown.name,'Оренда квартири');
+ const raw=d.ledger.entries.find(x=>x.id===shown.id);
+ const expected=JSON.stringify([raw.id,raw.date,raw.kind,raw.cents,raw.category,raw.note,raw.status,raw.calendarKey||'']);
+ A.confirmPlanned(d,K,{entryId:shown.id,expected,date:now,cents:62000,today:now});
+ assert.equal(raw.status,'actual');
+ assert.equal(raw.plannedCents,65000);
+});
