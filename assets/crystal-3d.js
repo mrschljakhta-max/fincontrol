@@ -252,14 +252,15 @@
  }
  function isMotionOn(){return !root.classList.contains('ex-motion-off')&&!reduce?.matches}
  function isRelevant(){
-  // The current 3D stone is tiny through the middle of the site.
-  // Pausing outside the hero saves battery without interrupting phone morphing.
-  return scrollStage<1.85&&root.style.display!=='none';
+  // The stone keeps turning while present across all scenes, including long
+  // pauses without scrolling; only stop when its phone transformation finishes.
+  return scrollStage<6.85&&root.style.display!=='none';
  }
  function animate(now){
   frameId=0;
   if(!active||document.hidden||contextLost||!isMotionOn()||!isRelevant())return;
-  const throttle=window.innerWidth<700?33:16.6;
+  // Reduce GPU cost when the stone is a small ambient detail, not a focal point.
+  const throttle=scrollStage>1.7?(window.innerWidth<700?67:48):(window.innerWidth<700?33:16.6);
   if(now-lastTime>=throttle){draw(now);lastTime=now}
   frameId=requestAnimationFrame(animate);
  }
