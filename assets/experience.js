@@ -225,28 +225,19 @@
  /* Single shared vector outline smoothly interpolates across all scenes.
     Sample count and angular order stay fixed — no sudden geometry swaps. */
  const countPoints=64,N=stageElements.length,shapePath=$('ex-morph-outline'),innerPath=$('ex-morph-inner'),morphShell=$('ex-morph-shell');
- const polygonPoints=[[100,13],[100,82],[-100,82],[-100,11],[0,-100]]; // house silhouette from right eave to peak
- function polygonAt(t){
-  let length=0;const segments=polygonPoints.map((p,i)=>{
-   const next=polygonPoints[(i+1)%polygonPoints.length];
-   const l=Math.hypot(next[0]-p[0],next[1]-p[1]);
-   length+=l;return{p,next,l};
-  });
-  let d=t*length;
-  for(const seg of segments){if(d<=seg.l)return[seg.p[0]+(seg.next[0]-seg.p[0])*d/seg.l,seg.p[1]+(seg.next[1]-seg.p[1])*d/seg.l];d-=seg.l}
-  return polygonPoints[0];
- }
+ /* Fixed clockwise point sampling keeps the rock silhouette continuous through every
+    stage. 0: raw core -> 1-4: faceted stone -> 5-6: narrowing slab -> 7: phone. */
  const signpow=(n,p)=>Math.sign(n)*Math.pow(Math.abs(n),p);
  function shape(stage,t){
   const a=t*Math.PI*2,co=Math.cos(a),si=Math.sin(a),r=84;
-  if(stage===0){const jagged=r+7*Math.sin(7*a+.4)+4*Math.cos(11*a);return[co*jagged,si*jagged]}
-  if(stage===1){const jagged=r+2.3*Math.sin(5*a);return[co*jagged,si*jagged]}
-  if(stage===2)return[signpow(co,.48)*91,signpow(si,.48)*88];
-  if(stage===3)return[signpow(co,.22)*103,signpow(si,.22)*66];
-  if(stage===4)return[co*96,si*70];
-  if(stage===5)return polygonAt(t);
-  if(stage===6){const jagged=r+9*Math.sin(6*a)+5*Math.cos(3*a);return[co*jagged,si*jagged]}
-  return[signpow(co,.20)*65,signpow(si,.20)*105];
+  if(stage===0){const jagged=r+8*Math.sin(7*a+.4)+4*Math.cos(11*a);return[co*jagged,si*jagged]}
+  if(stage===1){const jagged=r+7*Math.sin(7*a+.48)+3*Math.cos(9*a);return[co*jagged,si*jagged]}
+  if(stage===2){const jagged=r+4*Math.sin(6*a+.6);return[co*jagged,si*jagged]}
+  if(stage===3)return[signpow(co,.8)*86,signpow(si,.8)*88];
+  if(stage===4)return[signpow(co,.62)*82,signpow(si,.62)*95];
+  if(stage===5)return[signpow(co,.48)*75,signpow(si,.48)*101];
+  if(stage===6)return[signpow(co,.23)*65,signpow(si,.23)*104];
+  return[signpow(co,.12)*64,signpow(si,.12)*108];
  }
  const smoothstep=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
  function drawMorph(stageFloat){
@@ -283,6 +274,12 @@
   const at=animationProgress();
   if(motionEnabled){
    drawMorph(at);
+   // CSS handles perpetual rotation, orbiting, sparkles and heartbeat even without
+   // further scroll events. JS owns only the scroll-controlled geometry and crossfade.
+   const intoPhone=smoothstep((at-5.3)/1.7);
+   morphShell.style.setProperty('--ex-stone-visible',(1-intoPhone).toFixed(3));
+   morphShell.style.setProperty('--ex-phone-visible',intoPhone.toFixed(3));
+   morphShell.style.setProperty('--ex-orbit-visible',(1-intoPhone*.63).toFixed(3));
    morphShell.style.setProperty('--ex-orb-scale',(1-at*.025).toFixed(3));
    morphShell.style.setProperty('--ex-orb-x',(Math.sin(at*.78)*16).toFixed(1)+'px');
    morphShell.style.setProperty('--ex-orb-y',(Math.sin(at*1.2)*23).toFixed(1)+'px');
