@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Темний гірський краєвид над озером у бордових сутінках">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2=".2" y2="1">
+  <stop offset="0" stop-color="#0d1622"/>
+  <stop offset=".37" stop-color="#182333"/>
+  <stop offset=".69" stop-color="#332530"/>
+  <stop offset=".91" stop-color="#63303d"/>
+  <stop offset="1" stop-color="#21232b"/>
+ </linearGradient>
+ <radialGradient id="lastlight" cx=".84" cy=".49" r=".57">
+  <stop offset="0" stop-color="#c14e5e" stop-opacity=".62"/>
+  <stop offset=".24" stop-color="#903645" stop-opacity=".35"/>
+  <stop offset=".62" stop-color="#493041" stop-opacity=".18"/>
+  <stop offset="1" stop-color="#1d2430" stop-opacity="0"/>
+ </radialGradient>
+ <linearGradient id="peakA" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#28303d"/>
+  <stop offset="1" stop-color="#101b28"/>
+ </linearGradient>
+ <linearGradient id="peakB" x1="0" y1="0" x2=".2" y2="1">
+  <stop offset="0" stop-color="#1f2633"/>
+  <stop offset="1" stop-color="#0c1722"/>
+ </linearGradient>
+ <linearGradient id="lake" x1=".1" y1="0" x2=".8" y2="1">
+  <stop offset="0" stop-color="#2b2733"/>
+  <stop offset=".45" stop-color="#171e2c"/>
+  <stop offset=".95" stop-color="#101923"/>
+ </linearGradient>
+ <radialGradient id="reflection" cx=".68" cy="0" r=".85">
+  <stop offset="0" stop-color="#a43c4b" stop-opacity=".32"/>
+  <stop offset=".32" stop-color="#643041" stop-opacity=".2"/>
+  <stop offset="1" stop-color="#111b25" stop-opacity="0"/>
+ </radialGradient>
+ <radialGradient id="halo" cx=".5" cy=".5" r=".5">
+  <stop offset="0" stop-color="#FA2F4C" stop-opacity=".22"/>
+  <stop offset="1" stop-color="#FA2F4C" stop-opacity="0"/>
+ </radialGradient>
+ <linearGradient id="veil" x1="0" y1="0" x2="1" y2=".1">
+  <stop offset="0" stop-color="#131A20" stop-opacity=".61"/>
+  <stop offset=".5" stop-color="#131A20" stop-opacity=".26"/>
+  <stop offset="1" stop-color="#131A20" stop-opacity=".42"/>
+ </linearGradient>
+ <filter id="fog" x="-25%" y="-90%" width="150%" height="280%">
+  <feGaussianBlur stdDeviation="36"/>
+ </filter>
+ <filter id="grain" x="0" y="0" width="100%" height="100%">
+  <feTurbulence baseFrequency=".33" numOctaves="2" seed="8" stitchTiles="stitch" type="fractalNoise"/>
+  <feColorMatrix type="saturate" values="0"/>
+  <feComponentTransfer><feFuncA type="linear" slope=".11"/></feComponentTransfer>
+ </filter>
+</defs>
+<path fill="url(#sky)" d="M0 0h1920v1080H0z"/>
+<path fill="url(#lastlight)" d="M0 0h1920v1080H0z"/>
+<!-- Wisps of dark cloud along the horizon -->
+<g fill="#101a26" opacity=".27" filter="url(#fog)">
+ <path d="M500 310q185-70 355-33 130 43 279 0 170-66 344-13 155 44 442-48v215H500z"/>
+ <path d="M-90 235q160 10 296-25 209-16 330 42 114 39 213 8v68H-90z"/>
+</g>
+<!-- Mountain silhouettes, first distant then nearer -->
+<path fill="#343342" opacity=".68" d="M0 570l78-22 85-72 36 17 118-111 88 79 100-131 64 38 94-135 80 108 46-30 93 84 82-63 88 103 77-62 95 91 76-27 105 82 76-46 119 110 77-40 129 82v445H0z"/>
+<path fill="url(#peakA)" d="M0 627l94-89 56 26 94-139 35 24 89-74 124 111 71-94 75 56 95-147 103 126 84-45 68 107 77-56 91 84 62-62 77 75 54-29 93 87 70-23 91 112v403H0z"/>
+<path fill="#39404b" opacity=".4" d="M550 434l82-116 66 84 32-22-49 12-40-39-34 68zm540 68 67-57 57 55-59-26z"/>
+<path fill="url(#peakB)" d="M0 722l99-58 83 26 94-91 81 36 95-104 97 76 54-40 121 89 81-45 115 94 82-24 75 60 91-61 99 77 86-26 106 83 102-59 129 107v238H0z"/>
+<!-- Lake and reflected fading skyline -->
+<path fill="url(#lake)" d="M0 731q185-23 377-18 285 18 560-15 328-6 571 28 169 6 412-18v372H0z"/>
+<path fill="url(#reflection)" d="M0 716h1920v364H0z"/>
+<path d="M0 750q352 18 621 5 403-22 758 6 295 14 541-15" stroke="#e17a81" stroke-opacity=".09" stroke-width="3" fill="none"/>
+<g fill="none" stroke-linecap="round">
+ <path d="M580 787c139 5 260 3 382 0" stroke="#bea7b4" stroke-opacity=".12" stroke-width="2"/>
+ <path d="M650 819c209-11 340-7 549 0" stroke="#ac7888" stroke-opacity=".11" stroke-width="2"/>
+ <path d="M1100 853c201 9 345 12 466 0" stroke="#d59ba0" stroke-opacity=".1" stroke-width="2"/>
+ <path d="M990 907c174-9 299-8 469 2" stroke="#c88394" stroke-opacity=".07" stroke-width="2"/>
+ <path d="M270 948c330 7 461 7 652 0" stroke="#989cb1" stroke-opacity=".09" stroke-width="2"/>
+ <path d="M1160 969c177 6 360 4 560 0" stroke="#d17d87" stroke-opacity=".065" stroke-width="2"/>
+</g>
+<!-- Near shore silhouette and sparse village glints -->
+<path fill="#0d1823" opacity=".8" d="M0 876l78-29 102 38 109-46 140 29 99-27 130 49-50 45-160 9-225-30-223 24zm1379 86 104-35 78-58 58 13 107-34 88 26 106-63v265h-541z"/>
+<g opacity=".4">
+ <circle cx="1485" cy="751" r="2.5" fill="#ffa3a7"/>
+ <circle cx="1496" cy="748" r="1.2" fill="#ffd5bb"/>
+ <circle cx="1535" cy="756" r="1.8" fill="#ffc2ad"/>
+ <circle cx="1590" cy="741" r="1.5" fill="#f5b9ae"/>
+ <circle cx="1655" cy="753" r="2" fill="#ffadb5"/>
+ <path d="M1490 758v15m45-13v12m120-12v18" stroke="#e38a94" stroke-opacity=".18"/>
+</g>
+<path fill="#09131e" opacity=".26" d="M0 1020q370-91 660-12 326 49 603-8 354-43 657 20v60H0z"/>
+<!-- Soft red edge light kept behind UI -->
+<ellipse cx="1690" cy="464" rx="445" ry="320" fill="url(#halo)"/>
+<path fill="url(#veil)" d="M0 0h1920v1080H0z"/>
+<path filter="url(#grain)" opacity=".18" fill="#fff" d="M0 0h1920v1080H0z"/>
+</svg>
