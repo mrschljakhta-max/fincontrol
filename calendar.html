@@ -13,7 +13,7 @@
 <script src="assets/calendar-model.js?v=3" defer></script>
 <script src="assets/calendar-actions.js?v=4" defer></script>
 <script src="assets/shell.js?v=7" defer></script>
-<script src="calendar.js?v=6" defer></script>
+<script src="calendar.js?v=7" defer></script>
 </head>
 <body class="fc-premium fc-calendar-page" data-page="calendar">
 <a class="skip-link" href="#main-content">Перейти до вмісту</a>
@@ -53,7 +53,7 @@
   <p class="cal-footnote">Прогноз від введеної суми, з урахуванням нових фактів і невиконаних планів від сьогодні. Минулі прострочені події та нагадування з кредитного реєстру не списуються автоматично.</p>
  </section>
  <details class="cal-templates"><summary>Регулярні події та шаблони <span id="template-count"></span></summary><div class="cal-table-bar"><p>Індивідуальні зміни й факти зберігаються для кожної дати окремо.</p><button id="export" class="cal-quiet">↓ Експорт періоду CSV</button></div><div class="cal-table-scroll"><table><thead><tr><th>Подія</th><th>Сума</th><th>Повторення</th><th>Перша дата</th><th>Дія</th></tr></thead><tbody id="event-table"></tbody></table></div></details>
- <p class="cal-footnote cal-endnote">План — очікувана операція. «Внести факт» створює запис у журналі; для кредиту одночасно змінює його залишок. Позначка «Закрити без запису» лише прибирає нагадування.</p>
+ <p class="cal-footnote cal-endnote">План — очікувана операція. «Внести факт» створює операцію або прив’язує вже наявний запис журналу. План із журналу можна перевести у факт без дублювання. Кредитний платіж змінює залишок боргу; «Закрити без запису» прибирає тільки нагадування.</p>
 </main></div>
 <dialog id="event-drawer" class="cal-drawer" aria-labelledby="drawer-title"><div class="cal-sheet-handle" aria-hidden="true"></div><div class="cal-drawer-head"><p class="cal-eyebrow">ПОДІЯ / FINCONTROL</p><button class="cal-icon" data-close="event-drawer" aria-label="Закрити деталі події">✕</button></div><div id="event-detail"></div></dialog>
 <dialog id="form-drawer" class="cal-drawer" aria-labelledby="form-title"><div class="cal-sheet-handle" aria-hidden="true"></div><div class="cal-drawer-head"><h2 id="form-title">Нова подія</h2><button class="cal-icon" data-close="form-drawer" aria-label="Закрити форму події">✕</button></div>
