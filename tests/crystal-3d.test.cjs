@@ -59,7 +59,7 @@ function harness(hasWebGL=true){
  return {
   api:win.FCCrystal3D,canvas,body,doc,states,stats,uniforms,pending,
   nextFrame(ms){const tasks=[...pending.values()];pending.clear();for(const fn of tasks)fn(ms)},
-  fire(key){events.get(key)?.()}
+  fire(key){events.get(key)?.({preventDefault(){}})}
  };
 }
 test('progressive enhancement: HTML loads renderer, SVG orbit and smartphone remain',()=>{
