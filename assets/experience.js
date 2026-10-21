@@ -59,6 +59,8 @@
   if(persist)try{localStorage.setItem(motionKey,motionEnabled?'on':'off')}catch{}
   if(!motionEnabled)reveal.forEach(el=>el.classList.add('is-visible'));
   else if('IntersectionObserver' in window)observeReveals();
+  // Keep the true 3D renderer in sync with the existing accessible motion toggle.
+  window.FCCrystal3D?.setMotion(motionEnabled);
   requestVisualUpdate();
  }
  motionButton.addEventListener('click',()=>setMotion(!motionEnabled));
@@ -285,6 +287,7 @@
   const max=document.documentElement.scrollHeight-window.innerHeight;
   $('ex-scroll-fill').style.width=(max>0?percent(window.scrollY/max*100):0)+'%';
   const at=animationProgress();
+  window.FCCrystal3D?.setStage(at);
   if(motionEnabled){
    drawMorph(at);
    // CSS handles perpetual rotation, orbiting, sparkles and heartbeat even without
