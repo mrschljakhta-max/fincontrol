@@ -167,7 +167,7 @@ function showLedgerBooking(e){
  $('event-detail').querySelector('.cal-detail-actions').after(form);
  $('cancel-journal-booking').onclick=()=>{form.remove();button.hidden=false;button.focus()};
  form.onsubmit=ev=>{ev.preventDefault();run(ev.submitter,async()=>{
-  const p={entryId:e.id,expected:JSON.stringify([e.id,e.date,e.kind,e.cents,e.category,e.note,e.status,e.calendarKey||'']),date:$('journal-fact-date').value,cents:parseMoney($('journal-fact-amount').value),today:now};
+  const raw=ledger?.entries.find(item=>item.id===e.id&&item.status==='planned');if(!raw)throw Error('План змінено або вже підтверджено. Онови календар.');const p={entryId:e.id,expected:JSON.stringify([raw.id,raw.date,raw.kind,raw.cents,raw.category,raw.note,raw.status,raw.calendarKey||'']),date:$('journal-fact-date').value,cents:parseMoney($('journal-fact-amount').value),today:now};
   await S.update([K.ledger,K.reserve],d=>A.confirmPlanned(d,K,p));
   refresh();render();$('event-drawer').close();
   notice('План підтверджено. Замість другого запису операція в журналі стала фактичною.');
