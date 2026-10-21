@@ -128,6 +128,28 @@ async function startExport(beforeRestore=false){
  }catch(e){status('Не вдалося створити копію: '+e.message,true)}
 }
 $('backup-export').addEventListener('click',()=>startExport(false));
+const shareButton=$('backup-share');
+if(navigator.share&&navigator.canShare&&typeof File==='function'){
+ try{
+  const probe=new File(['{}'],'fincontrol-test.json',{type:'application/json'});
+  shareButton.hidden=!navigator.canShare({files:[probe]});
+ }catch{shareButton.hidden=true}
+}
+shareButton.addEventListener('click',async()=>{
+ if(busy)return;
+ try{
+  await S.ready;
+  const data=snapshot();
+  if(!Object.keys(data).length)throw Error('У цьому браузері ще немає даних для перенесення.');
+  const backup={format:X.FORMAT,version:X.VERSION,createdAt:new Date().toISOString(),data};
+  const filename='fincontrol-full-backup-'+backup.createdAt.slice(0,10)+'.json';
+  const file=new File([JSON.stringify(backup,null,2)],filename,{type:'application/json'});
+  if(!navigator.canShare({files:[file]}))throw Error('Системне меню обміну не підтримує такий файл. Скористайся кнопкою завантаження.');
+  await navigator.share({files:[file],title:'Резервна копія FINCONTROL'});
+  status('Файл передано до системного меню обміну. Зберігай резервну копію лише в довіреному місці.');
+ }catch(e){if(e?.name!=='AbortError')status('Не вдалося поділитися копією: '+e.message,true)}
+});
+
 $('backup-before-restore').addEventListener('click',()=>startExport(true));
 $('backup-confirmed').addEventListener('change',setRestoreEnabled);
 $('confirm-text').addEventListener('input',setRestoreEnabled);
