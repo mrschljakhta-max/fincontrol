@@ -1,0 +1,130 @@
+/* FINCONTROL Compact UI 2.0
+   Presentation only: never changes finance calculations or ledger data. */
+.fc-premium .fc-display-tools{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.fc-premium #fc-filters-toggle[aria-expanded="true"]{color:var(--silver)}
+.fc-premium:not(.fc-filters-open) #dashboard-filters{display:none!important}
+.fc-premium .fc-density-option{display:flex;align-items:center;gap:12px;padding:14px 12px;margin:0 0 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.fc-premium .fc-density-option input{width:19px;height:19px;min-height:19px;flex:0 0 auto;accent-color:var(--red)}
+.fc-premium .fc-density-option span{display:grid;gap:3px}
+.fc-premium .fc-density-option strong{font-size:13px;font-weight:600}
+.fc-premium .fc-density-option small{font-size:11px;color:var(--slate)}
+.fc-premium .fc-panel-heading .fc-collapse-widget{flex:0 0 auto;margin-left:auto;min-height:30px;padding:5px 9px;font-size:11px;color:var(--slate);background:transparent;border:1px solid var(--line);border-radius:7px;white-space:nowrap}
+.fc-premium .fc-panel-heading .fc-collapse-widget:hover{background:rgba(88,75,82,.24);color:var(--silver);border-color:var(--mauve)}
+.fc-premium .fc-panel.fc-is-collapsed>:not(.fc-panel-heading):not(.fc-widget-handle){display:none!important}
+.fc-premium .fc-panel.fc-is-collapsed .fc-panel-heading{margin-bottom:0}
+.fc-premium .fc-panel.fc-is-collapsed{align-self:start}
+.fc-premium .fc-panel.fc-is-collapsed .fc-widget-handle{display:none}
+.fc-premium .fc-panel-heading{min-width:0}
+.fc-premium .fc-panel-heading>div:first-child{min-width:0}
+.fc-premium .fc-panel-heading>div:first-child h2{overflow-wrap:anywhere}
+.fc-premium .fc-heading h1 br{display:none}
+/* Sidebar: five daily destinations visible; planning and tools are collapsible. */
+.fc-premium .sidebar .site-nav,.fc-unified .sidebar .site-nav{gap:3px}
+.fc-premium .sidebar .fc-nav-section,.fc-unified .sidebar .fc-nav-section{display:grid;gap:3px}
+.fc-premium .sidebar .fc-nav-section .nav-caption,.fc-unified .sidebar .fc-nav-section .nav-caption{margin:16px 12px 9px;font-size:9px}
+.fc-premium .sidebar .fc-nav-group,.fc-unified .sidebar .fc-nav-group{border-top:1px solid var(--line);margin-top:7px;padding-top:6px;min-width:0}
+.fc-premium .sidebar .fc-nav-group summary,.fc-unified .sidebar .fc-nav-group summary{display:flex;align-items:center;justify-content:space-between;gap:7px;cursor:pointer;list-style:none;padding:9px 12px;color:var(--slate);font-size:10px;font-weight:650;letter-spacing:.105em;border-radius:8px;user-select:none}
+.fc-premium .sidebar .fc-nav-group summary::-webkit-details-marker,.fc-unified .sidebar .fc-nav-group summary::-webkit-details-marker{display:none}
+.fc-premium .sidebar .fc-nav-group summary:hover,.fc-unified .sidebar .fc-nav-group summary:hover{background:rgba(88,75,82,.2);color:var(--silver)}
+.fc-premium .sidebar .fc-nav-chevron,.fc-unified .sidebar .fc-nav-chevron{font-size:17px;line-height:1;transition:transform .2s}
+.fc-premium .sidebar .fc-nav-group[open] .fc-nav-chevron,.fc-unified .sidebar .fc-nav-group[open] .fc-nav-chevron{transform:rotate(180deg)}
+.fc-premium .sidebar .fc-nav-group-links,.fc-unified .sidebar .fc-nav-group-links{display:grid;gap:3px;padding-top:4px}
+.fc-premium .sidebar .sidebar-note,.fc-unified .sidebar .sidebar-note{padding:12px 10px 8px}
+.fc-premium .sidebar .nav-link,.fc-unified .sidebar .nav-link{min-height:37px;padding:8px 11px}
+.fc-more-links{gap:13px}
+.fc-more-group{display:grid;gap:2px}
+.fc-more-title{color:var(--slate);font-size:10px;letter-spacing:.13em;font-weight:700;margin:7px 11px 3px}
+.fc-more-group a{display:block;padding:10px 12px;min-height:40px}
+.fc-more-group a[aria-current="page"]{color:var(--red);background:rgba(171,43,65,.12)}
+/* Higher-information-density option. */
+body.fc-premium.fc-density-compact main{padding-top:20px}
+body.fc-premium.fc-density-compact .fc-topbar{height:54px}
+body.fc-premium.fc-density-compact .fc-heading{margin:0 0 15px;gap:18px}
+body.fc-premium.fc-density-compact .fc-heading h1{font-size:clamp(24px,2.5vw,34px);line-height:1.13;margin:0 0 4px;font-weight:620;letter-spacing:-.04em}
+body.fc-premium.fc-density-compact .fc-heading .eyebrow{font-size:9px;letter-spacing:.12em;margin-bottom:5px}
+body.fc-premium.fc-density-compact .fc-heading .fc-subtitle{font-size:11px;margin:0}
+body.fc-premium.fc-density-compact .fc-heading-actions{gap:8px}
+body.fc-premium.fc-density-compact .fc-heading-actions button{min-height:36px;padding:7px 12px;font-size:12px}
+body.fc-premium.fc-density-compact .fc-viewbar{margin-bottom:10px;gap:12px}
+body.fc-premium.fc-density-compact .fc-tabs{gap:19px}
+body.fc-premium.fc-density-compact .fc-tabs button{min-height:39px;padding:8px 0;font-size:12px}
+body.fc-premium.fc-density-compact .fc-period-caption{margin:5px 0 10px;line-height:1.4}
+body.fc-premium.fc-density-compact .fc-chips{margin-bottom:10px}
+body.fc-premium.fc-density-compact .fc-filterbar{gap:10px}
+body.fc-premium.fc-density-compact .fc-kpi-grid{gap:10px;margin-bottom:12px}
+body.fc-premium.fc-density-compact .fc-kpi{min-height:94px;padding:12px 15px 10px;border-radius:12px}
+body.fc-premium.fc-density-compact .fc-kpi-top{font-size:11px}
+body.fc-premium.fc-density-compact .fc-kpi-value{font-size:clamp(19px,1.9vw,27px);line-height:1.15;margin:9px 0 4px}
+body.fc-premium.fc-density-compact .fc-kpi-note{font-size:10px;line-height:1.35}
+body.fc-premium.fc-density-compact .fc-dashboard-grid{gap:11px}
+body.fc-premium.fc-density-compact .fc-panel{padding:15px 17px;border-radius:12px}
+body.fc-premium.fc-density-compact .fc-panel-heading{margin-bottom:12px;gap:8px}
+body.fc-premium.fc-density-compact .fc-panel-heading h2{font-size:15px;font-weight:600}
+body.fc-premium.fc-density-compact .fc-panel-heading .eyebrow{display:none}
+body.fc-premium.fc-density-compact .fc-badge{padding:3px 7px}
+body.fc-premium.fc-density-compact .fc-footnote{font-size:10px!important;line-height:1.5;margin-top:10px}
+body.fc-premium.fc-density-compact .fc-section-intro{margin:12px 0 15px}
+body.fc-premium.fc-density-compact .fc-section-intro h2{font-size:21px}
+body.fc-premium.fc-density-compact .fc-extra-grid{gap:9px;margin-bottom:12px}
+body.fc-premium.fc-density-compact .fc-mini{padding:12px 13px}
+body.fc-premium.fc-density-compact .fc-mini small{margin-bottom:5px}
+body.fc-premium.fc-density-compact .fc-mini strong{font-size:19px}
+body.fc-premium.fc-density-compact .fc-story-item{padding:8px 0}
+body.fc-premium.fc-density-compact .fc-month{padding:7px 4px!important}
+body.fc-premium.fc-density-compact .fc-actions{margin-top:11px}
+body.fc-premium.fc-density-compact .fc-control{margin-bottom:13px}
+body.fc-premium.fc-density-compact .fc-scenario-controls h3{margin-bottom:12px}
+body.fc-premium.fc-density-compact .fc-treemap{height:210px}
+body.fc-premium.fc-density-compact .fc-table-scroll{max-height:510px}
+body.fc-premium.fc-density-compact th,body.fc-premium.fc-density-compact td{padding:9px 10px}
+body.fc-premium.fc-density-compact .page-footer{margin-top:18px;padding-top:12px}
+/* Small screens remain full-featured; compact layout reduces scroll, not tap targets. */
+@media(max-width:840px){
+ body.fc-premium.fc-density-compact main{padding-top:16px}
+ body.fc-premium.fc-density-compact .fc-heading{gap:9px;margin-bottom:12px}
+ body.fc-premium.fc-density-compact .fc-kpi{min-height:94px}
+ .fc-premium .fc-display-tools{gap:7px}
+}
+@media(max-width:620px){
+ body.fc-premium.fc-density-compact .fc-heading{display:flex;flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
+ body.fc-premium.fc-density-compact .fc-heading h1{font-size:clamp(20px,5vw,26px);margin-bottom:0}
+ body.fc-premium.fc-density-compact .fc-heading .eyebrow{font-size:8px;margin-bottom:3px}
+ body.fc-premium.fc-density-compact .fc-heading .fc-subtitle{display:none}
+ body.fc-premium.fc-density-compact .fc-heading-actions{width:auto;margin-left:auto;gap:6px}
+ body.fc-premium.fc-density-compact .fc-heading-actions button{font-size:11px;min-height:38px;padding:8px 10px}
+ body.fc-premium.fc-density-compact .fc-heading-actions #full-backup{display:none}
+ body.fc-premium.fc-density-compact .fc-viewbar{align-items:center}
+ body.fc-premium.fc-density-compact .fc-tabs{gap:14px;min-width:0}
+ body.fc-premium.fc-density-compact .fc-tabs button{font-size:11px;min-height:40px}
+ body.fc-premium.fc-density-compact .fc-display-tools{flex:0 0 auto;gap:4px}
+ body.fc-premium.fc-density-compact .fc-display-tools button{padding:6px 5px;min-height:35px;font-size:11px}
+ body.fc-premium.fc-density-compact #layout-open{font-size:0}
+ body.fc-premium.fc-density-compact #layout-open span{font-size:16px}
+ body.fc-premium.fc-density-compact .fc-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ body.fc-premium.fc-density-compact .fc-kpi{min-height:87px;padding:10px 10px 9px}
+ body.fc-premium.fc-density-compact .fc-kpi-top{font-size:10px}
+ body.fc-premium.fc-density-compact .fc-kpi-value{font-size:clamp(17px,4.5vw,23px);margin:7px 0 3px;white-space:normal;overflow-wrap:anywhere}
+ body.fc-premium.fc-density-compact .fc-kpi-note{font-size:9px}
+ body.fc-premium.fc-density-compact .fc-dashboard-grid{gap:8px}
+ body.fc-premium.fc-density-compact .fc-panel{padding:12px 12px}
+ body.fc-premium.fc-density-compact .fc-panel-heading{margin-bottom:10px}
+ body.fc-premium.fc-density-compact .fc-panel-heading h2{font-size:14px}
+ body.fc-premium.fc-density-compact .fc-panel-heading>.fc-chart-key,body.fc-premium.fc-density-compact .fc-panel-heading>.fc-badge{display:none}
+ body.fc-premium.fc-density-compact .fc-section-intro h2{font-size:20px}
+ body.fc-premium.fc-density-compact .fc-flow-list button{min-height:36px!important;padding:8px 0!important}
+ body.fc-premium.fc-density-compact .fc-extra-grid{gap:7px}
+ body.fc-premium.fc-density-compact .fc-mini{padding:10px}
+ body.fc-premium.fc-density-compact .fc-mini strong{font-size:17px}
+ body.fc-premium.fc-density-compact .fc-filterbar{display:grid;grid-template-columns:minmax(0,1fr);gap:9px}
+ body.fc-premium.fc-density-compact .fc-period-control{width:100%;min-width:0}
+ body.fc-premium.fc-density-compact .fc-period-control select{min-width:0}
+ body.fc-premium.fc-density-compact .fc-time-travel{width:max-content;max-width:100%;margin:0}
+ body.fc-premium.fc-density-compact .fc-custom-dates{width:100%;display:flex;flex-wrap:wrap}
+ body.fc-premium.fc-density-compact .fc-display-tools .fc-text-button{white-space:nowrap}
+}
+@media(max-width:370px){
+ body.fc-premium.fc-density-compact .fc-heading h1{font-size:19px}
+ body.fc-premium.fc-density-compact .fc-tabs{gap:9px}
+ body.fc-premium.fc-density-compact .fc-tabs button{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.fc-premium .fc-nav-chevron{transition:none}}
