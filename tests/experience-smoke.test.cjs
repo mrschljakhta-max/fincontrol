@@ -150,3 +150,28 @@ test('the motion toggle pauses all animations and never mutates finance records'
  assert.match(styles,/animation:none!important/);
  assert.match(styles,/@media\(prefers-reduced-motion:reduce\)/);
 });
+
+test('desktop scene backgrounds are full bleed, content remains centered and mobile images retain cover',()=>{
+ const styles=read('assets/experience-scenes.css');
+ assert.match(styles,/width:100vw;/);
+ assert.match(styles,/left:50%;/);
+ assert.match(styles,/translateX\(-50%\)/);
+ assert.match(styles,/background-size:cover,cover,cover/);
+ for(const pageId of ['intro','overview','calendar','credits','reserve','housing','analytics','finish'])
+   assert.ok(styles.includes('.ex-page #'+pageId+'{--ex-scene-image:'),pageId);
+ for(const mobile of ['hero','overview','calendar','credits','reserve','housing','analytics','final'])
+   assert.ok(styles.includes(mobile+'-mobile.webp'),mobile);
+});
+test('detailed crystal activates only after image load; SVG fallback, phone and motion remain',()=>{
+ const styles=read('assets/experience-photo-core.css');
+ assert.match(page,/id="ex-rock-photo"/);
+ assert.match(page,/assets\/images\/fincontrol-core-rock.webp/);
+ assert.match(page,/assets\/experience-photo-core.css/);
+ assert.match(styles,/z-index:2/);
+ assert.match(styles,/ex-photoreal-core/);
+ assert.match(script,/preview\.onload/);
+ assert.match(script,/preview\.onerror/);
+ assert.match(script,/--ex-photo-visible/);
+ assert.match(page,/id="ex-morph-outline"/);
+ assert.match(page,/id="ex-device"/);
+});
