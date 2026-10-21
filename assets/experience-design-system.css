@@ -1,0 +1,684 @@
+/* FINCONTROL · Motion Design System 2.0
+   Typography, layout, interaction and visual hierarchy ONLY.
+   The panorama, 3D core, premium phone, backgrounds and finance models stay independent.
+   App content remains real HTML — no image-baked text or fake financial figures. */
+.ex-page {
+ --ex-header-size:78px;
+ --ex-text-body:16px;
+ --ex-text-nav:15px;
+ --ex-text-ui:14px;
+ --ex-text-caption:12px;
+ --ex-text-overline:11px;
+ --ex-line-copy:1.65;
+ --ex-touch:44px;
+ --ex-glass-stroke:rgba(224,231,238,.22);
+ --ex-glass-shade:linear-gradient(135deg,rgba(47,37,46,.75),rgba(17,24,35,.75) 52%,rgba(29,29,39,.70));
+ --ex-faint:#bfc9d0;
+ font-size:var(--ex-text-body);
+ line-height:1.58;
+ font-variant-numeric:tabular-nums;
+}
+html{scroll-padding-top:calc(78px + 12px)}
+.ex-page .ex-header{
+ min-height:var(--ex-header-size);
+ height:var(--ex-header-size);
+ padding-inline:clamp(20px,3.1vw,56px);
+ gap:clamp(20px,2vw,36px);
+ background:linear-gradient(90deg,rgba(11,19,29,.94),rgba(27,23,34,.89));
+ border-bottom-color:rgba(205,215,220,.18);
+ box-shadow:0 8px 36px rgba(3,8,16,.15);
+}
+.ex-page .ex-brand{
+ font-size:19px;
+ font-weight:750;
+ letter-spacing:-.045em;
+ min-height:var(--ex-touch);
+ gap:11px;
+ flex-shrink:0;
+}
+.ex-page .ex-brand-mark{
+ font-size:28px!important;
+ line-height:1;
+}
+.ex-page .ex-navigation{
+ gap:clamp(10px,1.5vw,24px);
+ flex:1 1 auto;
+ justify-content:center;
+}
+.ex-page .ex-navigation a{
+ min-height:var(--ex-touch);
+ padding:0 5px;
+ font-size:var(--ex-text-nav);
+ line-height:1.3;
+ font-weight:530;
+ color:#cbd3db;
+}
+.ex-page .ex-navigation a:hover,
+.ex-page .ex-navigation a[aria-current="location"]{
+ color:#fff;
+}
+.ex-page .ex-navigation a[aria-current="location"]{
+ font-weight:650;
+ text-shadow:0 0 18px rgba(250,47,76,.24);
+}
+.ex-page .ex-navigation a::after{
+ bottom:5px;
+ left:5px;right:5px;
+}
+.ex-page .ex-header-actions{
+ gap:9px;
+ flex-shrink:0;
+}
+.ex-page .ex-motion-button,
+.ex-page .ex-workspace{
+ min-height:var(--ex-touch);
+ padding:10px 15px;
+ font-size:13px;
+ font-weight:560;
+ border-color:rgba(205,215,220,.27);
+ color:#e5ebef;
+ transition:background .2s,border-color .2s,transform .2s;
+}
+.ex-page #ex-privacy-toggle{
+ width:var(--ex-touch);
+ padding-inline:0;
+ font-size:19px;
+}
+.ex-page .ex-workspace{
+ background:rgba(171,43,65,.11);
+ border-color:rgba(250,47,76,.46);
+}
+.ex-page .ex-workspace:hover,
+.ex-page .ex-motion-button:hover{
+ background:rgba(250,47,76,.15);
+ border-color:rgba(250,47,76,.7);
+ transform:translateY(-1px);
+}
+.ex-page .ex-scroll-progress{top:var(--ex-header-size)}
+.ex-page .ex-menu-toggle{display:none}
+.ex-page .ex-mobile-nav[hidden]{display:none!important}
+.ex-page .ex-mobile-nav{display:none}
+
+/* Typographic rhythm across all seven content chapters and final scene. */
+.ex-page .ex-scene{
+ scroll-margin-top:calc(var(--ex-header-size) + 10px);
+ grid-template-columns:minmax(0,.9fr) minmax(0,1.14fr);
+ gap:clamp(40px,5vw,92px);
+ padding:clamp(98px,7.2vw,132px) clamp(28px,6vw,112px);
+}
+.ex-page .ex-story{
+ max-width:485px;
+ position:relative;
+}
+.ex-page .ex-story::before{
+ content:"";
+ position:absolute;
+ left:-22px;
+ top:4px;
+ bottom:auto;
+ width:2px;
+ height:52px;
+ background:linear-gradient(180deg,var(--ex-red),rgba(250,47,76,0));
+ box-shadow:0 0 12px rgba(250,47,76,.25);
+ pointer-events:none;
+}
+.ex-page .ex-chapter,
+.ex-page .ex-kicker,
+.ex-page .ex-eyebrow{
+ font-size:var(--ex-text-overline);
+ font-weight:700;
+ letter-spacing:.15em;
+ line-height:1.55;
+ color:#d4dce3;
+}
+.ex-page .ex-chapter{
+ margin-bottom:23px;
+ white-space:normal;
+ text-wrap:pretty;
+}
+.ex-page .ex-story h2{
+ font-size:clamp(40px,3.65vw,56px);
+ font-weight:360;
+ letter-spacing:-.055em;
+ line-height:1.12;
+ margin:0 0 22px;
+ max-width:15ch;
+}
+.ex-page .ex-story>p:not(.ex-chapter),
+.ex-page .ex-hero-description,
+.ex-page .ex-finish-copy>p:not(.ex-kicker){
+ font-size:var(--ex-text-body);
+ line-height:var(--ex-line-copy);
+ color:#d4dce3;
+ max-width:46ch;
+ text-wrap:pretty;
+}
+.ex-page .ex-section-link,
+.ex-page .ex-card-link,
+.ex-page .ex-text-link{
+ min-height:var(--ex-touch);
+ font-size:var(--ex-text-ui);
+ font-weight:630;
+ line-height:1.45;
+}
+.ex-page .ex-section-link{
+ margin-top:21px;
+ padding:8px 0 10px;
+}
+.ex-page .ex-card-link{
+ padding-top:19px;
+ margin-top:19px;
+}
+.ex-page .ex-section-link:focus-visible,
+.ex-page .ex-card-link:focus-visible,
+.ex-page .ex-text-link:focus-visible,
+.ex-page .ex-button:focus-visible,
+.ex-page .ex-navigation a:focus-visible{
+ outline:2px solid #F4D7DC;
+ outline-offset:4px;
+ border-radius:5px;
+}
+/* Card hierarchy: opaque enough to read but still reveals underlying landscape. */
+.ex-page .ex-glass,
+.ex-page .ex-scene .ex-glass{
+ max-width:820px;
+ padding:clamp(24px,2.9vw,38px);
+ border-radius:24px;
+ border-color:var(--ex-glass-stroke);
+ background:var(--ex-glass-shade);
+ -webkit-backdrop-filter:blur(22px) saturate(112%);
+ backdrop-filter:blur(22px) saturate(112%);
+ box-shadow:
+  0 28px 88px rgba(4,9,16,.47),
+  0 0 42px rgba(250,47,76,.055),
+  inset 0 1px rgba(255,255,255,.07);
+}
+.ex-page .ex-glass-heading{
+ font-size:16px;
+ margin-bottom:24px;
+ gap:12px;
+ letter-spacing:-.012em;
+ font-weight:640;
+}
+.ex-page .ex-mini-tag{
+ font-size:var(--ex-text-caption);
+ font-weight:550;
+ padding:7px 12px;
+ border-color:rgba(205,215,220,.21);
+ color:#e1e7eb;
+}
+.ex-page .ex-card-note{
+ font-size:var(--ex-text-caption);
+ color:#c2ccd3;
+ line-height:1.65;
+}
+.ex-page .ex-metric-xl{
+ font-size:clamp(36px,3.4vw,49px);
+ line-height:1.12;
+ font-weight:650;
+ letter-spacing:-.045em;
+}
+.ex-page .ex-glass small,
+.ex-page .ex-overview-numbers>small,
+.ex-page .ex-credit-total>small{
+ font-size:var(--ex-text-caption);
+ line-height:1.48;
+ color:#c7d0d7;
+}
+.ex-page .ex-value-line{
+ padding:13px 0;
+ font-size:14px;
+ gap:10px;
+}
+.ex-page .ex-value-line strong{
+ font-weight:675;
+ color:#f5f7f9;
+}
+
+/* Section 01: cinematic hero, text/art around 42/58. */
+.ex-page .ex-hero{
+ min-height:max(720px,calc(100svh - var(--ex-header-size)));
+ grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr);
+}
+.ex-page .ex-hero-copy{
+ max-width:630px;
+}
+.ex-page .ex-hero h1{
+ font-size:clamp(62px,5.5vw,90px);
+ letter-spacing:-.066em;
+ line-height:1.04;
+ font-weight:295;
+ margin-bottom:26px;
+}
+.ex-page .ex-hero .ex-kicker{
+ margin-bottom:26px;
+}
+.ex-page .ex-hero-description{
+ margin-bottom:26px;
+}
+.ex-page .ex-button{
+ min-height:49px;
+ padding:12px 22px;
+ font-size:var(--ex-text-ui);
+ gap:16px;
+ line-height:1.35;
+ font-weight:680;
+}
+.ex-page .ex-button-primary{
+ box-shadow:0 10px 33px rgba(250,47,76,.26),inset 0 1px rgba(255,255,255,.15);
+}
+.ex-page .ex-hero-actions{gap:clamp(12px,1.8vw,28px)}
+.ex-page .ex-private{
+ margin-top:29px!important;
+ font-size:var(--ex-text-caption)!important;
+ line-height:1.58!important;
+ color:#c1cbd2!important;
+}
+.ex-page .ex-hero-rail{
+ font-size:11px;
+ bottom:clamp(35px,5vw,72px);
+ color:#d2dbe1;
+}
+.ex-page .ex-orbit-tag{
+ font-size:var(--ex-text-caption);
+ line-height:1.35;
+ padding:12px 15px;
+}
+
+/* Section 02: balance visual, more legible ratio and ring. */
+.ex-page #overview .ex-glass{
+ border-top-color:rgba(250,47,76,.32);
+}
+.ex-page .ex-overview-content{
+ grid-template-columns:minmax(0,1.15fr) minmax(180px,.85fr);
+ gap:clamp(18px,2.2vw,32px);
+}
+.ex-page .ex-overview-numbers .ex-metric-xl{margin-bottom:20px}
+.ex-page .ex-donut{
+ width:min(100%,235px);
+ box-shadow:0 0 30px rgba(250,47,76,.12),inset 0 0 22px rgba(0,0,0,.25);
+}
+.ex-page .ex-donut::before{
+ inset:19%;
+ border-color:rgba(231,236,241,.16);
+}
+.ex-page .ex-donut strong{font-size:clamp(27px,2.5vw,37px)}
+.ex-page .ex-donut span,
+.ex-page .ex-donut-block>small{
+ font-size:var(--ex-text-caption);
+ color:#d0d9df;
+ line-height:1.5;
+}
+.ex-page .ex-donut-block>small{max-width:220px}
+
+/* Section 03: visual calendar, generous touch target and sliding selection. */
+.ex-page .ex-calendar-layout{
+ grid-template-columns:minmax(0,1.15fr) minmax(178px,.85fr);
+ gap:clamp(18px,2vw,28px);
+}
+.ex-page .ex-weekdays span{
+ font-size:var(--ex-text-caption);
+ font-weight:620;
+ padding-bottom:13px;
+}
+.ex-page .ex-calendar-grid{gap:3px}
+.ex-page .ex-calendar-day{
+ min-height:58px;
+ border-radius:15px;
+ transition:background .22s ease,box-shadow .22s ease;
+}
+.ex-page .ex-calendar-day:hover{
+ background:rgba(240,244,247,.09);
+ box-shadow:inset 0 0 0 1px rgba(205,215,220,.12);
+}
+.ex-page .ex-calendar-day>span:first-child{
+ font-size:16px;
+ font-weight:600;
+ width:38px;
+ height:38px;
+ transition:background .24s ease,box-shadow .26s ease,transform .2s ease;
+}
+.ex-page .ex-calendar-day[aria-pressed="true"]>span:first-child{
+ transform:scale(1.07);
+ box-shadow:0 0 0 5px rgba(250,47,76,.13),0 0 21px rgba(250,47,76,.3);
+}
+.ex-page .ex-calendar-dots i{width:5px;height:5px}
+.ex-page .ex-day-panel h3{font-size:24px}
+.ex-page .ex-day-event{
+ padding:12px 0;
+ grid-template-columns:4px minmax(0,1fr);
+ gap:12px;
+}
+.ex-page .ex-day-event strong{font-size:14px;line-height:1.5}
+.ex-page .ex-day-event small{font-size:var(--ex-text-caption)}
+.ex-page .ex-empty{font-size:var(--ex-text-ui);line-height:1.6}
+
+/* Section 04: obligation prioritization and clearer debt typography. */
+.ex-page #credits .ex-glass{
+ border-left:2px solid rgba(250,47,76,.48);
+}
+.ex-page .ex-credit-total{
+ margin-bottom:4px;
+ padding-bottom:22px;
+}
+.ex-page .ex-credit-total strong{
+ font-size:clamp(35px,3vw,46px);
+ font-weight:680;
+}
+.ex-page .ex-credit-row{
+ grid-template-columns:48px minmax(0,1fr) auto;
+ gap:15px;
+ padding:18px 0;
+}
+.ex-page .ex-credit-icon{
+ width:46px;height:46px;
+ border-radius:13px;
+}
+.ex-page .ex-credit-row strong,
+.ex-page .ex-credit-value{
+ font-size:15px;
+}
+.ex-page .ex-credit-row small{
+ font-size:var(--ex-text-caption);
+ display:block;
+ line-height:1.45;
+ margin-top:3px;
+}
+.ex-page .ex-credit-value{
+ max-width:170px;
+ overflow-wrap:anywhere;
+ white-space:normal;
+}
+
+/* Section 05: reserve calm, trustworthy progress. */
+.ex-page #reserve .ex-glass{
+ background:linear-gradient(142deg,rgba(28,37,47,.83),rgba(25,27,37,.72) 60%,rgba(56,35,45,.72));
+}
+.ex-page .ex-glass-reserve .ex-metric-xl,
+.ex-page .ex-glass-house .ex-metric-xl{
+ margin:9px 0 26px;
+}
+.ex-page .ex-progress-track{
+ height:11px;
+ background:rgba(229,237,241,.12);
+ border-color:rgba(205,215,220,.13);
+ overflow:hidden;
+}
+.ex-page .ex-progress-track span{
+ background:linear-gradient(90deg,#8E263A 0%,#D73452 55%,#FA506A 100%);
+ box-shadow:0 0 19px rgba(250,47,76,.29);
+}
+.ex-page .ex-progress-caption{
+ font-size:var(--ex-text-caption);
+ line-height:1.5;
+ margin-top:11px;
+}
+.ex-page .ex-progress-caption strong{font-size:15px}
+.ex-page .ex-insight{
+ margin-top:25px;
+ padding:19px;
+ border-color:rgba(205,215,220,.17);
+ background:rgba(16,25,35,.39);
+}
+.ex-page .ex-insight small{font-size:var(--ex-text-caption)}
+.ex-page .ex-insight strong{font-size:22px}
+
+/* Section 06: sense of dimensionality for the existing vector house. */
+.ex-page #housing .ex-glass{
+ background:linear-gradient(135deg,rgba(47,34,44,.79),rgba(17,27,35,.75) 53%,rgba(36,27,37,.73));
+}
+.ex-page .ex-house-symbol{
+ height:195px;
+ max-width:330px;
+ margin:-6px auto 13px;
+ filter:drop-shadow(0 18px 26px rgba(0,0,0,.32)) drop-shadow(0 0 20px rgba(250,47,76,.20));
+ transform-origin:center 80%;
+}
+.ex-page.ex-ready:not(.ex-motion-off) #housing .is-visible .ex-house-symbol{
+ animation:ex-house-breathe 9s ease-in-out infinite;
+}
+@keyframes ex-house-breathe{
+ 0%,100%{transform:translateY(0) rotateY(-8deg)}
+ 50%{transform:translateY(-5px) rotateY(6deg)}
+}
+.ex-page #housing .ex-progress-track span{
+ transition:width 1.4s cubic-bezier(.2,.85,.15,1);
+}
+
+/* Section 07: visually coherent and easily compared financial bars. */
+.ex-page #analytics .ex-glass{
+ border-top-color:rgba(250,47,76,.37);
+}
+.ex-page .ex-chart-legend{
+ gap:clamp(12px,2vw,24px);
+ font-size:var(--ex-text-caption);
+ flex-wrap:wrap;
+}
+.ex-page .ex-chart{
+ gap:clamp(5px,1vw,15px);
+}
+.ex-page .ex-chart-group{
+ height:258px;
+ grid-template-rows:1fr 28px;
+ gap:10px;
+}
+.ex-page .ex-chart-bars{gap:clamp(3px,.6vw,9px)}
+.ex-page .ex-chart-bar{
+ width:min(29%,21px);
+ border-radius:6px 6px 0 0;
+ box-shadow:0 0 15px rgba(250,47,76,.12);
+}
+.ex-page .ex-chart-month{font-size:var(--ex-text-caption);font-weight:550}
+
+/* Section 08: make the premium phone the focus on the right, copy on the left. */
+.ex-page .ex-finish{
+ min-height:max(760px,calc(100svh - var(--ex-header-size)));
+ grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);
+ justify-items:stretch;
+ text-align:left;
+}
+.ex-page .ex-finish-copy{
+ max-width:720px;
+ grid-column:1;
+ justify-items:start;
+ align-self:center;
+}
+.ex-page .ex-finish h2{
+ font-size:clamp(49px,4.75vw,74px);
+ line-height:1.10;
+ letter-spacing:-.063em;
+}
+.ex-page .ex-footer{font-size:var(--ex-text-caption);line-height:1.55}
+
+/* Menu changes at a genuine tablet breakpoint, before the full-size
+   navigation becomes cramped. */
+@media(max-width:1180px){
+ .ex-page{--ex-header-size:72px;--ex-text-nav:14px}
+ .ex-page .ex-header{height:var(--ex-header-size);min-height:var(--ex-header-size)}
+ .ex-page .ex-brand{font-size:17px}
+ .ex-page .ex-navigation{gap:12px}
+ .ex-page .ex-story h2{font-size:clamp(37px,4vw,52px)}
+ .ex-page .ex-scene{padding-inline:clamp(26px,3.3vw,48px);gap:30px}
+ .ex-page .ex-glass,.ex-page .ex-scene .ex-glass{padding:26px}
+}
+@media(max-width:1090px){
+ .ex-page{--ex-header-size:70px}
+ .ex-page .ex-navigation{display:none}
+ .ex-page .ex-header{justify-content:space-between;gap:14px}
+ .ex-page .ex-header-actions{margin-left:auto}
+ .ex-page .ex-menu-toggle{
+  display:inline-flex;
+  align-items:center;justify-content:center;gap:9px;
+  min-width:var(--ex-touch);
+  min-height:var(--ex-touch);
+  border:1px solid rgba(205,215,220,.3);
+  border-radius:999px;
+  padding:8px 14px;
+  background:rgba(22,30,40,.72);
+  color:#eff3f5;
+  font-size:14px;
+  font-weight:630;
+  white-space:nowrap;
+  flex-shrink:0;
+ }
+ .ex-page .ex-menu-icon{width:17px;height:14px;display:grid;align-content:space-around}
+ .ex-page .ex-menu-icon i{
+  width:17px;height:2px;
+  background:currentColor;border-radius:2px;display:block;
+  transition:transform .22s ease,opacity .2s ease;
+ }
+ .ex-page .ex-menu-toggle[aria-expanded="true"] .ex-menu-icon i:first-child{transform:translateY(5px) rotate(45deg)}
+ .ex-page .ex-menu-toggle[aria-expanded="true"] .ex-menu-icon i:last-child{transform:translateY(-5px) rotate(-45deg)}
+ .ex-page .ex-mobile-nav:not([hidden]){
+  position:absolute;
+  z-index:60;
+  display:block;
+  width:min(500px,calc(100vw - 32px));
+  top:calc(100% + 8px);
+  right:16px;
+  padding:20px;
+  max-height:calc(100dvh - var(--ex-header-size) - 20px);
+  overflow:auto;
+  border:1px solid rgba(205,215,220,.25);
+  border-radius:22px;
+  background:linear-gradient(140deg,rgba(32,36,47,.98),rgba(17,24,36,.98));
+  box-shadow:0 25px 75px rgba(0,0,0,.62);
+  -webkit-backdrop-filter:blur(23px);
+  backdrop-filter:blur(23px);
+ }
+ .ex-page .ex-mobile-nav-label{
+  margin:0 0 14px;
+  font-size:12px;
+  font-weight:750;
+  letter-spacing:.16em;
+  color:#c1cbd2;
+ }
+ .ex-page .ex-mobile-nav-links{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+ }
+ .ex-page .ex-mobile-nav-links a{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  min-height:48px;
+  border:1px solid rgba(205,215,220,.1);
+  border-radius:12px;
+  padding:11px 14px;
+  font-size:15px;
+  font-weight:570;
+  background:rgba(8,14,24,.22);
+  color:#edf1f4;
+ }
+ .ex-page .ex-mobile-nav-links a[aria-current="location"]{
+  border-color:rgba(250,47,76,.55);
+  background:rgba(171,43,65,.18);
+ }
+ .ex-page .ex-mobile-nav-links a span{color:#fa7088}
+ .ex-page .ex-mobile-nav-tools{
+  display:flex;
+  gap:8px;
+  margin-top:17px;
+  padding-top:16px;
+  border-top:1px solid rgba(205,215,220,.15);
+ }
+ .ex-page .ex-mobile-nav-tools button{
+  flex:1;
+  display:flex;
+  align-items:center;justify-content:center;gap:8px;
+  min-height:var(--ex-touch);
+  border:1px solid rgba(205,215,220,.20);
+  color:#e7edf0;
+  background:rgba(205,215,220,.04);
+  border-radius:12px;
+  font-size:14px;
+ }
+ .ex-page .ex-mobile-nav-tools button[aria-pressed="true"]{
+  border-color:rgba(250,47,76,.55);
+ }
+ .ex-page .ex-scene{grid-template-columns:1fr;gap:32px;min-height:auto;padding-block:110px}
+ .ex-page .ex-hero{grid-template-columns:1fr;min-height:calc(100svh - var(--ex-header-size))}
+ .ex-page .ex-hero-copy{max-width:620px}
+ .ex-page .ex-story{max-width:650px}
+ .ex-page .ex-story>p:not(.ex-chapter){max-width:57ch}
+ .ex-page .ex-glass,.ex-page .ex-scene .ex-glass{width:100%;max-width:760px;justify-self:center}
+ .ex-page .ex-finish{grid-template-columns:1fr;min-height:720px}
+ .ex-page .ex-finish-copy{grid-column:auto;max-width:610px}
+ .ex-page .ex-finish h2{font-size:clamp(48px,6vw,68px)}
+ .ex-page .ex-scroll-progress{top:var(--ex-header-size)}
+}
+@media(max-width:680px){
+ .ex-page{--ex-header-size:64px;--ex-text-body:15px;--ex-text-nav:14px;--ex-text-ui:14px}
+ .ex-page .ex-header{padding-inline:12px;gap:8px}
+ .ex-page .ex-brand{font-size:15px;gap:7px}
+ .ex-page .ex-brand-mark{font-size:25px!important}
+ .ex-page .ex-header-actions{gap:6px}
+ .ex-page .ex-menu-toggle{padding:8px 11px}
+ .ex-page .ex-menu-label{display:none}
+ .ex-page .ex-header-actions #ex-motion-toggle,
+ .ex-page .ex-header-actions #ex-privacy-toggle{display:none}
+ .ex-page .ex-workspace{
+  min-width:var(--ex-touch);
+  min-height:var(--ex-touch);
+  padding:9px 11px;
+  font-size:13px;
+ }
+ .ex-page .ex-scene{
+  padding:100px 18px 106px;
+  gap:30px;
+ }
+ .ex-page .ex-hero{padding-top:90px;min-height:calc(100svh - var(--ex-header-size))}
+ .ex-page .ex-hero h1{font-size:clamp(45px,10.3vw,66px)}
+ .ex-page .ex-hero-description{font-size:15px;max-width:35ch}
+ .ex-page .ex-hero-actions{gap:10px 16px}
+ .ex-page .ex-button{font-size:14px;min-height:48px}
+ .ex-page .ex-story h2{font-size:clamp(36px,9vw,52px)}
+ .ex-page .ex-story>p:not(.ex-chapter){font-size:15px;line-height:1.65}
+ .ex-page .ex-story::before{left:-12px;height:42px}
+ .ex-page .ex-chapter,.ex-page .ex-kicker,.ex-page .ex-eyebrow{font-size:10px;letter-spacing:.11em}
+ .ex-page .ex-glass,.ex-page .ex-scene .ex-glass{padding:20px 17px;border-radius:20px}
+ .ex-page .ex-glass-heading{font-size:15px;flex-wrap:wrap;gap:8px;margin-bottom:19px}
+ .ex-page .ex-overview-content{grid-template-columns:1fr;gap:22px}
+ .ex-page .ex-overview-numbers .ex-metric-xl{margin-bottom:13px}
+ .ex-page .ex-donut{width:min(100%,200px)}
+ .ex-page .ex-calendar-layout{grid-template-columns:1fr!important;gap:18px}
+ .ex-page .ex-calendar-day{min-height:49px}
+ .ex-page .ex-calendar-day>span:first-child{width:34px;height:34px;font-size:15px}
+ .ex-page .ex-day-panel{border-left:0;border-top:1px solid rgba(205,215,220,.18);padding:17px 0 0}
+ .ex-page .ex-day-event strong{font-size:13px}
+ .ex-page .ex-credit-row{grid-template-columns:42px minmax(0,1fr);gap:10px}
+ .ex-page .ex-credit-icon{width:40px;height:40px}
+ .ex-page .ex-credit-value{grid-column:2;justify-self:start;font-size:14px}
+ .ex-page .ex-house-symbol{height:170px;max-width:260px}
+ .ex-page .ex-chart{gap:6px}
+ .ex-page .ex-chart-group{height:195px;grid-template-rows:1fr 26px;gap:6px}
+ .ex-page .ex-chart-month{font-size:11px}
+ .ex-page .ex-finish{min-height:680px;align-content:center}
+ .ex-page .ex-finish h2{font-size:clamp(43px,9vw,60px)}
+ .ex-page .ex-private{font-size:11px!important}
+ .ex-page .ex-footer{font-size:12px}
+}
+@media(max-width:380px){
+ .ex-page .ex-brand{font-size:13px}
+ .ex-page .ex-workspace{font-size:12px;padding-inline:9px}
+ .ex-page .ex-menu-toggle{padding-inline:10px}
+ .ex-page .ex-scene{padding-inline:14px}
+ .ex-page .ex-glass,.ex-page .ex-scene .ex-glass{padding:17px 13px}
+ .ex-page .ex-hero-rail{font-size:10px}
+ .ex-page .ex-calendar-day{min-height:46px}
+ .ex-page .ex-value-line{font-size:12px}
+ .ex-page .ex-chart-legend{font-size:11px}
+}
+/* Avoid hover animations on touch and honor system motion preferences. */
+@media(hover:none){
+ .ex-page .ex-button-primary:hover,
+ .ex-page .ex-motion-button:hover,
+ .ex-page .ex-workspace:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .ex-page .ex-house-symbol{animation:none!important;transform:none!important}
+ .ex-page .ex-calendar-day>span:first-child{transition:none!important}
+ .ex-page .ex-mobile-nav-links a{transition:none!important}
+}
