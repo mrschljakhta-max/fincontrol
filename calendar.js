@@ -149,7 +149,7 @@ function addUpcomingRow(e,host,overdue=false){
 }
 function renderUpcoming(){
  const future=data(M.addDays(currentDate,1),M.addDays(currentDate,7),false).filter(isPending);
- const host=$('upcoming-events');host.replaceChildren();$('upcoming-count').textContent=countText(future.length);
+ const host=$('upcoming-events');host.replaceChildren();$('upcoming-count').textContent=countText(future.length);$('stat-week').textContent=countText(future.length);
  if(!future.length){const el=document.createElement('p');el.className='fc-cal-footnote';el.textContent='На найближчі 7 днів нових справ немає.';host.append(el)}
  else{for(const e of future.slice(0,8))addUpcomingRow(e,host);if(future.length>8){const p=document.createElement('p');p.className='fc-cal-footnote';p.textContent='І ще '+(future.length-8)+' подій. Обери відповідні дні в календарі.';host.append(p)}}
  return future.length;
