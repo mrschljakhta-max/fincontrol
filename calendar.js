@@ -1,295 +1,196 @@
-/* FINCONTROL financial calendar 2.0: today's agenda, reminders and monthly plans. */
+/* FINCONTROL calendar workspace: local plans, linked actuals and accessible daily actions. */
 (async function(){
 'use strict';
-const M=FCCalendarModel,S=FCStore,K=S.K,$=id=>document.getElementById(id);
-const money=n=>new Intl.NumberFormat('uk-UA',{style:'currency',currency:'UAH',maximumFractionDigits:0}).format(n/100);
-const dateText=d=>M.day(d).toLocaleDateString('uk-UA',{day:'numeric',month:'long',year:'numeric'});
+const M=FCCalendarModel,A=FCCalendarActions,S=FCStore,K=S.K,$=id=>document.getElementById(id);
+const uid=()=>typeof crypto.randomUUID==='function'?crypto.randomUUID():'cal-'+Array.from(crypto.getRandomValues(new Uint8Array(16)),v=>v.toString(16).padStart(2,'0')).join('');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>new Intl.NumberFormat('uk-UA',{style:'currency',currency:'UAH',minimumFractionDigits:n%100?2:0,maximumFractionDigits:2}).format(n/100);
+const compact=n=>new Intl.NumberFormat('uk-UA',{maximumFractionDigits:n%100?2:0}).format(n/100);
 const shortDate=d=>M.day(d).toLocaleDateString('uk-UA',{day:'numeric',month:'short'});
-const countText=n=>new Intl.NumberFormat('uk-UA').format(n);
-const kindLabel={income:'Зарплата / надходження',expense:'Оплата / витрата',debt_payment:'Кредитний платіж',reserve_deposit:'До фінподушки',refund:'Повернення',reserve_withdrawal:'Із фінподушки',internal_transfer:'Переказ',cash_withdrawal:'Готівка',review:'Уточнення'};
-const kindIcon={income:'↓',expense:'↑',credit:'▣',reserve:'◈',other:'•'};
-const templates={
- salary:{name:'Зарплата',kind:'income',repeat:'monthly'},
- bill:{name:'Комунальні послуги',kind:'expense',repeat:'monthly'},
- reserve:{name:'Поповнення фінансової подушки',kind:'reserve_deposit',repeat:'monthly'},
- credit:{name:'Платіж за кредитом',kind:'debt_payment',repeat:'monthly'}
-};
-let currentDate=M.today(),month=currentDate.slice(0,7),selected=currentDate,editing=null;
-let state={version:1,opening:0,events:[],done:{}},sources={ledger:null,debts:null};
-const safeRead=k=>{try{return S.read(k)}catch(e){showNotice('Помилка даних: '+e.message,true);return null}};
-function showNotice(message,isError=false){
- const box=$('calendar-notice');box.textContent=message;box.hidden=false;box.classList.toggle('is-error',isError);
+const dateText=d=>M.day(d).toLocaleDateString('uk-UA',{day:'numeric',month:'long',year:'numeric'});
+const monthText=d=>M.day(d).toLocaleDateString('uk-UA',{month:'long',year:'numeric'});
+const repeatLabel={once:'Один раз',weekly:'Щотижня',monthly:'Щомісяця',twice_monthly:'Двічі на місяць',month_end:'Останній день місяця'};
+const kindLabel={income:'Надходження',expense:'Витрата',debt_payment:'Кредит',reserve_deposit:'До фінподушки',refund:'Повернення',reserve_withdrawal:'Із фінподушки',internal_transfer:'Переказ',cash_withdrawal:'Готівка',review:'Уточнення'};
+const icons={income:'↓',expense:'↑',credit:'▣',reserve:'◈',other:'↔'};
+const templates={salary:{name:'Зарплата',kind:'income',repeat:'monthly'},bill:{name:'Комунальні послуги',kind:'expense',repeat:'monthly'},credit:{name:'Платіж за кредитом',kind:'debt_payment',repeat:'monthly'},reserve:{name:'Поповнення фінподушки',kind:'reserve_deposit',repeat:'monthly'}};
+let now=M.today(),selected=now,anchor=now,view=matchMedia('(max-width:700px)').matches?'week':'month',kind='all',status='all';
+let state=M.normalize(),ledger=null,debts=null,editing=null,detail=null,forecast=null;
+const refs=new Map();
+function notice(text,error=false){$('calendar-notice').textContent=text;$('calendar-notice').hidden=!text;$('calendar-notice').classList.toggle('is-error',error)}
+function refresh(){state=M.normalize(S.read(K.calendar));ledger=S.read(K.ledger);debts=S.read(K.debts)}
+const input=()=>({state,ledger,debts});
+const collect=(a,b,actual=true)=>M.collect(input(),a,b,{actual});
+const pending=M.pending;
+function ref(e){refs.set(e.key,e);return esc(e.key)}
+function matches(e){return(kind==='all'||e.category===kind)&&(status==='all'||status==='pending'&&pending(e)||status==='partial'&&e.origin==='calendar'&&e.paid>0&&!e.settled||status==='done'&&e.done||status==='overdue'&&pending(e)&&e.date<now)}
+function range(){if(status==='overdue'&&view==='list')return[M.addDays(now,-90),M.addDays(now,-1)];if(view==='week'){const start=M.weekStart(anchor);return[start,M.addDays(start,6)]}return[M.monthStart(anchor),M.monthEnd(anchor)]}
+function row(e,upcoming=false){
+ const overdue=pending(e)&&e.date<now;let meta=M.describeStatus(e,now);
+ if(e.origin==='calendar'&&e.paid&&!e.settled)meta+=' · лишилось '+money(e.remaining);
+ if(upcoming)meta=kindLabel[e.kind]||'Операція';
+ const symbol=upcoming?M.day(e.date).toLocaleDateString('uk-UA',{day:'numeric',month:'short'}):icons[e.category]||'↔';
+ return `<button class="cal-event-row is-${esc(e.category)}${e.done?' is-done':''}${overdue?' is-overdue':''}" data-event="${ref(e)}" aria-label="${esc(e.name+', '+money(e.cents)+', '+M.describeStatus(e,now))}"><span class="cal-event-symbol" aria-hidden="true">${esc(symbol)}</span><span class="cal-event-text"><strong>${esc(e.name)}</strong><small>${overdue&&!upcoming?'! ':''}${esc(meta)}</small></span><strong class="cal-event-amount">${['income','refund','reserve_withdrawal'].includes(e.kind)?'+':''}${esc(money(e.origin==='calendar'&&e.settled?e.paid:e.cents))}</strong></button>`;
 }
-function clearNotice(){const box=$('calendar-notice');box.hidden=true;box.textContent='';box.classList.remove('is-error')}
-function normalizeState(v){
- if(v&&v.version===1&&Number.isSafeInteger(v.opening)&&v.opening>=0&&Array.isArray(v.events)){
-  return{...v,done:v.done&&typeof v.done==='object'&&!Array.isArray(v.done)?v.done:{}};
+function empty(text='На цей день усе вільно',sub='Заплануй надходження, рахунок або поповнення резерву.'){return `<div class="cal-empty"><span class="cal-empty-symbol" aria-hidden="true">◇</span><strong>${esc(text)}</strong>${esc(sub)}</div>`}
+function dayCell(d,items,week=false){
+ const alerts=items.filter(e=>pending(e)&&e.date<now).length,today=d===now,other=d.slice(0,7)!==anchor.slice(0,7),sum=items.reduce((s,e)=>s+M.cashDelta(e),0);
+ const head=`<button class="cal-day-button" data-date="${d}" aria-pressed="${d===selected}" ${today?'aria-current="date"':''} aria-label="${esc(dateText(d)+(today?', сьогодні':'')+', подій: '+items.length+(alerts?', прострочених: '+alerts:''))}" tabindex="${d===selected?0:-1}">${week?'<span>'+M.day(d).toLocaleDateString('uk-UA',{weekday:'short'})+'</span>':''}<span class="cal-date-number">${Number(d.slice(8))}</span>${alerts?'<span class="cal-day-alert" title="Є прострочені події">!</span>':''}</button>`;
+ const chips=items.slice(0,week?7:3).map(e=>`<button class="cal-chip is-${esc(e.category)}${e.done?' is-done':''}" data-event="${ref(e)}" ${e.origin==='calendar'&&!e.done?'draggable="true"':''} title="${esc(e.name+' · '+money(e.cents)+' · '+M.describeStatus(e,now))}"><span class="cal-chip-icon" aria-hidden="true">${e.done?'✓':icons[e.category]||'•'}</span><span class="cal-chip-title">${esc(e.name)}</span><span class="cal-chip-sum">${esc(compact(e.origin==='calendar'&&e.settled?e.paid:e.cents))}</span></button>`).join('');
+ const max=week?7:3,more=items.length>max?`<button class="cal-more" data-date="${d}">Ще ${items.length-max}</button>`:'';
+ const mobile=`<div class="cal-mobile-dots" aria-hidden="true">${items.slice(0,4).map(e=>`<i class="is-${esc(e.category)}${e.done?' is-done':''}"></i>`).join('')}</div>${sum?'<span class="cal-mobile-total" aria-hidden="true">'+(sum>0?'+':'')+esc(compact(sum))+'</span>':''}`;
+ return `<div class="cal-cell${today?' is-today':''}${d===selected?' is-selected':''}${other?' is-other':''}" data-cell-date="${d}">${head}${chips}${more}${mobile}</div>`;
+}
+function renderCalendar(){
+ const [start,end]=range();let title=view==='week'?(start.slice(0,7)===end.slice(0,7)?Number(start.slice(8))+'–'+shortDate(end):shortDate(start)+' – '+shortDate(end)):monthText(start);
+ if(status==='overdue'&&view==='list')title='Потребують уваги';
+ $('month-title').textContent=title;
+ document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));
+ document.querySelectorAll('[data-kind]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.kind===kind)));
+ $('status-filter').value=status;
+ const host=$('calendar-content'),events=collect(start,end).filter(matches);
+ $('period-count').textContent=events.length+' подій · суми у ₴';
+ if(view==='list'){
+  const groups=new Map();for(const e of events){if(!groups.has(e.date))groups.set(e.date,[]);groups.get(e.date).push(e)}
+  host.innerHTML=groups.size?'<div class="cal-list">'+[...groups].map(([d,list])=>`<div class="cal-list-group"><div class="cal-list-heading"><h3>${esc(dateText(d))}${d===now?' · Сьогодні':''}</h3><small>${list.length} подій</small></div>${list.map(e=>row(e)).join('')}</div>`).join('')+'</div>':empty('Подій не знайдено','Зміни фільтри, період або створи нову подію.');
+ }else{
+  const from=view==='week'?start:M.weekStart(start),to=view==='week'?end:M.addDays(M.weekStart(end),6),all=collect(from,to).filter(matches),days=[];
+  for(let d=from;d<=to;d=M.addDays(d,1))days.push(dayCell(d,all.filter(e=>e.date===d),view==='week'));
+  host.innerHTML=(view==='month'?'<div class="cal-weekdays" aria-hidden="true">'+['Пн','Вт','Ср','Чт','Пт','Сб','Нд'].map(d=>'<span>'+d+'</span>').join('')+'</div>':'')+`<div class="${view==='week'?'cal-week-grid':'cal-month-grid'}" role="group" aria-label="Дні календаря">${days.join('')}</div>`;
+  if(!host.querySelector('.cal-day-button[tabindex="0"]'))host.querySelector('.cal-day-button')?.setAttribute('tabindex','0');
  }
- return{version:1,opening:0,events:[],done:{}};
+ $('mobile-agenda').hidden=view==='list';
 }
-function refreshState(){
- state=normalizeState(safeRead(K.calendar));
-}
-function write(fn){
- const next=JSON.parse(JSON.stringify(state));
- fn(next);
- S.legacySet(K.calendar,JSON.stringify(next));
- state=next;
- render();
-}
-function data(start,end,withActual=true){
- return M.collect({state,ledger:sources.ledger,debts:sources.debts},start,end,{actual:withActual});
-}
-function eventType(e){
- return M.category(e.kind);
-}
-function isPending(e){return e.origin!=='actual'&&!(e.origin==='calendar'&&e.done)}
-function linkFor(e){
- if(e.origin==='debt'||(e.origin==='calendar'&&e.kind==='debt_payment'))return ['debts.html','До кредитів ↗'];
- return ['ledger.html','Відкрити журнал ↗'];
-}
-function eventCard(e,compact=false){
- const box=document.createElement('div');
- box.className='fc-cal-item'+(e.done&&e.origin==='calendar'?' is-done':'');
- const icon=document.createElement('span');icon.className='fc-cal-item-icon is-'+eventType(e);icon.textContent=kindIcon[eventType(e)]||'•';icon.setAttribute('aria-hidden','true');
- const body=document.createElement('div');body.className='fc-cal-item-body';
- const heading=document.createElement('div');heading.className='fc-cal-item-head';
- const name=document.createElement('strong');name.textContent=e.name;
- const value=document.createElement('strong');value.className='fc-cal-item-amount is-'+eventType(e);
- const direction=['income','refund','reserve_withdrawal'].includes(e.kind)?'+':'−';
- value.textContent=(e.kind==='internal_transfer'||e.kind==='review'?'':direction)+money(e.cents);
- heading.append(name,value);
- const meta=document.createElement('div');meta.className='fc-cal-item-meta';
- const origin=document.createElement('span');
- origin.textContent=e.origin==='calendar'?'Моя подія':e.origin==='ledger'?'План із журналу':e.origin==='actual'?'Факт із журналу':'Кредитний реєстр';
- const status=document.createElement('span');status.textContent=M.describeStatus(e,currentDate);
- meta.append(origin,status);
- if(e.repeat==='monthly'){const repeat=document.createElement('span');repeat.textContent='↻ Щомісяця';meta.append(repeat)}
- body.append(heading,meta);
- if(e.note&&!compact){const note=document.createElement('p');note.className='fc-cal-item-note';note.textContent=e.note;body.append(note)}
- const actions=document.createElement('div');actions.className='fc-cal-item-actions';
- if(e.origin==='calendar'){
-  const toggle=document.createElement('button');toggle.type='button';toggle.textContent=e.done?'↶ Скасувати виконання':'✓ Виконано';
-  toggle.setAttribute('aria-label',(e.done?'Скасувати виконання події ':'Позначити виконаною подію ')+e.name+' '+dateText(e.date));
-  toggle.onclick=()=>{try{write(s=>{const key=e.id+'|'+e.date;if(e.done)delete s.done[key];else s.done[key]=true});showNotice(e.done?'Позначку виконання скасовано.':'Подію позначено виконаною. Фінансовий запис у журналі не створено.')}
-  catch(err){showNotice(err.message,true)}};
-  actions.append(toggle);
-  if(!compact){
-   const edit=document.createElement('button');edit.type='button';edit.textContent='Змінити';edit.onclick=()=>editEvent(e.id);actions.append(edit);
-  }
-  if(e.kind==='debt_payment'&&!compact){
-   const link=document.createElement('a');link.href='debts.html';link.textContent='Зафіксувати платіж ↗';actions.append(link);
-  }
- }else if(!compact){
-  const [href,label]=linkFor(e);const a=document.createElement('a');a.href=href;a.textContent=label;actions.append(a);
- }
- if(actions.childNodes.length)body.append(actions);
- box.append(icon,body);return box;
-}
-function goTo(d){
- if(!M.validDate(d))return;
- selected=d;month=d.slice(0,7);render();
-}
-function renderMonth(){
- const first=month+'-01',last=M.monthEnd(first),all=data(first,last,true),group=new Map();
- for(const e of all){if(!group.has(e.date))group.set(e.date,[]);group.get(e.date).push(e)}
- $('month-title').textContent=M.day(first).toLocaleDateString('uk-UA',{month:'long',year:'numeric'});
- const host=$('calendar');host.replaceChildren();
- const offset=(M.day(first).getDay()+6)%7,total=Number(last.slice(8));
- for(let i=0;i<offset;i++){const blank=document.createElement('div');blank.className='fc-cal-blank';blank.setAttribute('aria-hidden','true');host.append(blank)}
- for(let i=1;i<=total;i++){
-  const d=month+'-'+String(i).padStart(2,'0'),items=group.get(d)||[];
-  const btn=document.createElement('button');btn.type='button';btn.className='fc-cal-day'+(d===currentDate?' is-today':'')+(d===selected?' is-selected':'');
-  btn.setAttribute('aria-label',dateText(d)+(d===currentDate?', сьогодні':'')+', фінансових подій: '+items.length);
-  btn.setAttribute('aria-pressed',String(d===selected));
-  const head=document.createElement('span');head.className='fc-cal-day-head';
-  const num=document.createElement('span');num.className='fc-cal-day-num';num.textContent=String(i);
-  head.append(num);
-  if(d===currentDate){const tag=document.createElement('span');tag.className='fc-cal-day-flag';tag.textContent='СЬОГОДНІ';head.append(tag)}
-  const list=document.createElement('span');list.className='fc-cal-day-list';
-  for(const e of items.slice(0,3)){
-   const chip=document.createElement('span');chip.className='fc-cal-day-chip is-'+eventType(e)+(e.done?' is-done':'');
-   chip.title=e.name+' · '+money(e.cents);
-   const dot=document.createElement('span');dot.className='fc-cal-chip-dot';
-   const name=document.createElement('span');name.className='fc-cal-chip-text';name.textContent=e.name;
-   chip.append(dot,name);list.append(chip);
-  }
-  if(items.length>3){const more=document.createElement('span');more.className='fc-cal-day-more';more.textContent='+'+(items.length-3);list.append(more)}
-  btn.append(head,list);btn.onclick=()=>goTo(d);host.append(btn);
- }
-}
+function daySummary(events){const ins=events.reduce((s,e)=>s+Math.max(0,M.cashDelta(e)),0),outs=events.reduce((s,e)=>s+Math.max(0,-M.cashDelta(e)),0);return`<div><small>Очікується</small>↓ ${esc(money(ins))}</div><div><small>До сплати / переказу</small>↑ ${esc(money(outs))}</div>`}
+function dayBalance(){if(!forecast.known)return'<span>Додай стартову суму для прогнозу</span><button class="cal-quiet" data-opening>＋</button>';if(selected<now)return'<span>Минула дата · переглядай факти в подіях</span>';const p=selected<=M.addDays(now,30)?forecast:M.project(input(),now,selected),point=p.rows.find(x=>x.date===selected);return point?`<span>За планом на кінець дня</span><strong class="${point.balance<0?'cal-danger':''}">${esc(money(point.balance))}</strong>`:'<span>Немає прогнозу на цю дату</span>'}
 function renderSelected(){
- $('selected-title').textContent=selected===currentDate?'Сьогодні · '+shortDate(selected):dateText(selected);
- const events=data(selected,selected,true),host=$('day-events');host.replaceChildren();
- $('selected-count').textContent=countText(events.length);
- if(!events.length){
-  const box=document.createElement('div');box.className='fc-cal-empty';box.textContent='На цю дату ще немає подій. Можна запланувати зарплату, оплату або переказ у резерв.';host.append(box);
- }else for(const e of events)host.append(eventCard(e));
- const note=$('day-balance');note.replaceChildren();
- if(selected===currentDate)note.textContent='Події на сьогодні — це план і факти з журналу. Заплановані суми не означають, що гроші вже надійшли чи були сплачені.';
- else if(selected<currentDate)note.textContent='Минулі дати: події зі статусом «виконано» — ручні позначки календаря, не банківські операції.';
- else{
-  const current=Number.isSafeInteger(state.opening)?state.opening:0;
-  const till=data(M.addDays(currentDate,1),selected,false);
-  const projected=till.reduce((s,e)=>s+M.cashDelta(e),current);
-  note.textContent='Орієнтовний залишок на кінець дня: '+money(projected)+' · розраховано від введеного доступного залишку.';
- }
+ const events=collect(selected,selected).filter(matches),title=(selected===now?'Сьогодні, ':'')+shortDate(selected);
+ $('selected-title').textContent=title;$('day-summary').innerHTML=daySummary(events);$('day-events').innerHTML=events.length?events.map(e=>row(e)).join(''):empty();$('day-balance').innerHTML=dayBalance();
+ $('mobile-agenda').innerHTML=`<div class="cal-agenda-head"><h2>${esc(title)}</h2><button class="cal-icon" data-new-day aria-label="Додати подію на обраний день">＋</button></div><div class="cal-day-summary">${daySummary(events)}</div>${events.length?events.map(e=>row(e)).join(''):empty()}<div class="cal-balance">${dayBalance()}</div>`;
+ const upcoming=collect(M.addDays(now,1),M.addDays(now,7),false).filter(pending).slice(0,4);
+ $('upcoming-events').innerHTML=upcoming.length?upcoming.map(e=>row(e,true)).join(''):'<p class="cal-footnote">На наступні 7 днів нових справ немає.</p>';
 }
-function addUpcomingRow(e,host,overdue=false){
- const row=document.createElement('button');row.type='button';row.className='fc-cal-upcoming-row';
- const dt=document.createElement('span');dt.className='fc-cal-upcoming-date';dt.textContent=e.date===currentDate?'Сьогодні':shortDate(e.date);
- const content=document.createElement('span');content.className='fc-cal-upcoming-text';
- const title=document.createElement('strong');title.textContent=e.name;
- const sub=document.createElement('small');sub.textContent=(overdue?'Перевір: ':'')+(e.origin==='debt'?'Кредитний термін':e.origin==='ledger'?'План журналу':kindLabel[e.kind]||'Подія');
- content.append(title,sub);
- const amount=document.createElement('strong');amount.className='fc-cal-item-amount is-'+eventType(e);amount.textContent=money(e.cents);
- row.append(dt,content,amount);row.onclick=()=>{goTo(e.date);document.querySelector('.fc-cal-agenda')?.scrollIntoView({behavior:'smooth',block:'nearest'})};
- host.append(row);
+function renderForecast(){
+ $('stat-income').textContent=money(forecast.income);$('stat-outgoing').textContent=money(forecast.outgoing);
+ $('forecast-empty').hidden=forecast.known;$('forecast-content').hidden=!forecast.known;$('opening-edit').textContent=forecast.known?'Оновити залишок ↗':'Вказати залишок ↗';
+ if(!forecast.known)return;
+ $('opening-date').textContent='· '+shortDate(state.openingDate);$('m-opening').textContent=money(state.opening);$('m-end').textContent=money(forecast.ending);$('m-min').textContent=money(forecast.minimum);
+ $('m-min').classList.toggle('cal-danger',forecast.minimum<0);$('m-end').classList.toggle('cal-danger',forecast.ending<0);
+ const warning=$('forecast-warning');warning.classList.toggle('is-danger',!!forecast.firstDeficit);warning.textContent=forecast.firstDeficit?'! Можливий дефіцит із '+shortDate(forecast.firstDeficit)+' · Перевір дати платежів і надходжень.':'За внесеними планами коштів вистачає до '+shortDate(M.addDays(now,30));
+ const rows=forecast.rows,width=900,height=110,min=Math.min(0,...rows.map(r=>r.balance)),max=Math.max(1,...rows.map(r=>r.balance)),y=n=>12+(max-n)/(max-min)*70,x=i=>8+i/(rows.length-1)*(width-16),points=rows.map((r,i)=>x(i)+','+y(r.balance)).join(' ');
+ const zero=y(0),selectedPoint=rows.findIndex(r=>r.date===selected);
+ let svg=`<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="group" aria-label="Прогноз доступних коштів; натисни дату для перегляду подій"><defs><linearGradient id="cal-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#AB2B41" stop-opacity=".27"/><stop offset="1" stop-color="#AB2B41" stop-opacity="0"/></linearGradient></defs><line x1="0" y1="${zero}" x2="900" y2="${zero}" stroke="#584B52" stroke-dasharray="3 4"/><polygon points="${x(0)},82 ${points} ${x(rows.length-1)},82" fill="url(#cal-area)"/><polyline points="${points}" fill="none" stroke="#CDD7DC" stroke-width="1.8" vector-effect="non-scaling-stroke"/>`;
+ if(selectedPoint>=0)svg+=`<line x1="${x(selectedPoint)}" x2="${x(selectedPoint)}" y1="7" y2="85" stroke="#584B52" stroke-dasharray="3 3"/><circle cx="${x(selectedPoint)}" cy="${y(rows[selectedPoint].balance)}" r="4" style="opacity:1;fill:#FA2F4C"/>`;
+ rows.forEach((r,i)=>{svg+=`<g data-forecast-date="${r.date}" tabindex="0" role="button" aria-label="${esc(shortDate(r.date)+': '+money(r.balance))}"><title>${esc(dateText(r.date)+' · '+money(r.balance))}</title><rect x="${x(i)-12}" y="0" width="24" height="88" fill="transparent"/><circle cx="${x(i)}" cy="${y(r.balance)}" r="4"/></g>`});
+ [0,7,14,21,30].forEach(i=>svg+=`<text x="${x(i)}" y="105" text-anchor="${i===0?'start':i===30?'end':'middle'}">${esc(shortDate(rows[i].date))}</text>`);
+ $('forecast-chart').innerHTML=svg+'</svg>';$('forecast-table').innerHTML=rows.map(r=>`<tr><td>${esc(dateText(r.date))}</td><td>${esc(money(r.balance))}</td></tr>`).join('');
 }
-function renderUpcoming(){
- const future=data(M.addDays(currentDate,1),M.addDays(currentDate,7),false).filter(isPending);
- const host=$('upcoming-events');host.replaceChildren();$('upcoming-count').textContent=countText(future.length);$('stat-week').textContent=countText(future.length);
- if(!future.length){const el=document.createElement('p');el.className='fc-cal-footnote';el.textContent='На найближчі 7 днів нових справ немає.';host.append(el)}
- else{for(const e of future.slice(0,8))addUpcomingRow(e,host);if(future.length>8){const p=document.createElement('p');p.className='fc-cal-footnote';p.textContent='І ще '+(future.length-8)+' подій. Обери відповідні дні в календарі.';host.append(p)}}
- return future.length;
-}
-function renderOverdue(){
- const old=data(M.addDays(currentDate,-90),M.addDays(currentDate,-1),false).filter(isPending),box=$('overdue-panel');
- $('stat-overdue').textContent=countText(old.length);
- $('stat-overdue').closest('.fc-cal-stat').classList.toggle('has-overdue',old.length>0);
- box.hidden=!old.length;$('overdue-count').textContent=countText(old.length);
- const host=$('overdue-events');host.replaceChildren();
- for(const e of old.slice(-8))addUpcomingRow(e,host,true);
- if(old.length>8){const p=document.createElement('p');p.className='fc-cal-footnote';p.textContent='Показано останні 8 з '+old.length+' нагадувань.';host.append(p)}
-}
-function renderMetrics(){
- const todayTasks=data(currentDate,currentDate,false).filter(isPending);
- $('stat-today').textContent=countText(todayTasks.length);
- const within=data(M.addDays(currentDate,1),M.addDays(currentDate,30),false);
- const forecast=M.metrics(within,currentDate,30,state.opening);
- $('stat-income').textContent=money(forecast.income);
- $('m-opening').textContent=money(state.opening);
- $('m-in').textContent=money(forecast.income);
- $('m-out').textContent=money(forecast.outgoing);
- $('m-end').textContent=money(forecast.ending);
- $('m-end').classList.toggle('is-danger',forecast.ending<0);
-}
+function nextInstance(e){const list=M.collect({state:{...state,events:[e]},ledger,debts:null},now,M.addDays(now,740));return list[0]||M.occurrence(state,e,e.date,ledger)}
 function renderTable(){
- const tbody=$('event-table');tbody.replaceChildren();
- for(const e of [...state.events].sort((a,b)=>a.date.localeCompare(b.date))){
-  const tr=document.createElement('tr'),cols=[e.date,e.name,kindLabel[e.kind]||e.kind,money(e.cents),e.repeat==='monthly'?'Щомісяця':'Один раз'];
-  for(const v of cols){const td=document.createElement('td');td.textContent=v;tr.append(td)}
-  const action=document.createElement('td'),edit=document.createElement('button'),del=document.createElement('button');
-  edit.type='button';edit.textContent='Змінити';edit.onclick=()=>editEvent(e.id);
-  del.type='button';del.textContent='Видалити';del.onclick=()=>{
-   if(!confirm('Видалити подію «'+e.name+'» разом із повтореннями?'))return;
-   try{write(s=>{s.events=s.events.filter(x=>x.id!==e.id);for(const key of Object.keys(s.done))if(key.startsWith(e.id+'|'))delete s.done[key]});showNotice('Подію видалено з календаря.')}
-   catch(err){showNotice(err.message,true)}
-  };
-  action.append(edit,document.createTextNode(' '),del);tr.append(action);tbody.append(tr);
- }
- if(!state.events.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=6;td.textContent='Ще немає власних подій. Додай зарплату, кредит або поповнення резерву вище.';tr.append(td);tbody.append(tr)}
+ $('template-count').textContent=state.events.filter(e=>!e.until||e.until>=now).length;
+ $('event-table').innerHTML=state.events.map(e=>{const item=nextInstance(e);return`<tr><td>${esc(e.name)}${e.until?' · до '+esc(shortDate(e.until)):''}</td><td>${esc(money(e.cents))}</td><td>${esc(repeatLabel[e.repeat]||'Один раз')}</td><td>${esc(shortDate(e.date))}</td><td>${item?`<button class="cal-quiet" data-event="${ref(item)}">Деталі ↗</button>`:'Завершено'}</td></tr>`}).join('')||'<tr><td colspan="5">Тут з’являться твої події та повторення.</td></tr>';
 }
 function render(){
- sources={ledger:safeRead(K.ledger),debts:safeRead(K.debts)};
- currentDate=M.today();
- $('today-line').textContent='Сьогодні · '+M.day(currentDate).toLocaleDateString('uk-UA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
- $('date').value=editing?$('date').value:selected;
- renderMonth();renderSelected();renderUpcoming();renderOverdue();renderMetrics();renderTable();
+ now=M.today();refs.clear();forecast=M.project(input(),now);
+ $('today-line').textContent=M.day(now).toLocaleDateString('uk-UA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ $('stat-today').textContent=collect(now,now,false).filter(pending).length;
+ const overdue=collect(M.addDays(now,-90),M.addDays(now,-1),false).filter(pending).length;$('stat-overdue').textContent=overdue;$('stat-overdue-action').classList.toggle('has-overdue',overdue>0);
+ renderCalendar();renderSelected();renderForecast();renderTable();
 }
-function openForm(template){
- const details=$('add-event');details.open=true;
- editing=null;
- $('event-form').reset();
- $('date').value=selected;
- $('save-event').textContent='Зберегти подію';
- $('form-message').textContent='';
- if(template&&templates[template]){
-  const t=templates[template];$('name').value=t.name;$('kind').value=t.kind;$('repeat').value=t.repeat;
+function goTo(d){if(!M.validDate(d))return;selected=d;anchor=d;render()}
+function payload(e){return{eventId:e.id,occurrence:e.occurrence,expected:M.fingerprint(e)}}
+async function transaction(fn){await S.update([K.calendar,K.ledger,K.debts],d=>fn(d));refresh();render()}
+async function run(button,fn,errorId){if(button?.disabled)return;if(button)button.disabled=true;try{await fn()}catch(e){if(errorId)$(errorId).textContent=e.message;else notice(e.message,true)}finally{if(button)button.disabled=false}}
+function closeDialogs(){for(const id of ['event-drawer','form-drawer'])$(id).close()}
+function showDetail(e,focusBooking=false){
+ detail=e;const cal=e.origin==='calendar',statusText=M.describeStatus(e,now),actual=e.origin==='actual',date=cal&&e.date!==e.occurrence?dateText(e.date)+' · перенесено з '+shortDate(e.occurrence):dateText(e.date);
+ $('event-detail').innerHTML=`<span class="cal-event-symbol is-${esc(e.category)}" aria-hidden="true">${icons[e.category]||'↔'}</span><h2 id="drawer-title">${esc(e.name)}</h2><p class="cal-muted">${esc(date)}</p><div class="cal-detail-meta"><span>${esc(kindLabel[e.kind]||'Операція')}</span><span>${esc(statusText)}</span>${cal&&e.repeat!=='once'?'<span>↻ '+esc(repeatLabel[e.repeat])+'</span>':''}</div><div class="cal-detail-totals"><div><small>${actual?'Фактична сума':'План'}</small><strong>${esc(money(e.cents))}</strong></div>${cal?'<div><small>Внесено фактично</small><strong>'+esc(money(e.paid))+'</strong></div><p>'+(e.settled?'Різниця з планом: '+(e.difference>0?'+':'')+esc(money(e.difference)):'Залишилось за планом: '+esc(money(e.remaining)))+'</p>':''}</div>${e.note?'<p class="cal-detail-note">'+esc(e.note)+'</p>':''}<div id="detail-notice" class="cal-form-message" role="status"></div>`;
+ const host=$('event-detail');
+ if(cal){
+  if(e.operationIds.length)host.insertAdjacentHTML('beforeend','<div class="cal-payment-list"><h3>Пов’язані факти</h3>'+e.payments.map(p=>'<div class="cal-payment-row"><span>'+esc(shortDate(p.date))+'</span><strong>'+esc(money(p.cents))+'</strong></div>').join('')+'<a class="cal-quiet" href="ledger.html">Відкрити журнал ↗</a></div>');
+  host.insertAdjacentHTML('beforeend',`<div class="cal-detail-actions">${!e.settled?'<button id="record-fact" class="cal-primary">Внести факт</button>':''}<button id="edit-detail" class="cal-secondary">Змінити подію</button></div>`);
+  $('edit-detail').onclick=()=>openForm(null,e);
+  if(!e.settled){$('record-fact').onclick=()=>showBooking(e);}
+  if(!e.done)host.insertAdjacentHTML('beforeend',`<form id="move-form" class="cal-form cal-move-form"><label>Перенести лише цю подію<div class="cal-two"><input id="move-date" aria-label="Нова дата події" type="date" value="${e.date}" required><button class="cal-secondary" type="submit">Перенести</button></div></label></form>`);
+  if($('move-form'))$('move-form').onsubmit=ev=>{ev.preventDefault();run(ev.submitter,async()=>{await moveEvent(e,$('move-date').value);$('event-drawer').close()},'detail-notice')};
+  host.insertAdjacentHTML('beforeend',`<details class="cal-detail-secondary"><summary>Інші дії</summary>${!e.paid?`<button id="close-reminder" class="cal-quiet">${e.reminderDone?'Повернути нагадування':'Закрити без запису в журналі'}</button><p class="cal-footnote">Гроші не змінюються. Подія перестає враховуватись у прогнозі.</p><button id="skip-event" class="cal-quiet cal-danger">Пропустити цю подію</button>${e.repeat!=='once'?'<button id="stop-series" class="cal-quiet cal-danger">Зупинити серію від цієї дати</button>':''}`:'<p class="cal-footnote">Подія з фактом залишається в історії. Виправлення операцій — у журналі або кредитному реєстрі.</p>'}</details>`);
+  if($('close-reminder'))$('close-reminder').onclick=ev=>run(ev.currentTarget,async()=>{await transaction(d=>{const item=A.fresh(d,K,payload(e));if(item.paid)throw Error('Подія вже має фактичні платежі.');if(item.reminderDone)delete d[K.calendar].done[item.key];else d[K.calendar].done[item.key]=true});$('event-drawer').close();notice(e.reminderDone?'Нагадування повернуто.':'Нагадування закрито. Запис у журналі не створювався.')},'detail-notice');
+  for(const [id,scope] of [['skip-event','one'],['stop-series','future']])if($(id))$(id).onclick=ev=>run(ev.currentTarget,async()=>{if(!confirm(scope==='future'?'Зупинити цю та наступні події серії? Попередня історія збережеться.':'Пропустити цю подію? Фактичні операції не зміняться.'))return;await transaction(d=>A.remove(d,K,{...payload(e),scope}));$('event-drawer').close();notice('План оновлено.')},'detail-notice');
+ }else{
+  const href=e.origin==='debt'?'debts.html':'ledger.html';host.insertAdjacentHTML('beforeend',`<p class="cal-detail-note">${e.origin==='debt'?'Термін із кредитного реєстру. Створи пов’язану подію, щоб включити платіж у прогноз і внести факт тут.':actual?'Це підтверджена операція з журналу.':'Це план із журналу. Керування цією операцією доступне в журналі.'}</p><div class="cal-detail-actions"><a class="cal-secondary" href="${href}">Відкрити ${e.origin==='debt'?'кредити':'журнал'} ↗</a>${e.origin==='debt'?'<button id="plan-credit" class="cal-primary">Запланувати платіж</button>':''}</div>`);
+  if($('plan-credit'))$('plan-credit').onclick=()=>{openForm('credit');$('name').value=e.name;$('date').value=e.date;$('amount').value=(e.cents/100).toFixed(2);$('credit').value=e.id;$('repeat').value='once'};
  }
- details.scrollIntoView({behavior:'smooth',block:'nearest'});
- if(template)$('amount').focus({preventScroll:true});else $('name').focus({preventScroll:true});
+ if(!$('event-drawer').open){closeDialogs();$('event-drawer').showModal()}
+ if(focusBooking&&!e.settled)showBooking(e);
 }
-function editEvent(id){
- const found=state.events.find(e=>e.id===id);if(!found)return;
- editing=id;
- const fields=$('event-form');
- fields.reset();
- $('name').value=found.name;$('date').value=found.date;$('amount').value=(found.cents/100).toFixed(2);
- $('kind').value=found.kind;$('repeat').value=found.repeat;$('note').value=found.note||'';
- $('save-event').textContent='Зберегти зміни';
- $('form-message').textContent='Редагування події. Якщо змінити дату, суму, тип або повторення — старі позначки виконання буде очищено.';
- $('add-event').open=true;
- $('add-event').scrollIntoView({behavior:'smooth',block:'nearest'});
+function showBooking(e){
+ if($('booking-form')){$('fact-amount')?.focus();return}
+ const eligible=(ledger?.entries||[]).filter(x=>x.status==='actual'&&!x.calendarKey&&x.kind===e.kind&&x.date<=now&&(e.kind!=='debt_payment'||e.creditId&&x.creditId===e.creditId)).sort((a,b)=>b.date.localeCompare(a.date));
+ $('record-fact').hidden=true;
+ const form=document.createElement('div');form.className='cal-booking';form.innerHTML=`<h3>Внести фактичну операцію</h3><p class="cal-footnote">Якщо операція вже є в журналі, прив’яжи її нижче. Це збереже єдиний запис.</p><form id="booking-form" class="cal-form"><label>Джерело факту<select id="fact-source"><option value="new">Створити нову операцію</option value="existing" ${eligible.length?'':'disabled'}>Прив’язати з журналу (${eligible.length})</option></select></label><label id="existing-field" hidden>Операція<select id="fact-existing"><option value="">Обери операцію</option>${eligible.map(x=>`<option value="${esc(x.id)}">${esc(shortDate(x.date)+' · '+x.category+' · '+money(x.cents))}</option>`).join('')}</select></label><div id="new-fact-fields"><div class="cal-two"><label>Фактична дата<input id="fact-date" type="date" value="${e.date>now?now:e.date}" max="${now}" required></label><label>Факт, грн<input id="fact-amount" type="number" step=".01" min=".01" required value="${(e.remaining/100).toFixed(2)}" inputmode="decimal"></label></div><p class="cal-footnote">${e.kind==='debt_payment'?'Журнал і залишок прив’язаного кредиту оновляться разом.':'Операція з’явиться в журналі як факт.'}</p></div><label class="cal-check"><input id="fact-finalize" type="checkbox" checked><span>Завершити подію цією сумою.<br>Зніми позначку для часткової оплати.</span></label><p id="booking-message" class="cal-form-message" role="status"></p><div class="cal-form-actions"><button id="cancel-booking" class="cal-secondary" type="button">Скасувати</button><button id="save-fact" class="cal-primary" type="submit">Зберегти факт</button></div></form>`;
+ $('event-detail').querySelector('.cal-detail-actions').after(form);
+ $('fact-source').onchange=()=>{const existing=$('fact-source').value==='existing';$('new-fact-fields').hidden=existing;$('existing-field').hidden=!existing;$('fact-date').disabled=existing;$('fact-amount').disabled=existing;$('fact-existing').required=existing};
+ $('fact-amount').oninput=()=>{$('fact-finalize').checked=parseMoney($('fact-amount').value,false,false)>=e.remaining};
+ $('fact-existing').onchange=()=>{const item=eligible.find(x=>x.id===$('fact-existing').value);if(item)$('fact-finalize').checked=item.cents>=e.remaining};
+ $('cancel-booking').onclick=()=>{form.remove();$('record-fact').hidden=false;$('record-fact').focus()};
+ const operationId=uid(),historyId=uid();
+ $('booking-form').onsubmit=ev=>{ev.preventDefault();run(ev.submitter,async()=>{
+  const existingId=$('fact-source').value==='existing'?$('fact-existing').value:null;
+  if($('fact-source').value==='existing'&&!existingId)throw Error('Обери операцію з журналу.');
+  const p={...payload(e),existingId,date:$('fact-date').value,cents:existingId?0:parseMoney($('fact-amount').value),finalize:$('fact-finalize').checked,operationId,historyId,today:now};
+  await transaction(d=>A.book(d,K,p));const current=M.occurrence(state,state.events.find(x=>x.id===e.id),e.occurrence,ledger);showDetail(current);notice(existingId?'Операцію прив’язано. Додатковий фінансовий запис не створювався.':'Факт збережено. Календар і журнал оновлено.');
+ },'booking-message')};
+ $('fact-amount').focus();form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth',block:'nearest'});
 }
-function validCents(value){
- const n=Number(value),c=Math.round(n*100);
- if(!Number.isFinite(n)||!Number.isSafeInteger(c)||c<=0||Math.abs(n*100-c)>1e-6)throw Error('Введи коректну суму у гривнях.');
- return c;
+function parseMoney(value,zero=false,throws=true){const n=Number(value),c=Math.round(n*100);if(value===''||!Number.isFinite(n)||!Number.isSafeInteger(c)||(zero?c<0:c<=0)||Math.abs(n*100-c)>1e-6){if(throws)throw Error('Введи коректну суму у гривнях, до двох знаків після коми.');return 0}return c}
+function populateCredits(id=''){$('credit').innerHTML='<option value="">Не прив’язано</option>'+(debts?.credits||[]).map(c=>`<option value="${esc(c.id)}">${esc(c.name+' · залишок '+money(c.balance))}</option>`).join('');$('credit').value=id}
+function formVisibility(){const recurring=editing&&editing.repeat!=='once';$('credit-field').hidden=$('kind').value!=='debt_payment';$('scope-field').hidden=!recurring;$('repeat').disabled=!!editing&&(!recurring||$('edit-scope').value==='one');$('second-day-field').hidden=$('repeat').value!=='twice_monthly';$('second-day').disabled=$('repeat').disabled}
+function openForm(template,e=null){
+ editing=e;closeDialogs();$('event-form').reset();$('form-message').textContent='';$('form-title').textContent=e?'Змінити подію':'Нова подія';$('date').value=e?.date||selected;
+ const values=e||templates[template]||{};for(const field of ['name','kind','repeat','note'])if(values[field]!==undefined)$(field).value=values[field];if(e){$('amount').value=(e.cents/100).toFixed(2);$('second-day').value=state.events.find(x=>x.id===e.id)?.secondDay||25}
+ populateCredits(e?.creditId);formVisibility();$('form-drawer').showModal();(template?$('amount'):$('name')).focus();
 }
-$('quick-add').onclick=()=>openForm();
-for(const b of document.querySelectorAll('[data-template]'))b.onclick=()=>openForm(b.dataset.template);
-$('cancel-add').onclick=()=>{editing=null;$('add-event').open=false;$('event-form').reset();$('form-message').textContent=''};
-$('event-form').onsubmit=e=>{
- e.preventDefault();
- try{
-  const values={name:$('name').value.trim(),date:$('date').value,kind:$('kind').value,cents:validCents($('amount').value),repeat:$('repeat').value,note:$('note').value.trim()};
-  if(!values.name)throw Error('Укажи назву події.');
-  if(!M.validDate(values.date))throw Error('Укажи коректну дату.');
-  if(!['income','expense','reserve_deposit','debt_payment'].includes(values.kind))throw Error('Некоректний тип події.');
-  if(!['once','monthly'].includes(values.repeat))throw Error('Некоректне повторення.');
-  if(editing&&!state.events.some(x=>x.id===editing))throw Error('Подію вже видалено.');
-  const old=editing?state.events.find(x=>x.id===editing):null,id=old?.id||crypto.randomUUID();
-  write(s=>{
-   if(old){
-    const index=s.events.findIndex(x=>x.id===id);
-    s.events[index]={...s.events[index],...values};
-    if(['date','kind','cents','repeat'].some(k=>old[k]!==values[k])){
-     for(const key of Object.keys(s.done))if(key.startsWith(id+'|'))delete s.done[key];
-    }
-   }else s.events.push({id,...values});
-  });
-  const text=editing?'Зміни збережено.':'Подію додано в календар.';
-  selected=values.date;month=values.date.slice(0,7);editing=null;
-  $('add-event').open=false;$('event-form').reset();render();showNotice(text);
- }catch(err){$('form-message').textContent=err.message;showNotice(err.message,true)}
-};
-$('prev').onclick=()=>{month=M.shiftMonth(month,-1);selected=month+'-01';render()};
-$('next').onclick=()=>{month=M.shiftMonth(month,1);selected=month+'-01';render()};
-function goToday(){currentDate=M.today();selected=currentDate;month=currentDate.slice(0,7);render();clearNotice()}
-$('today').onclick=goToday;
-$('jump-today').onclick=goToday;
-$('opening').value=(state.opening/100).toFixed(2);
-$('save-opening').onclick=()=>{
- try{const n=Number($('opening').value),c=Math.round(n*100);
-  if(!Number.isFinite(n)||!Number.isSafeInteger(c)||c<0||Math.abs(n*100-c)>1e-6)throw Error('Укажи коректний доступний залишок.');
-  write(s=>{s.opening=c});showNotice('Початкову доступну суму збережено. Це не банківський баланс.')
- }catch(err){showNotice(err.message,true)}
-};
-$('export').onclick=()=>{
- const columns=[['Перша дата','Назва','Тип','Сума грн','Повторення'],...state.events.map(e=>[e.date,e.name,kindLabel[e.kind]||e.kind,(e.cents/100).toFixed(2),e.repeat])];
- const csv='\ufeff'+columns.map(row=>row.map(S.csvCell).join(';')).join('\r\n');
- S.download('fincontrol-calendar-'+currentDate+'.csv',csv,'text/csv;charset=utf-8');
-};
-window.addEventListener('storage',e=>{
- if([K.calendar,K.ledger,K.debts].includes(e.key)){refreshState();render()}
+$('kind').onchange=formVisibility;$('repeat').onchange=formVisibility;$('edit-scope').onchange=formVisibility;
+$('event-form').onsubmit=ev=>{ev.preventDefault();run(ev.submitter,async()=>{
+ const values={name:$('name').value.trim(),date:$('date').value,cents:parseMoney($('amount').value),kind:$('kind').value,repeat:$('repeat').value,note:$('note').value.trim(),creditId:$('kind').value==='debt_payment'?$('credit').value:undefined};
+ if(values.repeat==='twice_monthly')values.secondDay=Number($('second-day').value);
+ const p={...(editing?payload(editing):{}),values,scope:$('edit-scope').value,newId:uid()};
+ await transaction(d=>A.edit(d,K,p));$('form-drawer').close();editing=null;goTo(values.repeat==='month_end'?M.monthEnd(values.date):values.date);notice('Подію збережено.');
+ },'form-message')};
+async function moveEvent(e,date){if(!M.validDate(date))throw Error('Вкажи коректну дату.');if(date===e.date)return;await transaction(d=>{const item=A.fresh(d,K,payload(e));if(item.done)throw Error('Завершену подію не можна переносити.');d[K.calendar].overrides[item.key]={...(d[K.calendar].overrides[item.key]||{}),date}});goTo(date);notice('Подію перенесено на '+dateText(date)+'. Прогноз перераховано.')}
+function openOpening(){$('opening').value=state.openingDate||state.opening>0?(state.opening/100).toFixed(2):'';$('opening-message').textContent='';$('opening-dialog').showModal();$('opening').focus()}
+$('opening-form').onsubmit=ev=>{ev.preventDefault();run(ev.submitter,async()=>{const cents=parseMoney($('opening').value,true);await transaction(d=>{d[K.calendar]=M.normalize(d[K.calendar]);d[K.calendar].opening=cents;d[K.calendar].openingDate=now;d[K.calendar].openingActual=(d[K.ledger]?.entries||[]).filter(e=>e.status==='actual'&&e.date>=now&&e.date<=now).map(e=>({id:e.id,date:e.date,delta:M.signed(e.kind,e.cents)}))});$('opening-dialog').close();notice('Залишок на сьогодні збережено. Прогноз оновлено.')},'opening-message')};
+function shiftPeriod(n){if(view==='week'){anchor=M.addDays(anchor,n*7);selected=anchor}else{anchor=M.shiftMonth(anchor,n)+'-01';selected=anchor}render()}
+$('prev').onclick=()=>shiftPeriod(-1);$('next').onclick=()=>shiftPeriod(1);$('today').onclick=()=>goTo(now);
+$('quick-add').onclick=()=>openForm();$('day-add').onclick=()=>openForm();$('opening-edit').onclick=openOpening;$('opening-start').onclick=openOpening;
+$('stat-today-action').onclick=()=>{kind='all';status='pending';goTo(now)};
+$('stat-overdue-action').onclick=()=>{kind='all';status='overdue';view='list';anchor=now;render()};
+$('status-filter').onchange=()=>{status=$('status-filter').value;if(status==='overdue')view='list';render()};
+$('export').onclick=()=>{const [from,to]=range(),cols=[['Дата','Подія','Тип','План грн','Факт грн','Залишок грн','Статус'],...collect(from,to).filter(matches).map(e=>[e.date,e.name,kindLabel[e.kind],e.origin==='actual'?'':(e.cents/100).toFixed(2),e.origin==='actual'?(e.cents/100).toFixed(2):e.origin==='calendar'?(e.paid/100).toFixed(2):'',e.origin==='calendar'?(e.remaining/100).toFixed(2):'',M.describeStatus(e,now)])];S.download('fincontrol-calendar-'+from+'.csv','\ufeff'+cols.map(r=>r.map(S.csvCell).join(';')).join('\r\n'),'text/csv;charset=utf-8')};
+document.addEventListener('click',ev=>{
+ const b=ev.target.closest('button,[data-forecast-date]');if(!b)return;
+ if(b.dataset.event){const e=refs.get(b.dataset.event);if(e){selected=e.date;anchor=e.date;render();showDetail(e)}}
+ if(b.dataset.date)goTo(b.dataset.date);
+ if(b.dataset.view){view=b.dataset.view;anchor=selected;render()}
+ if(b.dataset.kind){kind=b.dataset.kind;render()}
+ if(b.dataset.template)openForm(b.dataset.template);
+ if(b.hasAttribute('data-new-day'))openForm();
+ if(b.hasAttribute('data-opening'))openOpening();
+ if(b.dataset.forecastDate)goTo(b.dataset.forecastDate);
 });
-function updateDay(){
- const d=M.today();
- if(d!==currentDate){
-  const follow=selected===currentDate;
-  currentDate=d;
-  if(follow){selected=d;month=d.slice(0,7)}
-  render();
- }
-}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateDay()});
-window.addEventListener('focus',updateDay);
-setInterval(updateDay,60*1000);
-try{
- await S.ready;
- refreshState();
- $('opening').value=(state.opening/100).toFixed(2);
- render();
-}catch(err){showNotice('Не вдалося прочитати календар: '+err.message,true)}
+$('calendar-content').addEventListener('keydown',ev=>{const b=ev.target.closest('.cal-day-button');if(!b)return;const shifts={ArrowLeft:-1,ArrowRight:1,ArrowUp:-7,ArrowDown:7};if(shifts[ev.key]){ev.preventDefault();const next=M.addDays(b.dataset.date,shifts[ev.key]);goTo(next);document.querySelector('.cal-day-button[data-date="'+next+'"]')?.focus()}});
+$('forecast-chart').addEventListener('keydown',ev=>{const p=ev.target.closest('[data-forecast-date]');if(p&&['Enter',' '].includes(ev.key)){ev.preventDefault();goTo(p.dataset.forecastDate)}});
+let dragged=null;
+$('calendar-content').addEventListener('dragstart',ev=>{const chip=ev.target.closest('[draggable=true]');if(!chip)return;dragged=refs.get(chip.dataset.event);ev.dataTransfer.setData('text/plain',dragged.key);ev.dataTransfer.effectAllowed='move'});
+$('calendar-content').addEventListener('dragover',ev=>{if(!dragged)return;const cell=ev.target.closest('[data-cell-date]');if(cell){ev.preventDefault();cell.classList.add('is-drop');ev.dataTransfer.dropEffect='move'}});
+$('calendar-content').addEventListener('dragleave',ev=>ev.target.closest('[data-cell-date]')?.classList.remove('is-drop'));
+$('calendar-content').addEventListener('drop',ev=>{const cell=ev.target.closest('[data-cell-date]');if(!dragged||!cell)return;ev.preventDefault();const e=dragged;dragged=null;cell.classList.remove('is-drop');run(null,()=>moveEvent(e,cell.dataset.cellDate))});
+$('calendar-content').addEventListener('dragend',()=>{dragged=null;document.querySelectorAll('.is-drop').forEach(e=>e.classList.remove('is-drop'))});
+let touch=null;$('calendar-content').addEventListener('touchstart',e=>{if(matchMedia('(max-width:700px)').matches&&e.touches.length===1)touch={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
+$('calendar-content').addEventListener('touchend',e=>{if(!touch)return;const dx=e.changedTouches[0].clientX-touch.x,dy=e.changedTouches[0].clientY-touch.y;touch=null;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.7&&view!=='list')shiftPeriod(dx<0?1:-1)},{passive:true});
+for(const handle of document.querySelectorAll('.cal-sheet-handle')){let y=null;handle.addEventListener('pointerdown',e=>{y=e.clientY;handle.setPointerCapture(e.pointerId)});handle.addEventListener('pointerup',e=>{if(y!==null&&e.clientY-y>60)handle.closest('dialog').close();y=null})}
+function externalRefresh(){try{refresh();render();if($('event-drawer').open)$('detail-notice').textContent='Дані оновлено. Для нової дії перевір подію; застарілий запис не буде збережено.'}catch(e){notice(e.message,true)}}
+window.addEventListener('storage',e=>{if([K.calendar,K.ledger,K.debts].includes(e.key)||e.key===null)externalRefresh()});
+function updateDay(){const d=M.today();if(d!==now){const follow=selected===now;now=d;if(follow)selected=anchor=d;externalRefresh()}}
+window.addEventListener('focus',updateDay);document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateDay()});setInterval(updateDay,60000);
+try{await S.ready;refresh();render()}catch(e){notice('Не вдалося відкрити календар: '+e.message,true)}
 })();

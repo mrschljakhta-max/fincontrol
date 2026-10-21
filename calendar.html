@@ -4,100 +4,61 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#131A20">
-<meta name="description" content="Щоденний фінансовий календар: зарплата, кредити, перекази в резерв і найближчі платежі.">
-<title>FINCONTROL · Фінансовий календар</title>
+<meta name="description" content="Фінансовий календар FINCONTROL: платежі, план і факт, регулярні події та прогноз доступних коштів.">
+<title>FINCONTROL · Календар</title>
 <link rel="stylesheet" href="assets/fincontrol.css?v=4">
 <link rel="stylesheet" href="assets/premium.css?v=6">
-<link rel="stylesheet" href="assets/calendar-v2.css?v=1">
+<link rel="stylesheet" href="assets/calendar-v2.css?v=3">
 <script src="assets/store.js?v=5"></script>
-<script src="assets/finance.js?v=4"></script>
-<script src="assets/calendar-model.js?v=1" defer></script>
+<script src="assets/calendar-model.js?v=3" defer></script>
+<script src="assets/calendar-actions.js?v=3" defer></script>
 <script src="assets/shell.js?v=7" defer></script>
-<script src="calendar.js?v=4" defer></script>
+<script src="calendar.js?v=5" defer></script>
 </head>
 <body class="fc-premium fc-calendar-page" data-page="calendar">
 <a class="skip-link" href="#main-content">Перейти до вмісту</a>
 <aside class="sidebar" id="app-navigation" aria-label="Основна навігація"></aside>
 <div class="app-shell">
-<header class="fc-topbar">
- <div class="fc-crumb">Особистий простір <span>/</span> <strong>Календар</strong></div>
- <div class="fc-top-actions"><span class="fc-local"><i></i> Локальні дані</span><button class="fc-icon-button" id="command-open" type="button" aria-label="Швидкі команди">⌘ <kbd>Ctrl K</kbd></button></div>
-</header>
+<header class="fc-topbar"><div class="fc-crumb">Особистий простір <span>/</span> <strong>Календар</strong></div><div class="fc-top-actions"><span class="fc-local"><i></i> Локальні дані</span><button class="fc-icon-button" id="command-open" type="button" aria-label="Швидкі команди">⌘ <kbd>Ctrl K</kbd></button></div></header>
 <main id="main-content" tabindex="-1">
- <div class="fc-cal-heading">
-  <div><p class="eyebrow">FINCONTROL / ЩОДЕННИЙ ПЛАН</p><h1>Фінансовий календар</h1><p id="today-line" class="fc-cal-today" aria-live="polite">Завантаження поточної дати…</p></div>
-  <div class="fc-cal-heading-actions"><button class="fc-cal-secondary" id="jump-today" type="button">◎ Сьогодні</button><button class="fc-cal-primary" id="quick-add" type="button">＋ Подія</button></div>
+ <div class="cal-heading"><div><p class="cal-eyebrow">ПЛАНУЙ. БАЧ. ДІЙ.</p><h1>Фінансовий календар<span class="cal-heading-dot">.</span></h1><p id="today-line" class="cal-muted"></p></div><button id="quick-add" class="cal-primary" type="button">＋ Нова подія</button></div>
+ <div id="calendar-notice" class="cal-notice" role="status" aria-live="polite" hidden></div>
+ <div class="cal-stats" aria-label="Найважливіші показники">
+  <button class="cal-stat" id="stat-today-action"><span>На сьогодні</span><strong id="stat-today">—</strong><small>невиконаних подій ↗</small></button>
+  <button class="cal-stat" id="stat-overdue-action"><span>Потребують уваги</span><strong id="stat-overdue">—</strong><small>прострочених за 90 днів ↗</small></button>
+  <div class="cal-stat"><span>Надходження · 30 днів</span><strong id="stat-income">—</strong><small>залишилось отримати</small></div>
+  <div class="cal-stat"><span>Платежі · 30 днів</span><strong id="stat-outgoing">—</strong><small>разом із кредитами й резервом</small></div>
  </div>
- <div id="calendar-notice" class="fc-cal-notice" role="status" aria-live="polite" hidden></div>
- <section class="fc-cal-stats" aria-label="Найважливіші показники">
-  <div class="fc-cal-stat"><small>На сьогодні</small><strong id="stat-today">—</strong><span>Потрібно зробити</span></div>
-  <div class="fc-cal-stat fc-cal-alert"><small>Прострочені нагадування</small><strong id="stat-overdue">—</strong><span>За останні 90 днів</span></div>
-  <div class="fc-cal-stat"><small>Наступні 7 днів</small><strong id="stat-week">—</strong><span>Майбутні події</span></div>
-  <div class="fc-cal-stat"><small>Очікується зарплата / надходження</small><strong id="stat-income">—</strong><span>План на 30 днів, не факт</span></div>
- </section>
- <div class="fc-cal-layout">
-  <section class="fc-cal-card fc-cal-month-card" aria-labelledby="month-title">
-   <div class="fc-cal-card-head">
-    <div><p class="fc-cal-eyebrow">ПЛАН НА МІСЯЦЬ</p><h2 id="month-title">Поточний місяць</h2></div>
-    <div class="fc-cal-navigation"><button id="prev" type="button" class="fc-cal-arrow" aria-label="Попередній місяць">‹</button><button id="today" class="fc-cal-secondary" type="button">Сьогодні</button><button id="next" type="button" class="fc-cal-arrow" aria-label="Наступний місяць">›</button></div>
-   </div>
-   <div class="fc-cal-weekdays" aria-hidden="true"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span></div>
-   <div id="calendar" class="fc-cal-grid" role="group" aria-label="Календар з фінансовими подіями"></div>
-   <div class="fc-cal-legend"><span><i class="is-income"></i> Зарплата / дохід</span><span><i class="is-expense"></i> Витрата</span><span><i class="is-credit"></i> Кредит</span><span><i class="is-reserve"></i> Резерв</span><span><i class="is-done"></i> Виконано</span></div>
-   <p class="fc-cal-footnote">Натисни день, щоб побачити всі його події. Сьогоднішня дата завжди має окреме виділення.</p>
+ <div class="cal-workspace">
+  <section class="cal-board" aria-labelledby="month-title">
+   <div class="cal-toolbar"><div class="cal-period"><button id="prev" class="cal-icon" aria-label="Попередній період">‹</button><h2 id="month-title"></h2><button id="next" class="cal-icon" aria-label="Наступний період">›</button><button id="today" class="cal-quiet">Сьогодні</button></div><div class="cal-segment" role="group" aria-label="Вигляд календаря"><button data-view="month" aria-pressed="true">Місяць</button><button data-view="week" aria-pressed="false">Тиждень</button><button data-view="list" aria-pressed="false">Список</button></div></div>
+   <div class="cal-filters"><div class="cal-kind-filters" role="group" aria-label="Тип подій"><button data-kind="all" aria-pressed="true">Усі</button><button data-kind="income" aria-pressed="false">↓ Дохід</button><button data-kind="expense" aria-pressed="false">↑ Витрати</button><button data-kind="credit" aria-pressed="false">▣ Кредити</button><button data-kind="reserve" aria-pressed="false">◈ Резерв</button></div><label class="cal-status-label"><span class="sr-only">Статус подій</span><select id="status-filter"><option value="all">Усі статуси</option><option value="pending">Заплановані</option><option value="partial">Частково</option><option value="done">Завершені</option><option value="overdue">Прострочені</option></select></label></div>
+   <div id="calendar-content" aria-live="polite"></div>
+   <div class="cal-board-footer"><span><i class="cal-today-dot"></i> Сьогодні <i class="cal-selected-dot"></i> Обраний день</span><span id="period-count"></span></div>
+   <div class="cal-mobile-agenda" id="mobile-agenda"></div>
   </section>
-  <section class="fc-cal-card fc-cal-agenda" aria-labelledby="selected-title">
-   <div class="fc-cal-card-head"><div><p class="fc-cal-eyebrow">ПОДІЇ ОБРАНОГО ДНЯ</p><h2 id="selected-title">Сьогодні</h2></div><span id="selected-count" class="fc-cal-count">0</span></div>
-   <div id="day-events" class="fc-cal-event-list" aria-live="polite"></div>
-   <div id="day-balance" class="fc-cal-day-note"></div>
-   <div class="fc-cal-divider"></div>
-   <div class="fc-cal-card-head fc-cal-next-head"><div><p class="fc-cal-eyebrow">НЕ ПРОПУСТИ</p><h3>Найближчі події</h3></div><span class="fc-cal-count" id="upcoming-count">0</span></div>
-   <div id="upcoming-events" class="fc-cal-upcoming"></div>
-  </section>
+  <aside class="cal-agenda" aria-labelledby="selected-title">
+   <div class="cal-agenda-head"><div><p class="cal-eyebrow">ОБРАНИЙ ДЕНЬ</p><h2 id="selected-title"></h2></div><button id="day-add" class="cal-icon" aria-label="Додати подію на обраний день">＋</button></div>
+   <div id="day-summary" class="cal-day-summary"></div>
+   <div id="day-events" class="cal-events"></div>
+   <div id="day-balance" class="cal-balance"></div>
+   <div class="cal-upcoming-heading"><h3>Далі за планом</h3><span>7 днів</span></div><div id="upcoming-events" class="cal-upcoming"></div>
+   <div class="cal-quick-actions"><button data-template="salary">↓ Зарплата</button><button data-template="bill">↑ Рахунок</button><button data-template="credit">▣ Кредит</button><button data-template="reserve">◈ Резерв</button></div>
+  </aside>
  </div>
- <section id="overdue-panel" class="fc-cal-card fc-cal-overdue" hidden aria-labelledby="overdue-title">
-  <div class="fc-cal-card-head"><div><p class="fc-cal-eyebrow">ПОТРЕБУЄ УВАГИ</p><h2 id="overdue-title">Невиконані минулі події</h2></div><span class="fc-cal-count" id="overdue-count">0</span></div>
-  <div id="overdue-events" class="fc-cal-overdue-list"></div>
-  <p class="fc-cal-footnote">Показуємо непідтверджені календарні події, планові операції з журналу та минулі строки кредитів за 90 днів. Вони не обов’язково означають реальну заборгованість — перевір записи.</p>
+ <section class="cal-forecast" aria-labelledby="forecast-title">
+  <div class="cal-forecast-head"><div><p class="cal-eyebrow">ГРОШІ В ЧАСІ / 30 ДНІВ</p><h2 id="forecast-title">Що буде із залишком?</h2></div><button class="cal-quiet" id="opening-edit">Вказати залишок ↗</button></div>
+  <div id="forecast-empty" class="cal-forecast-empty"><span class="cal-forecast-symbol">↗</span><div><strong>Почни з доступної суми</strong><p>Додай залишок на сьогодні — календар покаже, коли платежі можуть перевищити доступні кошти.</p></div><button id="opening-start" class="cal-secondary">Вказати суму</button></div>
+  <div id="forecast-content" hidden><div class="cal-forecast-metrics"><div><small>Введений залишок <span id="opening-date"></span></small><strong id="m-opening"></strong></div><div><small>Прогноз через 30 днів</small><strong id="m-end"></strong></div><div><small>Найнижчий залишок</small><strong id="m-min"></strong></div><p id="forecast-warning"></p></div><div id="forecast-chart" class="cal-chart"></div><details class="cal-chart-data"><summary>Дані прогнозу по днях</summary><div class="cal-table-scroll"><table><thead><tr><th>Дата</th><th>Залишок за планом</th></tr></thead><tbody id="forecast-table"></tbody></table></div></details></div>
+  <p class="cal-footnote">Прогноз від введеної суми, з урахуванням нових фактів і невиконаних планів від сьогодні. Минулі прострочені події та нагадування з кредитного реєстру не списуються автоматично.</p>
  </section>
- <section class="fc-cal-card fc-cal-quick-card" aria-labelledby="quick-title">
-  <div class="fc-cal-card-head"><div><p class="fc-cal-eyebrow">ШВИДКЕ ПЛАНУВАННЯ</p><h2 id="quick-title">Що потрібно запланувати?</h2></div></div>
-  <div class="fc-cal-templates">
-   <button type="button" data-template="salary" class="fc-cal-template"><span class="fc-cal-template-icon is-income">↓</span><span><strong>Зарплата</strong><small>Надходження</small></span></button>
-   <button type="button" data-template="bill" class="fc-cal-template"><span class="fc-cal-template-icon is-expense">↑</span><span><strong>Рахунок</strong><small>Сплатити</small></span></button>
-   <button type="button" data-template="reserve" class="fc-cal-template"><span class="fc-cal-template-icon is-reserve">◈</span><span><strong>Фінподушка</strong><small>Поповнити</small></span></button>
-   <button type="button" data-template="credit" class="fc-cal-template"><span class="fc-cal-template-icon is-credit">▣</span><span><strong>Кредит</strong><small>План платежу</small></span></button>
-  </div>
-  <details id="add-event" class="fc-cal-disclosure">
-   <summary>＋ Створити власну подію <span aria-hidden="true">⌄</span></summary>
-   <form id="event-form" class="fc-cal-fields">
-    <label>Назва<input id="name" required maxlength="100" placeholder="Наприклад, зарплата або комунальні"></label>
-    <label>Дата події<input id="date" type="date" required></label>
-    <label>Сума, грн<input id="amount" type="number" min=".01" step=".01" required placeholder="0,00"></label>
-    <label>Тип<select id="kind"><option value="income">Зарплата / надходження</option><option value="expense">Оплатити / витрата</option><option value="reserve_deposit">Поповнити фінподушку</option><option value="debt_payment">Платіж за кредитом</option></select></label>
-    <label>Повторення<select id="repeat"><option value="once">Одноразово</option><option value="monthly">Щомісяця</option></select></label>
-    <label>Примітка<input id="note" maxlength="200" placeholder="Необов'язково"></label>
-    <div class="fc-cal-form-actions"><button type="submit" class="fc-cal-primary" id="save-event">Зберегти подію</button><button type="button" class="fc-cal-secondary" id="cancel-add">Скасувати</button></div>
-   </form>
-   <p id="form-message" class="fc-cal-footnote" role="status"></p>
-  </details>
- </section>
- <details class="fc-cal-card fc-cal-disclosure fc-cal-settings">
-  <summary>Прогноз грошей на 30 днів <span class="fc-cal-toggle-icon" aria-hidden="true">⌄</span></summary>
-  <p class="fc-cal-footnote">Це сценарій, а не залишок банківського рахунку. Початкові доступні кошти введи самостійно. Події, позначені виконаними, не списуються повторно у прогнозі.</p>
-  <div class="fc-cal-forecast-grid">
-   <div><small>Доступно зараз</small><strong id="m-opening">—</strong></div>
-   <div><small>Очікувані надходження</small><strong id="m-in">—</strong></div>
-   <div><small>Планові платежі / перекази</small><strong id="m-out">—</strong></div>
-   <div><small>Прогноз через 30 днів</small><strong id="m-end">—</strong></div>
-  </div>
-  <div class="fc-cal-opening"><label>Стартовий доступний залишок, грн <input type="number" min="0" step=".01" id="opening" value="0"></label><button id="save-opening" class="fc-cal-secondary" type="button">Зберегти</button></div>
- </details>
- <details class="fc-cal-card fc-cal-disclosure fc-cal-table-section">
-  <summary>Усі мої шаблони й регулярні події <span class="fc-cal-toggle-icon" aria-hidden="true">⌄</span></summary>
-  <div class="fc-cal-table-actions"><p class="fc-cal-footnote">Тут можна видаляти створені в календарі події. Регулярна подія видаляється з усіх наступних місяців.</p><button class="fc-cal-secondary" id="export" type="button">↓ Експорт CSV</button></div>
-  <div class="fc-cal-table-scroll" tabindex="0" role="region" aria-label="Таблиця запланованих подій"><table><thead><tr><th>Перша дата</th><th>Подія</th><th>Тип</th><th>Сума</th><th>Повторення</th><th>Дія</th></tr></thead><tbody id="event-table"></tbody></table></div>
- </details>
- <p class="fc-cal-safety">Позначка «Виконано» в календарі <strong>не створює фінансової транзакції</strong>. Фактичні надходження й перекази внось до <a href="ledger.html">Журналу</a>; погашення кредитів — до <a href="debts.html">Кредитів</a>. Строки кредитів із реєстру є нагадуваннями й не списуються вдруге з прогнозу.</p>
+ <details class="cal-templates"><summary>Регулярні події та шаблони <span id="template-count"></span></summary><div class="cal-table-bar"><p>Індивідуальні зміни й факти зберігаються для кожної дати окремо.</p><button id="export" class="cal-quiet">↓ Експорт періоду CSV</button></div><div class="cal-table-scroll"><table><thead><tr><th>Подія</th><th>Сума</th><th>Повторення</th><th>Перша дата</th><th>Дія</th></tr></thead><tbody id="event-table"></tbody></table></div></details>
+ <p class="cal-footnote cal-endnote">План — очікувана операція. «Внести факт» створює запис у журналі; для кредиту одночасно змінює його залишок. Позначка «Закрити без запису» лише прибирає нагадування.</p>
 </main></div>
+<dialog id="event-drawer" class="cal-drawer" aria-labelledby="drawer-title"><div class="cal-sheet-handle" aria-hidden="true"></div><div class="cal-drawer-head"><p class="cal-eyebrow">ПОДІЯ / FINCONTROL</p><button class="cal-icon" data-close="event-drawer" aria-label="Закрити деталі події">✕</button></div><div id="event-detail"></div></dialog>
+<dialog id="form-drawer" class="cal-drawer" aria-labelledby="form-title"><div class="cal-sheet-handle" aria-hidden="true"></div><div class="cal-drawer-head"><h2 id="form-title">Нова подія</h2><button class="cal-icon" data-close="form-drawer" aria-label="Закрити форму події">✕</button></div>
+ <div class="cal-form-templates"><button data-template="salary">↓ Зарплата</button><button data-template="bill">↑ Рахунок</button><button data-template="credit">▣ Кредит</button><button data-template="reserve">◈ Резерв</button></div>
+ <form id="event-form" class="cal-form"><label>Назва події<input id="name" required maxlength="100" placeholder="Наприклад, оренда квартири"></label><div class="cal-two"><label>Дата<input id="date" type="date" required></label><label>План, грн<input id="amount" type="number" min=".01" step=".01" required placeholder="0,00" inputmode="decimal"></label></div><label>Тип<select id="kind"><option value="income">Зарплата / надходження</option><option value="expense">Оплата / витрата</option><option value="reserve_deposit">Поповнення фінподушки</option><option value="debt_payment">Платіж за кредитом</option></select></label><label id="credit-field" hidden>Кредит із реєстру<select id="credit"></select><small>Для внесення факту потрібен зв’язок із кредитом. <a href="debts.html">Відкрити реєстр ↗</a></small></label><label id="scope-field" hidden>Застосувати зміни<select id="edit-scope"><option value="one">Лише до цієї події</option><option value="future">До цієї й наступних у серії</option></select></label><label>Повторення<select id="repeat"><option value="once">Один раз</option><option value="weekly">Щотижня</option><option value="monthly">Щомісяця</option><option value="twice_monthly">Двічі на місяць</option><option value="month_end">Останній день місяця</option></select></label><label id="second-day-field" hidden>Другий день місяця<input id="second-day" type="number" min="1" max="31" value="25"><small>Перший день береться з дати події. У коротких місяцях використовується останній доступний день.</small></label><label>Примітка<textarea id="note" rows="3" maxlength="300" placeholder="Необов’язково"></textarea></label><p id="form-message" class="cal-form-message" role="status"></p><div class="cal-form-actions"><button type="button" class="cal-secondary" data-close="form-drawer">Скасувати</button><button type="submit" id="save-event" class="cal-primary">Зберегти подію</button></div></form>
+</dialog>
+<dialog id="opening-dialog" class="cal-small-dialog" aria-labelledby="opening-title"><div class="cal-drawer-head"><h2 id="opening-title">Доступно на сьогодні</h2><button class="cal-icon" data-close="opening-dialog" aria-label="Закрити налаштування залишку">✕</button></div><p class="cal-muted">Сума, яку можна використати для майбутніх платежів. Уже внесені факти вважаємо врахованими в цій сумі.</p><form id="opening-form" class="cal-form"><label>Залишок, грн<input id="opening" type="number" min="0" step=".01" required inputmode="decimal" placeholder="0,00"></label><p id="opening-message" class="cal-form-message" role="status"></p><button class="cal-primary" type="submit">Зберегти й розрахувати</button></form></dialog>
 </body></html>

@@ -3,7 +3,11 @@
 'use strict';
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const M=require('../assets/calendar-model.js');
+const vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+const ctx=vm.createContext({});
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../assets/calendar-model.js'),'utf8'),ctx);
+const rawM=ctx.FCCalendarModel;
+const M=new Proxy(rawM,{get:(t,k)=>typeof t[k]==='function'?(...args)=>{const value=t[k](...args);return value&&typeof value==='object'&&!(value instanceof Date)?JSON.parse(JSON.stringify(value)):value}:t[k]});
 const income=(id,date,cents,repeat='once')=>({id,date,cents,kind:'income',name:'Тестове надходження',repeat,note:''});
 const expense=(id,date,cents,repeat='once')=>({id,date,cents,kind:'expense',name:'Тестовий рахунок',repeat,note:''});
 const state=(events,done={})=>({version:1,opening:0,events,done});

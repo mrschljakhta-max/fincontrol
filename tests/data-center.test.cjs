@@ -92,3 +92,15 @@ test('version 2 backups exported by FCStore can be read by preflight',async()=>{
  assert.equal(checked.info.transactions,1);
  assert.equal(checked.backup.version,2);
 });
+
+test('calendar workspace repeats, overrides and linked actuals survive full backup preflight',async()=>{
+ const b=browser();await b.S.ready;
+ const calendar={version:1,opening:50000,openingDate:'2026-10-21',openingActual:[],events:[{id:'planned',name:'Test',date:'2026-10-21',kind:'expense',cents:10000,repeat:'weekly'}],done:{},overrides:{'planned|2026-10-28':{date:'2026-10-29'}},settled:{'planned|2026-10-21':['actual']}};
+ const actual={...entry,id:'actual',kind:'expense',calendarKey:'planned|2026-10-21',calendarEventId:'planned',calendarOccurrence:'2026-10-21'};
+ const result=b.X.inspectBackup(backup({'fincontrol-calendar-v1':raw(calendar),'fincontrol-offline-v1':raw({...ledger,entries:[actual]})}),b.S);
+ assert.ok(result);
+ await b.S.restore(backup({'fincontrol-calendar-v1':raw(calendar),'fincontrol-offline-v1':raw({...ledger,entries:[actual]})}));
+ assert.equal(b.S.read(b.S.K.calendar).events[0].repeat,'weekly');
+ assert.equal(b.S.read(b.S.K.calendar).overrides['planned|2026-10-28'].date,'2026-10-29');
+ assert.equal(b.S.read(b.S.K.ledger).entries[0].calendarKey,'planned|2026-10-21');
+});
