@@ -38,7 +38,9 @@ test('same eight scenes, local assets and real final navigation remain available
  assert.equal((css.match(/\{/g)||[]).length,(css.match(/\}/g)||[]).length);
 });
 test('interactive week orbit draws seven buttons and updates selection without storage',()=>{
- const model=require('../assets/calendar-model.js');
+ const calendarContext={};
+ vm.runInNewContext(read('assets/calendar-model.js'),calendarContext);
+ const model=calendarContext.FCCalendarModel;
  const host=node();
  const selected='2026-10-22';
  const setDate=[];
@@ -79,7 +81,7 @@ test('rock responds to pointer and keyboard with no financial-store access',()=>
   events:new Map(),addEventListener(k,f){this.events.set(k,f)},matches:()=>false
  }));
  const doc={hidden:false,getElementById:()=>shell,querySelectorAll:()=>links,addEventListener(){}};
- vm.runInNewContext(rock,{document:doc},{timeout:2000});
+ vm.runInNewContext(rock,{document:doc,window:{addEventListener(){}}},{timeout:2000});
  links[1].events.get('pointerenter')();
  assert.equal(shell.dataset.orbitFocus,'reserve');
  links[1].events.get('pointerleave')();

@@ -9,7 +9,10 @@ const vm=require('node:vm');
 const read=name=>fs.readFileSync(path.join(__dirname,'..',name),'utf8');
 const page=read('experience.html');
 const script=read('assets/experience.js');
-const model=require('../assets/calendar-model.js');
+// Browser UMD script loads under a separate VM because package.json is ESM.
+const calendarContext={};
+vm.runInNewContext(read('assets/calendar-model.js'),calendarContext);
+const model=calendarContext.FCCalendarModel;
 class Node {
  constructor(tag='div',top=0){
   this.tag=tag;this.children=[];this.dataset={top:String(top)};
