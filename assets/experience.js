@@ -346,7 +346,10 @@
    // Full-size cinematic core in hero, unobtrusive near finance glass panels,
    // and a strong appearance again for the completed smartphone in the finale.
    const presence=at<.65?.98:at<1.55?.98-.77*smoothstep((at-.65)/.9):at<5.75?.21:.21+.68*smoothstep((at-5.75)/1.25);
-   morphShell.style.setProperty('--ex-orb-opacity',presence.toFixed(2));
+   // The architectural render is the hero of the Housing chapter. Fade the
+   // roaming crystal behind it, then bring it back ahead of the phone finale.
+   const housingFocus=smoothstep((at-4.25)/.6)*(1-smoothstep((at-5.55)/.44));
+   morphShell.style.setProperty('--ex-orb-opacity',(presence*(1-.92*housingFocus)).toFixed(2));
   }
   const index=Math.max(0,Math.min(N-1,Math.round(at)));
   if(index!==activeIndex){
