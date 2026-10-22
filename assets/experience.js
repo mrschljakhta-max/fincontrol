@@ -219,6 +219,7 @@
   if(!home||!Number.isFinite(home.priceUsd)||!Number.isFinite(home.rate)||home.priceUsd<=0||home.rate<=0){
    ['ex-house-saved','ex-house-percent'].forEach(id=>set(id,'—'));
    set('ex-house-target','Житлову ціль ще не налаштовано');$('ex-house-progress').dataset.target='0%';
+   $('ex-house-stage')?.style?.setProperty?.('--ex-house-charge','0%');
    return;
   }
   // Same acquisition formula as the existing housing module: UAH estimate.
@@ -228,6 +229,9 @@
   set('ex-house-saved',amount(saved));set('ex-house-target','із '+amount(target));
   set('ex-house-percent',privacyOn?'••':Math.round(progress)+'%');
   $('ex-house-progress').dataset.target=(privacyOn?0:progress).toFixed(1)+'%';
+  // Decorative ring uses the same *displayed* progress, never a separate
+  // financial source; privacy mode also hides this visual percentage.
+  $('ex-house-stage')?.style?.setProperty?.('--ex-house-charge',(privacyOn?0:progress).toFixed(1)+'%');
  }
  function renderAnalytics(ledger,today){
   const container=$('ex-chart');container.replaceChildren();
