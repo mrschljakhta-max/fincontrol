@@ -19,7 +19,7 @@
 .ex-page #housing .ex-glass-house::before{display:none}
 /* Premium cinematic heading — open space above the existing WebGL stage. */
 .ex-page #housing .ex-house-hud-heading{position:relative;width:100%;max-width:740px;margin:0 auto;padding:4px 4px 15px;background:transparent;border:0}
-.ex-page #housing .ex-house-hud-label{display:flex;align-items:center;gap:11px;color:#CDD7DC;font:700 clamp(10px,.85vw,12px)/1.5 inherit;letter-spacing:.17em}
+.ex-page #housing .ex-house-hud-label{display:flex;align-items:center;gap:11px;color:#CDD7DC;font-weight:700;font-size:clamp(10px,.85vw,12px);line-height:1.5;letter-spacing:.17em}
 .ex-page #housing .ex-house-hud-label .ex-ti{width:17px;height:17px;flex:none;color:#FA2F4C}
 .ex-page #housing .ex-house-hud-slash{color:#FA506A;padding:0 5px}
 .ex-page #housing .ex-house-hud-heading::after{content:"";position:absolute;bottom:5px;left:4px;width:82px;height:1px;background:linear-gradient(90deg,#FA2F4C,rgba(171,43,65,.13));transform-origin:left}

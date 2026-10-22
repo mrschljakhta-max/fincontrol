@@ -89,10 +89,10 @@ test('cinematic HUD retains live finance IDs and does not reveal privacy values'
  assert.match(html,/class="ex-house-hud-metrics"/);
  assert.match(html,/role="progressbar"/);
  assert.doesNotMatch(html,/ex-house-stat-title/);
- assert.match(model,/Math\\.max\\(0,target-saved\\)/);
+ assert.match(model,/Math\.max\(0,target-saved\)/);
  assert.match(model,/Прогрес приховано/);
- assert.match(css,/@media\\(max-width:560px\\)/);
- assert.match(css,/\\.ex-page\\.ex-motion-off #housing \\.ex-house-hud-heading/);
+ assert.match(css,/@media\(max-width:560px\)/);
+ assert.match(css,/\.ex-page\.ex-motion-off #housing \.ex-house-hud-heading/);
 });
 test('image appears on entry, continues moving and pauses invisible animation layers',()=>{
  const f=fixture();
