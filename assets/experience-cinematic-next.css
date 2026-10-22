@@ -136,3 +136,124 @@
  .ex-page .ex-morph-shell::after,.ex-page #finish .ex-finish-apps a,
  .ex-page .ex-calendar-orbit-dot,.ex-page .ex-chart-bar{transition:none!important;animation:none!important}
 }
+
+
+/* Motion 3.0 — continuous atmospheric crossfade: each existing chapter
+   keeps its own artwork and receives only a lightweight additive glow. */
+.ex-page .ex-scene>.ex-cine-haze{
+ position:absolute;inset:0;z-index:0;pointer-events:none;
+ background:
+  radial-gradient(ellipse 58% 57% at 72% 40%,rgba(var(--ex-cine-rgb,171,43,65),.37),transparent 79%),
+  linear-gradient(120deg,rgba(var(--ex-cine-rgb,171,43,65),.055),transparent 58%);
+ opacity:var(--ex-cine-opacity,.14);
+ transition:opacity .4s linear;
+ mix-blend-mode:screen;
+}
+.ex-page #intro{--ex-cine-rgb:250,47,76}
+.ex-page #overview{--ex-cine-rgb:143,56,82}
+.ex-page #calendar{--ex-cine-rgb:165,73,90}
+.ex-page #credits{--ex-cine-rgb:192,59,86}
+.ex-page #reserve{--ex-cine-rgb:107,77,105}
+.ex-page #housing{--ex-cine-rgb:214,61,93}
+.ex-page #analytics{--ex-cine-rgb:175,88,112}
+.ex-page #finish{--ex-cine-rgb:250,47,76}
+.ex-page .ex-scene>.ex-cine-haze + .ex-hero-copy,
+.ex-page .ex-scene>.ex-cine-haze + .ex-story,
+.ex-page .ex-scene>.ex-cine-haze + .ex-finish-copy{position:relative;z-index:2}
+.ex-page.ex-ready:not(.ex-motion-off) .ex-scene .ex-story.is-visible h2,
+.ex-page.ex-ready:not(.ex-motion-off) .ex-scene .ex-finish-copy.is-visible h2{
+ animation:ex-cine-title-enter .85s cubic-bezier(.18,.76,.24,1) both;
+}
+@keyframes ex-cine-title-enter{
+ from{opacity:.35;transform:translate3d(0,13px,0);letter-spacing:-.075em}
+ to{opacity:1;transform:translate3d(0,0,0)}
+}
+/* Quiet fixed chapter rail, text shown only when keyboard-focus or hover. */
+.ex-page .ex-cine-chapters{
+ position:fixed;right:clamp(8px,1.2vw,22px);top:50%;
+ transform:translateY(-50%);z-index:39;display:grid;gap:4px;
+ pointer-events:auto;
+}
+.ex-page .ex-cine-chapters a{
+ display:flex;align-items:center;justify-content:flex-end;gap:9px;
+ min-height:31px;min-width:35px;padding:2px 4px;
+ color:#AEB9C0;text-decoration:none;
+}
+.ex-page .ex-cine-chapters span{font-size:9px;font-weight:600;opacity:0;transition:opacity .25s ease}
+.ex-page .ex-cine-chapters i{
+ width:4px;height:15px;background:rgba(205,215,220,.35);border-radius:9px;
+ transition:height .28s ease,width .28s ease,background .28s ease,box-shadow .28s ease;
+}
+.ex-page .ex-cine-chapters a:hover span,
+.ex-page .ex-cine-chapters a:focus-visible span,
+.ex-page .ex-cine-chapters a[aria-current="location"] span{opacity:1}
+.ex-page .ex-cine-chapters a[aria-current="location"] i{
+ height:27px;width:3px;background:#FA2F4C;box-shadow:0 0 10px rgba(250,47,76,.65);
+}
+.ex-page .ex-cine-chapters a:focus-visible{outline:2px solid #FA506A;outline-offset:1px;border-radius:5px}
+@media(max-width:1090px){
+ .ex-page .ex-cine-chapters{display:none}
+}
+/* Financial commentary is derived exclusively from the user's monthly ledger. */
+.ex-page #overview .ex-cine-finance-story{
+ margin:13px 0 2px;padding:13px 0 3px;border-top:1px solid rgba(205,215,220,.16);
+ font-size:12px;line-height:1.7;color:#C9D3DB;
+}
+.ex-page #overview .ex-cine-finance-story::before{
+ content:"●";font-size:9px;color:#FA506A;margin-right:9px;
+}
+/* Live HTML mini-screen: separate from the fixed perspective photo and
+   therefore always receives real keyboard/pointer interaction. */
+.ex-page #finish .ex-live-phone{
+ position:relative;padding:12px 14px 13px;margin:0 0 15px;
+ border:1px solid rgba(205,215,220,.20);border-radius:18px;
+ background:linear-gradient(155deg,rgba(19,26,32,.9),rgba(33,26,38,.77));
+ box-shadow:inset 0 1px rgba(255,255,255,.08),0 13px 38px rgba(0,0,0,.22);
+}
+.ex-page #finish .ex-live-phone-head{
+ display:flex;align-items:center;gap:7px;color:#CDD7DC;
+ font-size:9px;font-weight:700;letter-spacing:.11em;
+}
+.ex-page #finish .ex-live-phone-head small{margin-left:auto;color:#9EABB5;font-size:9px}
+.ex-page #finish .ex-live-pulse{width:5px;height:5px;border-radius:50%;background:#FA2F4C;box-shadow:0 0 7px rgba(250,47,76,.5)}
+.ex-page #finish .ex-live-phone-screen{display:grid;gap:5px;padding:18px 0 12px;min-width:0}
+.ex-page #finish .ex-live-phone-screen small{color:#B3C0C9;font-size:10px;letter-spacing:.16em}
+.ex-page #finish #ex-live-value{
+ font-size:clamp(23px,2.25vw,31px);line-height:1.25;font-weight:650;
+ font-variant-numeric:tabular-nums;letter-spacing:-.045em;
+ color:#F0F4F6;overflow-wrap:anywhere;
+}
+.ex-page #finish #ex-live-caption{font-size:10px;color:#AFBCC5;line-height:1.4}
+.ex-page #finish .ex-live-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;border-top:1px solid rgba(205,215,220,.13);padding-top:11px}
+.ex-page #finish .ex-live-tabs button{
+ min-width:0;min-height:35px;border:0;border-radius:7px;padding:6px 2px;
+ background:transparent;color:#ADB9C2;font:600 10px/1.3 system-ui,sans-serif;cursor:pointer;
+}
+.ex-page #finish .ex-live-tabs button[aria-pressed="true"]{background:rgba(171,43,65,.31);color:#FFF2F4}
+.ex-page #finish .ex-live-phone-action{
+ display:inline-flex;align-items:center;gap:7px;margin-top:11px;
+ min-height:32px;color:#E2E8EC;font-size:11px;text-decoration:none;
+}
+.ex-page #finish .ex-live-phone-action span{color:#FA506A}
+.ex-page #finish .ex-live-phone :is(button,a):focus-visible{outline:2px solid #FA506A;outline-offset:2px}
+/* The mini-screen is always privacy-safe even before mutation callbacks run. */
+.ex-page.ex-private-on #finish #ex-live-value{visibility:hidden}
+.ex-page.ex-private-on #finish .ex-live-phone-screen::after{
+ content:"СУМИ ПРИХОВАНО";color:#F3B6C0;font-size:11px;letter-spacing:.13em;
+ position:absolute;left:14px;top:80px;
+}
+@media(max-width:680px){
+ .ex-page #finish .ex-finish-launcher{width:min(100%,400px)}
+ .ex-page #finish .ex-live-phone{padding:12px;margin-bottom:14px}
+ .ex-page #finish #ex-live-value{font-size:clamp(23px,7vw,31px)}
+ .ex-page #finish .ex-live-tabs button{min-height:43px;font-size:10px}
+ .ex-page #overview .ex-cine-finance-story{font-size:12px}
+}
+.ex-page.ex-motion-off .ex-scene>.ex-cine-haze{transition:none!important}
+.ex-page.ex-motion-off .ex-cine-chapters *, .ex-page.ex-motion-off .ex-cine-chapters i{transition:none!important}
+.ex-page.ex-motion-off .ex-live-pulse{animation:none!important}
+@media(prefers-reduced-motion:reduce){
+ .ex-page .ex-scene>.ex-cine-haze,.ex-page .ex-cine-chapters *, .ex-page #finish .ex-live-phone *{
+  transition:none!important;animation:none!important;
+ }
+}

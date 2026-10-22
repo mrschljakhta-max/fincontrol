@@ -58,7 +58,7 @@ test('head loads one isolated design system after all visual assets',()=>{
  assert.match(html,/href="assets\/experience-design-system.css\?v=4"/);
  assert.match(html,/src="assets\/experience-design-system.js\?v=2"/);
  assert.ok(html.indexOf('experience-design-system.css')>html.indexOf('experience-premium-phone.css'));
- assert.match(html,/src="assets\/experience.js\?v=13"/);
+ assert.match(html,/src="assets\/experience.js\?v=14"/);
 });
 test('navigation has six matching scene anchors and mobile menu accessibility',()=>{
  const chapterIDs=['overview','calendar','credits','reserve','housing','analytics'];

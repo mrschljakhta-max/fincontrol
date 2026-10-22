@@ -101,6 +101,7 @@
    ['ex-operations-count','ex-month-income','ex-month-expenses','ex-month-reserve','ex-donut-value'].forEach(id=>set(id,'—'));
    $('ex-overview-donut').style.setProperty('--ex-donut-angle','0%');
    note.textContent=lastError?'Дані не прочитано: '+lastError:'У цьому браузері журнал ще не налаштовано. Для внесення операцій відкрий робочий кабінет.';
+   set('ex-finance-story','Фінансова історія з’явиться після внесення фактичних операцій.');
    return;
   }
   const totals=monthTotals(ledger.entries,today.slice(0,7));
@@ -112,6 +113,14 @@
   set('ex-donut-value',ratio===null?'—':privacyOn?'••':ratio+'%');
   $('ex-overview-donut').style.setProperty('--ex-donut-angle',(privacyOn?0:percent(ratio))+'%');
   note.textContent=ratio===null?'Без надходжень у цьому місяці відсоток витрат не розраховується.':'Витрати й кредитні платежі — як частка надходжень. Резерв показано окремо, власні перекази не включено.';
+  const summary=totals.count===0
+   ?'Цього місяця фактичних операцій поки немає.'
+   :privacyOn
+    ?'Фінансова динаміка доступна. Числові співвідношення приховано.'
+    :totals.inc>0
+     ?'За поточний місяць витрати й кредитні платежі становлять '+ratio+'% від зафіксованих надходжень.'
+     :'Витрати цього місяця є, але надходжень поки не зафіксовано.';
+  set('ex-finance-story',summary);
  }
  function renderCalendar(calendar,ledger,debts,today){
   const first=C.monthStart(calendarAnchor),end=C.monthEnd(first),displayStart=C.weekStart(first);
@@ -387,6 +396,7 @@
   $('ex-scroll-fill').style.width=(max>0?percent(window.scrollY/max*100):0)+'%';
   const at=animationProgress();
   window.FCCrystal3D?.setStage(at);
+  window.FCExperienceCinematic?.setStage(at,motionEnabled);
   // Scroll position sets shape and phone opacity even with Motion off:
   // reduced-motion means no idle loops, not hiding the final phone.
   drawMorph(at);

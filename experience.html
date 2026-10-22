@@ -18,22 +18,32 @@
 <link rel="stylesheet" href="assets/experience-house.css?v=1">
 <link rel="stylesheet" href="assets/experience-house-floating.css?v=2">
 <link rel="stylesheet" href="assets/house-cinematic-3d.css?v=1">
-<link rel="stylesheet" href="assets/experience-cinematic-next.css?v=1">
+<link rel="stylesheet" href="assets/experience-cinematic-next.css?v=2">
 <script src="assets/store.js?v=5"></script>
 <script src="assets/finance.js?v=4"></script>
 <script src="assets/calendar-model.js?v=3"></script>
 <script src="assets/crystal-3d.js?v=1" defer></script>
-<script src="assets/experience.js?v=13" defer></script>
+<script src="assets/experience.js?v=14" defer></script>
 <script src="assets/experience-design-system.js?v=2" defer></script>
 <script src="assets/experience-house.js?v=2" defer></script>
 <script src="assets/house-cinematic-geometry.js?v=1" defer></script>
 <script src="assets/house-cinematic-3d.js?v=1" defer></script>
-<script src="assets/experience-cinematic.js?v=1" defer></script>
+<script src="assets/experience-cinematic.js?v=2" defer></script>
 </head>
 <body class="ex-page">
 <a class="ex-skip" href="#main-content">Перейти до фінансового огляду</a>
 <div class="ex-world" aria-hidden="true"></div>
 <div class="ex-ambient" aria-hidden="true"></div>
+<nav class="ex-cine-chapters" aria-label="Швидкий перехід між сценами">
+ <a href="#intro" data-ex-chapter="intro" aria-label="Головна сцена"><span>01</span><i></i></a>
+ <a href="#overview" data-ex-chapter="overview" aria-label="Фінансовий огляд"><span>02</span><i></i></a>
+ <a href="#calendar" data-ex-chapter="calendar" aria-label="Фінансовий календар"><span>03</span><i></i></a>
+ <a href="#credits" data-ex-chapter="credits" aria-label="Кредити"><span>04</span><i></i></a>
+ <a href="#reserve" data-ex-chapter="reserve" aria-label="Резерв"><span>05</span><i></i></a>
+ <a href="#housing" data-ex-chapter="housing" aria-label="Житло"><span>06</span><i></i></a>
+ <a href="#analytics" data-ex-chapter="analytics" aria-label="Аналітика"><span>07</span><i></i></a>
+ <a href="#finish" data-ex-chapter="finish" aria-label="Фінальна сцена"><span>08</span><i></i></a>
+</nav>
 <div class="ex-morph-shell" id="ex-morph-shell" aria-hidden="true">
  <div class="ex-core-lava"></div>
  <canvas id="ex-crystal-3d" aria-hidden="true"></canvas>
@@ -216,6 +226,7 @@
 <div class="ex-scroll-progress" aria-hidden="true"><span id="ex-scroll-fill"></span></div>
 <main id="main-content" tabindex="-1">
  <section id="intro" class="ex-scene ex-hero" data-stage="0" aria-labelledby="ex-hero-title">
+  <span class="ex-cine-haze" aria-hidden="true"></span>
   <div class="ex-hero-copy ex-reveal">
    <p class="ex-kicker"><i></i> FINCONTROL / НОВИЙ ВИМІР</p>
    <h1 id="ex-hero-title">Фінанси.<br><span>У гармонії.</span></h1>
@@ -237,6 +248,7 @@
   </nav>
  </section>
  <section id="overview" class="ex-scene" data-stage="1" aria-labelledby="ex-overview-title">
+  <span class="ex-cine-haze" aria-hidden="true"></span>
   <div class="ex-story ex-reveal">
    <p class="ex-chapter">01 <i></i> <svg class="ex-ti ex-chapter-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-layout-dashboard"></use></svg> ВІД ДАНИХ ДО РОЗУМІННЯ</p>
    <h2 id="ex-overview-title">Усе починається<br>з повної картини.</h2>
@@ -258,9 +270,11 @@
     </div>
    </div>
    <p class="ex-card-note" id="ex-overview-note">Показуємо лише фактичні операції, без повторного обліку власних переказів.</p>
+   <p id="ex-finance-story" class="ex-cine-finance-story" aria-live="polite">Фінансова історія з’явиться після внесення записів.</p>
   </div>
  </section>
  <section id="calendar" class="ex-scene" data-stage="2" aria-labelledby="ex-calendar-title">
+  <span class="ex-cine-haze" aria-hidden="true"></span>
   <div class="ex-story ex-reveal">
    <p class="ex-chapter">02 <i></i> <svg class="ex-ti ex-chapter-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-calendar-event"></use></svg> ЧАС ТА РІШЕННЯ</p>
    <h2 id="ex-calendar-title">Фінансовий<br>календар.</h2>
@@ -294,6 +308,7 @@
   </div>
  </section>
  <section id="credits" class="ex-scene" data-stage="3" aria-labelledby="ex-credits-title">
+  <span class="ex-cine-haze" aria-hidden="true"></span>
   <div class="ex-story ex-reveal">
    <p class="ex-chapter">03 <i></i> <svg class="ex-ti ex-chapter-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-credit-card"></use></svg> КОНТРОЛЬ ЗОБОВ'ЯЗАНЬ</p>
    <h2 id="ex-credits-title">Кредити.<br>Без хаосу.</h2>
@@ -308,6 +323,7 @@
   </div>
  </section>
  <section id="reserve" class="ex-scene" data-stage="4" aria-labelledby="ex-reserve-title">
+  <span class="ex-cine-haze" aria-hidden="true"></span>
   <div class="ex-story ex-reveal">
    <p class="ex-chapter">04 <i></i> <svg class="ex-ti ex-chapter-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-shield-check"></use></svg> ФІНАНСОВА БЕЗПЕКА</p>
    <h2 id="ex-reserve-title">Резерв.<br>Точка опори.</h2>
@@ -324,6 +340,7 @@
   </div>
  </section>
  <section id="housing" class="ex-scene" data-stage="5" aria-labelledby="ex-housing-title">
+  <span class="ex-cine-haze" aria-hidden="true"></span>
   <div class="ex-story ex-reveal">
    <p class="ex-chapter">05 <i></i> <svg class="ex-ti ex-chapter-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-home"></use></svg> ДОВГОСТРОКОВА ЦІЛЬ</p>
    <h2 id="ex-housing-title">Власне житло.<br>Крок за кроком.</h2>
@@ -393,6 +410,7 @@
   </div>
  </section>
  <section id="analytics" class="ex-scene" data-stage="6" aria-labelledby="ex-analytics-title">
+  <span class="ex-cine-haze" aria-hidden="true"></span>
   <div class="ex-story ex-reveal">
    <p class="ex-chapter">06 <i></i> <svg class="ex-ti ex-chapter-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-chart-bar"></use></svg> ЗВ'ЯЗКИ ТА ЗАКОНОМІРНОСТІ</p>
    <h2 id="ex-analytics-title">Аналітика.<br>Бачити більше.</h2>
@@ -416,6 +434,7 @@
   </div>
  </section>
  <section id="finish" class="ex-scene ex-finish" data-stage="7" aria-labelledby="ex-finish-title">
+  <span class="ex-cine-haze" aria-hidden="true"></span>
   <div class="ex-finish-copy ex-reveal">
    <p class="ex-kicker"><i></i> КОЖЕН КРОК МАЄ ЗНАЧЕННЯ</p>
    <h2 id="ex-finish-title">Фінансова свобода<br><span>починається сьогодні.</span></h2>
@@ -425,6 +444,21 @@
   <nav class="ex-finish-launcher ex-reveal" aria-label="Застосунки FINCONTROL">
    <p class="ex-finish-launcher-kicker">FINCONTROL <span> / </span> ШВИДКИЙ ДОСТУП</p>
    <p class="ex-finish-launcher-title">Відкрий свій простір</p>
+   <div class="ex-live-phone" aria-label="Інтерактивний фінансовий мініекран">
+    <div class="ex-live-phone-head"><span class="ex-live-pulse" aria-hidden="true"></span><span>FINCONTROL · LIVE</span><small>ПЕРЕГЛЯД</small></div>
+    <div class="ex-live-phone-screen">
+     <small id="ex-live-title">НАДХОДЖЕННЯ</small>
+     <strong id="ex-live-value" aria-live="polite">—</strong>
+     <span id="ex-live-caption">Показники з цього браузера</span>
+    </div>
+    <div class="ex-live-tabs" role="group" aria-label="Показник мініекрана">
+     <button type="button" data-ex-live="income" aria-pressed="true">Доходи</button>
+     <button type="button" data-ex-live="reserve" aria-pressed="false">Резерв</button>
+     <button type="button" data-ex-live="home" aria-pressed="false">Житло</button>
+     <button type="button" data-ex-live="debt" aria-pressed="false">Кредити</button>
+    </div>
+    <a id="ex-live-action" class="ex-live-phone-action" href="analytics.html#income">Відкрити розділ <span aria-hidden="true">↗</span></a>
+   </div>
    <div class="ex-finish-apps">
     <a href="analytics.html#overview" aria-label="Фінансовий огляд"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/tabler-sprite.svg#ti-layout-dashboard"></use></svg><span>Огляд</span></a>
     <a href="calendar.html" aria-label="Фінансовий календар"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/tabler-sprite.svg#ti-calendar-event"></use></svg><span>Календар</span></a>

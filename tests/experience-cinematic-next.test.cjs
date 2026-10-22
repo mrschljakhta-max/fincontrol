@@ -34,7 +34,7 @@ test('same eight scenes, local assets and real final navigation remain available
   assert.ok(html.includes('id="'+id+'"'));
  for(const file of ['assets/experience-cinematic-next.css','assets/experience-cinematic.js'])
   assert.ok(fs.existsSync(path.join(root,file)));
- assert.match(html,/assets\/experience\.js\?v=13/);
+ assert.match(html,/assets\/experience\.js\?v=14/);
  assert.equal((css.match(/\{/g)||[]).length,(css.match(/\}/g)||[]).length);
 });
 test('interactive week orbit draws seven buttons and updates selection without storage',()=>{
