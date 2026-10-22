@@ -16,13 +16,14 @@
 <link rel="stylesheet" href="assets/experience-design-system.css?v=3">
 <link rel="stylesheet" href="assets/experience-tabler.css?v=1">
 <link rel="stylesheet" href="assets/experience-house.css?v=1">
+<link rel="stylesheet" href="assets/experience-house-floating.css?v=1">
 <script src="assets/store.js?v=5"></script>
 <script src="assets/finance.js?v=4"></script>
 <script src="assets/calendar-model.js?v=3"></script>
 <script src="assets/crystal-3d.js?v=1" defer></script>
 <script src="assets/experience.js?v=10" defer></script>
 <script src="assets/experience-design-system.js?v=2" defer></script>
-<script src="assets/experience-house.js?v=1" defer></script>
+<script src="assets/experience-house.js?v=2" defer></script>
 </head>
 <body class="ex-page">
 <a class="ex-skip" href="#main-content">Перейти до фінансового огляду</a>
@@ -314,27 +315,48 @@
   </div>
   <div class="ex-glass ex-glass-house ex-reveal" data-reveal-child>
    <div class="ex-glass-heading"><span class="ex-panel-label"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-home"></use></svg><span>Ціль: житло</span></span><span class="ex-mini-tag">Прогрес</span></div>
-   <div id="ex-house-stage" class="ex-house-stage" style="--ex-house-charge:0%" aria-label="Сучасний будинок серед гір із червоним підсвічуванням">
+
+   <div id="ex-house-stage" class="ex-house-stage" style="--ex-house-charge:0%" role="img"
+        aria-label="Сучасний будинок із панорамними вікнами на левітуючій скелястій платформі">
     <div class="ex-house-stage-ambient" aria-hidden="true"></div>
     <div class="ex-house-stage-scene">
-     <img id="ex-house-art" class="ex-house-art" src="assets/images/fincontrol-housing-scene.webp?v=1" width="1672" height="941" alt="Реалістичний сучасний будинок із панорамним склінням, оточений гірським пейзажем та червоними світловими доріжками" loading="lazy" decoding="async">
-     <div class="ex-house-wireframe" aria-hidden="true">
-      <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-linejoin="round" stroke-linecap="round">
-       <path d="M45 95 78 65 204 45 267 83 267 149 190 166 45 142Z" stroke="#CDD7DC" opacity=".58" stroke-width="1.3"/>
-       <path d="M78 65 78 128 45 142M204 45 204 131 267 149M45 95 190 109 267 83M190 109 190 166" stroke="#FA2F4C" opacity=".85" stroke-width="1.6"/>
-       <path d="M78 84 127 78 127 133M139 70 139 137M154 67 154 142M169 63 169 146M214 69 251 87 251 130" stroke="#CDD7DC" opacity=".32"/>
-       <path d="M21 151 Q147 166 304 146" stroke="#FA2F4C" stroke-width="1.5" opacity=".55"/>
-      </svg>
+     <div class="ex-house-orbit" aria-hidden="true"></div>
+     <div class="ex-house-floor-shadow" aria-hidden="true"></div>
+     <div id="ex-house-float" class="ex-house-float" aria-hidden="true">
+      <div id="ex-house-tilt" class="ex-house-tilt">
+       <img id="ex-house-art" class="ex-house-art"
+            src="assets/images/fincontrol-house-floating.webp?v=1"
+            width="1280" height="960" alt="" decoding="async" loading="lazy">
+       <img id="ex-house-emission" class="ex-house-emission"
+            src="assets/images/fincontrol-house-emission.webp?v=1"
+            width="1280" height="960" alt="" decoding="async" loading="lazy">
+       <div class="ex-house-wireframe" aria-hidden="true">
+        <svg viewBox="0 0 1280 960" fill="none" stroke-linejoin="round" stroke-linecap="round">
+         <path class="ex-house-draw-line" d="M298 311 746 147 1153 283 1153 583 1037 657 401 652 176 640 176 480 298 396Z"
+               stroke="#FA2F4C" stroke-width="4"/>
+         <path class="ex-house-draw-line" d="M746 147 748 455 1153 584M298 311V545L175 624M298 396 746 286 1047 357M405 652V470L746 420"
+               stroke="#CDD7DC" stroke-opacity=".64" stroke-width="2.8"/>
+         <path class="ex-house-draw-line" d="M250 670 1140 700M385 485 385 640M465 453 465 644M582 420 582 650M748 420 748 658M916 385V641"
+               stroke="#FA2F4C" stroke-opacity=".54" stroke-width="3"/>
+        </svg>
+       </div>
+       <div class="ex-house-sheen" aria-hidden="true"></div>
+      </div>
      </div>
-     <div class="ex-house-sheen" aria-hidden="true"></div>
      <div class="ex-house-trail" aria-hidden="true"></div>
+     <div class="ex-house-particles" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+     </div>
     </div>
     <div class="ex-house-stage-caption" aria-hidden="true"><span class="ex-house-stage-pulse"></span> ВІД МРІЇ ДО ВЛАСНОГО ПРОСТОРУ</div>
    </div>
-   <small>Вже накопичено</small><strong class="ex-metric-xl" id="ex-house-saved">—</strong>
-   <div class="ex-progress-track"><span id="ex-house-progress" style="width:0%"></span></div>
-   <div class="ex-progress-caption"><span id="ex-house-target">Ціль не задана</span><strong id="ex-house-percent">—</strong></div>
-   <a class="ex-card-link" href="home.html">Відкрити житловий план <svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-arrow-up-right"></use></svg></a>
+   <div class="ex-house-stats">
+    <div class="ex-house-stat-title"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-target-arrow"></use></svg><span>Прогрес накопичення</span></div>
+    <small>Вже накопичено</small><strong class="ex-metric-xl" id="ex-house-saved">—</strong>
+    <div class="ex-progress-track"><span id="ex-house-progress" style="width:0%"></span></div>
+    <div class="ex-progress-caption"><span id="ex-house-target">Ціль не задана</span><strong id="ex-house-percent">—</strong></div>
+    <a class="ex-card-link" href="home.html">Відкрити житловий план <svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-arrow-up-right"></use></svg></a>
+   </div>
   </div>
  </section>
  <section id="analytics" class="ex-scene" data-stage="6" aria-labelledby="ex-analytics-title">
