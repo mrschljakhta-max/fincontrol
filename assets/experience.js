@@ -216,21 +216,33 @@
   $('ex-reserve-progress').dataset.target=(privacyOn?0:progress).toFixed(1)+'%';
  }
  function renderHome(home){
+  const progressBar=$('ex-house-progress'),progressTrack=$('ex-house-progress-track');
   if(!home||!Number.isFinite(home.priceUsd)||!Number.isFinite(home.rate)||home.priceUsd<=0||home.rate<=0){
-   ['ex-house-saved','ex-house-percent'].forEach(id=>set(id,'—'));
-   set('ex-house-target','Житлову ціль ще не налаштовано');$('ex-house-progress').dataset.target='0%';
+   ['ex-house-saved','ex-house-left','ex-house-percent'].forEach(id=>set(id,'—'));
+   set('ex-house-target','Житлову ціль ще не налаштовано');
+   progressBar.dataset.target='0%';
+   progressTrack?.removeAttribute('aria-valuenow');
+   progressTrack?.setAttribute('aria-valuetext','Житлову ціль не налаштовано');
    $('ex-house-stage')?.style?.setProperty?.('--ex-house-charge','0%');
    return;
   }
-  // Same acquisition formula as the existing housing module: UAH estimate.
+  // Existing FINCONTROL housing acquisition formula, unchanged.
   const target=home.priceUsd*home.rate*(1+Number(home.fees||0)/100)+Number(home.renovation||0);
   const saved=Number(home.saved||0);
   const progress=percent(100*saved/target);
-  set('ex-house-saved',amount(saved));set('ex-house-target','із '+amount(target));
+  set('ex-house-saved',amount(saved));
+  set('ex-house-left',amount(Math.max(0,target-saved)));
+  set('ex-house-target','Ціль · '+amount(target));
   set('ex-house-percent',privacyOn?'••':Math.round(progress)+'%');
-  $('ex-house-progress').dataset.target=(privacyOn?0:progress).toFixed(1)+'%';
-  // Decorative ring uses the same *displayed* progress, never a separate
-  // financial source; privacy mode also hides this visual percentage.
+  progressBar.dataset.target=(privacyOn?0:progress).toFixed(1)+'%';
+  if(privacyOn){
+   progressTrack?.removeAttribute('aria-valuenow');
+   progressTrack?.setAttribute('aria-valuetext','Прогрес приховано');
+  }else{
+   progressTrack?.setAttribute('aria-valuenow',String(Math.round(progress)));
+   progressTrack?.setAttribute('aria-valuetext',Math.round(progress)+'%');
+  }
+  // The energy ring never exposes hidden percentages.
   $('ex-house-stage')?.style?.setProperty?.('--ex-house-charge',(privacyOn?0:progress).toFixed(1)+'%');
  }
  function renderAnalytics(ledger,today){

@@ -17,15 +17,16 @@
   overflow:visible;
 }
 .ex-page #housing .ex-glass-house::before{display:none}
-.ex-page #housing .ex-glass-house .ex-glass-heading{
-  max-width:750px;
-  padding:11px 15px;
-  border-radius:13px;
-  border:1px solid rgba(205,215,220,.19);
-  background:linear-gradient(115deg,rgba(19,26,32,.79),rgba(51,42,48,.64));
-  box-shadow:0 9px 24px rgba(0,0,0,.2);
-  margin:0 0 8px;
-}
+/* Premium cinematic heading — open space above the existing WebGL stage. */
+.ex-page #housing .ex-house-hud-heading{position:relative;width:100%;max-width:740px;margin:0 auto;padding:4px 4px 15px;background:transparent;border:0}
+.ex-page #housing .ex-house-hud-label{display:flex;align-items:center;gap:11px;color:#CDD7DC;font:700 clamp(10px,.85vw,12px)/1.5 inherit;letter-spacing:.17em}
+.ex-page #housing .ex-house-hud-label .ex-ti{width:17px;height:17px;flex:none;color:#FA2F4C}
+.ex-page #housing .ex-house-hud-slash{color:#FA506A;padding:0 5px}
+.ex-page #housing .ex-house-hud-heading::after{content:"";position:absolute;bottom:5px;left:4px;width:82px;height:1px;background:linear-gradient(90deg,#FA2F4C,rgba(171,43,65,.13));transform-origin:left}
+.ex-page.ex-ready:not(.ex-motion-off) #housing .ex-glass-house .ex-house-hud-heading{opacity:0;transform:translateY(12px);transition:opacity .65s ease,transform .8s ease}
+.ex-page.ex-ready:not(.ex-motion-off) #housing .ex-glass-house.is-visible .ex-house-hud-heading{opacity:1;transform:translateY(0)}
+.ex-page.ex-ready:not(.ex-motion-off) #housing .ex-glass-house .ex-house-hud-heading::after{transform:scaleX(0);transition:transform .9s ease .15s}
+.ex-page.ex-ready:not(.ex-motion-off) #housing .ex-glass-house.is-visible .ex-house-hud-heading::after{transform:scaleX(1)}
 .ex-page #housing .ex-house-stage{
   margin:-3px auto 1px;
   width:100%;
@@ -241,54 +242,51 @@
 .ex-page #housing .ex-house-particles i:nth-child(7){left:9%;top:32%;animation-delay:-3.7s}
 
 .ex-page #housing .ex-house-stage-caption{
-  margin:0 0 clamp(15px,2.2vw,25px);
+  margin:0 0 5px;
   padding-top:5px;
   color:#D6DAE0;
   font-size:11px;
   line-height:1.4;
   letter-spacing:.12em;
 }
-.ex-page #housing .ex-house-stats{
-  position:relative;
-  z-index:2;
-  width:100%;
-  padding:clamp(19px,2.6vw,27px);
-  margin-top:5px;
-  border-radius:20px;
-  border:1px solid rgba(205,215,220,.21);
-  background:linear-gradient(125deg,rgba(31,27,38,.77),rgba(14,21,31,.82));
-  -webkit-backdrop-filter:blur(22px) saturate(115%);
-  backdrop-filter:blur(22px) saturate(115%);
-  box-shadow:0 17px 52px rgba(3,9,17,.29),inset 0 1px rgba(255,255,255,.07);
-  display:grid;
+/* Open HUD ribbon, not a second glass dashboard card. */
+.ex-page #housing .ex-house-stats{position:relative;z-index:2;display:grid;gap:15px;min-width:0;width:100%;max-width:740px;margin:4px auto 0;padding:16px 4px 4px;border:0;border-top:1px solid rgba(205,215,220,.22);border-radius:0;background:linear-gradient(180deg,rgba(19,26,32,.48),rgba(19,26,32,.05));box-shadow:none;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.ex-page #housing .ex-house-hud-metrics{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1.12fr) minmax(0,.68fr);align-items:start;min-width:0}
+.ex-page #housing .ex-house-hud-metric{min-width:0;padding:0 clamp(9px,1.5vw,18px);border-left:1px solid rgba(205,215,220,.17)}
+.ex-page #housing .ex-house-hud-metric:first-child{border-left:0;padding-left:0}
+.ex-page #housing .ex-house-hud-metric:last-child{text-align:right;padding-right:0}
+.ex-page #housing .ex-house-hud-metric small{display:block;margin:0 0 7px;color:#AFBDC6;font-size:10px;font-weight:650;letter-spacing:.15em;line-height:1.4}
+.ex-page #housing .ex-house-hud-metric strong{display:block;min-width:0;font-size:clamp(18px,2.05vw,29px);font-weight:660;line-height:1.25;letter-spacing:-.04em;color:#EFF3F5;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.ex-page #housing .ex-house-hud-metric:last-child strong{font-size:clamp(21px,2.2vw,31px);color:#F8A1AD}
+.ex-page #housing .ex-house-hud-track{height:4px;margin:0;border:0;border-radius:999px;background:rgba(205,215,220,.15);overflow:hidden}
+.ex-page #housing .ex-house-hud-track span{height:100%;background:linear-gradient(90deg,#AB2B41,#FA2F4C);box-shadow:0 0 13px rgba(250,47,76,.4);transition:width 1.3s cubic-bezier(.2,.85,.15,1)}
+.ex-page #housing .ex-house-hud-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px 16px;min-width:0}
+.ex-page #housing .ex-house-hud-target{color:#AAB6BE;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+.ex-page #housing .ex-house-hud-link{display:inline-flex;align-items:center;gap:7px;color:#D6DEE4;font-size:11px;font-weight:650;line-height:1.5;text-decoration:none;transition:color .2s ease}
+.ex-page #housing .ex-house-hud-link .ex-ti{width:15px;height:15px;color:#FA506A}
+.ex-page #housing .ex-house-hud-link:hover{color:#FF8397}
+.ex-page #housing .ex-house-hud-link:focus-visible{outline:2px solid #FA2F4C;outline-offset:5px;border-radius:2px}
+.ex-page.ex-ready:not(.ex-motion-off) #housing .ex-glass-house .ex-house-stats{opacity:0;transform:translateY(13px);transition:opacity .8s ease .7s,transform .9s ease .7s}
+.ex-page.ex-ready:not(.ex-motion-off) #housing .ex-glass-house.is-visible .ex-house-stats{opacity:1;transform:translateY(0)}
+@media(max-width:560px){
+ .ex-page #housing .ex-house-stats{padding:13px 3px 2px;gap:12px}
+ .ex-page #housing .ex-house-hud-metrics{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:12px}
+ .ex-page #housing .ex-house-hud-metric{padding:0 10px}
+ .ex-page #housing .ex-house-hud-metric strong{font-size:clamp(18px,5.1vw,24px)}
+ .ex-page #housing .ex-house-hud-metric:last-child{display:flex;grid-column:1/-1;align-items:baseline;justify-content:space-between;padding:10px 0 0;border-left:0;border-top:1px solid rgba(205,215,220,.12);text-align:left}
+ .ex-page #housing .ex-house-hud-metric:last-child small{margin:0}
+ .ex-page #housing .ex-house-hud-metric:last-child strong{font-size:24px}
 }
-.ex-page #housing .ex-house-stat-title{
-  display:flex;align-items:center;gap:10px;
-  color:#E1E7ED;
-  font-size:13px;
-  font-weight:650;
-  margin-bottom:16px;
+.ex-page.ex-motion-off #housing .ex-house-hud-heading,
+.ex-page.ex-motion-off #housing .ex-house-hud-heading::after,
+.ex-page.ex-motion-off #housing .ex-house-stats,
+.ex-page.ex-motion-off #housing .ex-house-hud-track span{animation:none!important;transition:none!important;transform:none!important;opacity:1}
+@media(prefers-reduced-motion:reduce){
+ .ex-page #housing .ex-house-hud-heading,
+ .ex-page #housing .ex-house-hud-heading::after,
+ .ex-page #housing .ex-house-stats,
+ .ex-page #housing .ex-house-hud-track span{animation:none!important;transition:none!important;transform:none!important;opacity:1}
 }
-.ex-page #housing .ex-house-stat-title .ex-ti{
-  width:18px;height:18px;
-  color:#FA506A;
-}
-.ex-page #housing .ex-house-stats>small{
-  color:#B8C4CE;
-  font-size:12px;
-  margin-bottom:4px;
-}
-.ex-page #housing .ex-house-stats>.ex-metric-xl{
-  margin:0 0 18px;
-  font-weight:670;
-  letter-spacing:-.035em;
-}
-.ex-page #housing .ex-house-stats .ex-progress-track{margin:0}
-.ex-page #housing .ex-house-stats .ex-progress-caption{
-  margin:11px 0 8px;
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-}
-.ex-page #housing .ex-house-stats .ex-card-link{margin-top:16px}
 
 @keyframes ex-house-hover-breath{
   0%,100%{transform:translate3d(0,2px,0) rotateZ(-.45deg) scale(.990)}
@@ -369,8 +367,6 @@
   .ex-page #housing .ex-house-stage-scene{aspect-ratio:1.45}
   .ex-page #housing .ex-house-float{inset:-7% -12% -14%}
   .ex-page #housing .ex-house-stage-caption{font-size:9px;letter-spacing:.07em;margin-bottom:14px}
-  .ex-page #housing .ex-house-stats{padding:19px 17px;border-radius:17px}
-  .ex-page #housing .ex-house-stats>.ex-metric-xl{font-size:35px}
   .ex-page #housing .ex-house-particles i:nth-child(n+5){display:none}
   .ex-page #housing .ex-house-orbit{bottom:6%}
 }

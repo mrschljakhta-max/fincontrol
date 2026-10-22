@@ -16,13 +16,13 @@
 <link rel="stylesheet" href="assets/experience-design-system.css?v=3">
 <link rel="stylesheet" href="assets/experience-tabler.css?v=1">
 <link rel="stylesheet" href="assets/experience-house.css?v=1">
-<link rel="stylesheet" href="assets/experience-house-floating.css?v=1">
+<link rel="stylesheet" href="assets/experience-house-floating.css?v=2">
 <link rel="stylesheet" href="assets/house-cinematic-3d.css?v=1">
 <script src="assets/store.js?v=5"></script>
 <script src="assets/finance.js?v=4"></script>
 <script src="assets/calendar-model.js?v=3"></script>
 <script src="assets/crystal-3d.js?v=1" defer></script>
-<script src="assets/experience.js?v=10" defer></script>
+<script src="assets/experience.js?v=11" defer></script>
 <script src="assets/experience-design-system.js?v=2" defer></script>
 <script src="assets/experience-house.js?v=2" defer></script>
 <script src="assets/house-cinematic-geometry.js?v=1" defer></script>
@@ -317,8 +317,9 @@
    <a href="home.html" class="ex-section-link">Моя ціль: житло <svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-arrow-up-right"></use></svg></a>
   </div>
   <div class="ex-glass ex-glass-house ex-reveal" data-reveal-child>
-   <div class="ex-glass-heading"><span class="ex-panel-label"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-home"></use></svg><span>Ціль: житло</span></span><span class="ex-mini-tag">Прогрес</span></div>
-
+   <header class="ex-house-hud-heading">
+    <div class="ex-house-hud-label"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-home"></use></svg><span>МОЯ ЦІЛЬ <span class="ex-house-hud-slash" aria-hidden="true">/</span> ЖИТЛО</span></div>
+   </header>
    <div id="ex-house-stage" class="ex-house-stage" style="--ex-house-charge:0%" role="group" tabindex="0"
         aria-label="Інтерактивна 3D-модель сучасного будинку" aria-describedby="ex-house-3d-help">
     <div class="ex-house-stage-ambient" aria-hidden="true"></div>
@@ -363,12 +364,17 @@
     <div class="ex-house-stage-caption" aria-hidden="true"><span class="ex-house-stage-pulse"></span> ВІД МРІЇ ДО ВЛАСНОГО ПРОСТОРУ</div>
     <p id="ex-house-3d-help" class="ex-house-3d-help">Будинок плавно обертається. Перетягніть його мишею чи пальцем, щоб змінити ракурс. Клавіші зі стрілками повертають модель, клавіша Home відновлює початковий вигляд. Кнопка «Рух» зупиняє анімацію.</p>
    </div>
-   <div class="ex-house-stats">
-    <div class="ex-house-stat-title"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-target-arrow"></use></svg><span>Прогрес накопичення</span></div>
-    <small>Вже накопичено</small><strong class="ex-metric-xl" id="ex-house-saved">—</strong>
-    <div class="ex-progress-track"><span id="ex-house-progress" style="width:0%"></span></div>
-    <div class="ex-progress-caption"><span id="ex-house-target">Ціль не задана</span><strong id="ex-house-percent">—</strong></div>
-    <a class="ex-card-link" href="home.html">Відкрити житловий план <svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-arrow-up-right"></use></svg></a>
+   <div class="ex-house-stats" aria-label="Накопичення на житло">
+    <div class="ex-house-hud-metrics">
+     <div class="ex-house-hud-metric"><small>НАКОПИЧЕНО</small><strong id="ex-house-saved">—</strong></div>
+     <div class="ex-house-hud-metric"><small>ДО ЦІЛІ</small><strong id="ex-house-left">—</strong></div>
+     <div class="ex-house-hud-metric"><small>ПРОГРЕС</small><strong id="ex-house-percent">—</strong></div>
+    </div>
+    <div id="ex-house-progress-track" class="ex-progress-track ex-house-hud-track" role="progressbar" aria-label="Прогрес накопичення на житло" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Житлову ціль не налаштовано"><span id="ex-house-progress" style="width:0%"></span></div>
+    <div class="ex-house-hud-footer">
+     <span id="ex-house-target" class="ex-house-hud-target" aria-live="polite">Житлову ціль ще не налаштовано</span>
+     <a class="ex-house-hud-link" href="home.html">Відкрити житловий план <svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-arrow-up-right"></use></svg></a>
+    </div>
    </div>
   </div>
  </section>

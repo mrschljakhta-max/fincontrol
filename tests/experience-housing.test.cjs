@@ -67,7 +67,7 @@ test('the final stage uses a truly transparent WEBP cutout and local emission ov
  assert.match(html,/src="assets\/images\/fincontrol-house-floating.webp\?v=1"/);
  assert.match(html,/src="assets\/images\/fincontrol-house-emission.webp\?v=1"/);
  assert.match(html,/width="1280" height="960"/);
- assert.match(html,/assets\/experience-house-floating.css\?v=1/);
+ assert.match(html,/assets\/experience-house-floating.css\?v=2/);
  assert.match(html,/assets\/experience-house.js\?v=2/);
  assert.doesNotMatch(html,/src="assets\/images\/fincontrol-housing-scene.webp/);
 });
@@ -81,6 +81,18 @@ test('financial values stay separate and derived from actual FINCONTROL data',()
  assert.match(model,/--ex-house-charge/);
  assert.match(model,/privacyOn\?0:progress/);
  assert.doesNotMatch(script,/FCStore|\.update\(/);
+});
+test('cinematic HUD retains live finance IDs and does not reveal privacy values',()=>{
+ for(const id of ['ex-house-left','ex-house-progress-track','ex-house-saved','ex-house-target','ex-house-percent'])
+  assert.ok(html.includes('id="'+id+'"'),id);
+ assert.match(html,/class="ex-house-hud-heading"/);
+ assert.match(html,/class="ex-house-hud-metrics"/);
+ assert.match(html,/role="progressbar"/);
+ assert.doesNotMatch(html,/ex-house-stat-title/);
+ assert.match(model,/Math\\.max\\(0,target-saved\\)/);
+ assert.match(model,/Прогрес приховано/);
+ assert.match(css,/@media\\(max-width:560px\\)/);
+ assert.match(css,/\\.ex-page\\.ex-motion-off #housing \\.ex-house-hud-heading/);
 });
 test('image appears on entry, continues moving and pauses invisible animation layers',()=>{
  const f=fixture();
