@@ -56,7 +56,9 @@
   octa(x,-.40*scale,z,.36*scale,.49*scale,.33*scale,C.leaf);
   octa(x-.18*scale,-.47*scale,z+.1*scale,.22*scale,.27*scale,.22*scale,C.burgundy);
  }
+ let cachedGeometry=null;
  function build(){
+  if(cachedGeometry)return cachedGeometry;
   // Suspended dark volcanic platform, beveled edge and illuminated base.
   box(0,-1.69,0,7.74,.30,4.25,C.basalt);
   box(0,-1.49,0,7.52,.12,4.05,C.edge,MAT.metal);
@@ -131,7 +133,8 @@
    octa(x,-1.07,1.72,.21,.26,.21,C.leaf);
   }
   ledX(0,-1.35,1.93,7.03,C.redDim);
-  return{solid:new Float32Array(solid),glass:new Float32Array(glass),lights:new Float32Array(light)};
+  cachedGeometry={solid:new Float32Array(solid),glass:new Float32Array(glass),lights:new Float32Array(light)};
+  return cachedGeometry;
  }
  window.FCHouseGeometry={build,MAT};
 })();
