@@ -79,7 +79,7 @@
 .ex-page #analytics .ex-chart-ranges{display:inline-flex;gap:3px;border:1px solid rgba(205,215,220,.15);border-radius:999px;padding:3px}
 .ex-page #analytics .ex-chart-ranges button{
  background:transparent;border:0;border-radius:999px;color:#B7C4CC;cursor:pointer;
- font:600 11px/1.4 inherit;min-height:30px;padding:5px 10px;
+ font-family:inherit;font-size:11px;font-weight:600;line-height:1.4;min-height:30px;padding:5px 10px;
 }
 .ex-page #analytics .ex-chart-ranges button[aria-pressed="true"]{color:#F4F7F8;background:rgba(171,43,65,.48)}
 .ex-page #analytics .ex-chart{grid-template-columns:repeat(var(--ex-chart-count,6),minmax(40px,1fr));overflow-x:auto;padding:4px 1px 8px;scrollbar-width:thin}
