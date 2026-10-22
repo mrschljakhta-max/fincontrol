@@ -284,12 +284,6 @@ html{scroll-padding-top:calc(78px + 12px)}
  bottom:clamp(35px,5vw,72px);
  color:#d2dbe1;
 }
-.ex-page .ex-orbit-tag{
- font-size:var(--ex-text-caption);
- line-height:1.35;
- padding:12px 15px;
-}
-
 /* Section 02: balance visual, more legible ratio and ring. */
 .ex-page #overview .ex-glass{
  border-top-color:rgba(250,47,76,.32);

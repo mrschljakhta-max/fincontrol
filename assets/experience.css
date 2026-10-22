@@ -220,10 +220,86 @@ body.ex-page{
 .ex-private span{color:#FA2F4C}
 .ex-hero-rail{position:absolute;bottom:63px;left:clamp(28px,6.7vw,115px);display:flex;align-items:center;gap:14px;color:#b9c3c9;font-size:10px;letter-spacing:.1em}
 .ex-hero-rail i{height:1px;width:85px;background:linear-gradient(90deg,#FA2F4C,transparent)}
-.ex-hero-side{justify-self:end;display:grid;gap:12px;align-self:center;margin-top:300px;max-width:200px}
-.ex-orbit-tag{display:block;font-size:11px;white-space:nowrap;padding:11px 16px;border:1px solid rgba(205,215,220,.17);border-radius:13px;background:rgba(19,26,32,.36);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 10px 34px rgba(0,0,0,.16)}
-.ex-orbit-tag:nth-child(2){transform:translateX(-80px);color:#FA2F4C}
-.ex-orbit-tag:nth-child(3){transform:translateX(-27px)}
+/* Cinematic orbital rail: navigation grows from the sculpture, not from cards. */
+.ex-hero-side{
+ position:relative;
+ z-index:3;
+ justify-self:end;
+ align-self:center;
+ display:grid;
+ gap:2px;
+ width:clamp(228px,22vw,284px);
+ max-width:100%;
+ margin-top:clamp(220px,30vh,320px);
+}
+.ex-orbit-tag{
+ --ex-orbit-lead:clamp(57px,8.4vw,114px);
+ position:relative;
+ isolation:isolate;
+ display:grid;
+ grid-template-columns:25px minmax(0,1fr) 17px;
+ align-items:center;
+ gap:12px;
+ min-height:54px;
+ padding:10px 5px 10px 8px;
+ border:0;
+ border-bottom:1px solid rgba(205,215,220,.18);
+ border-radius:0;
+ background:transparent;
+ box-shadow:none;
+ -webkit-backdrop-filter:none;
+ backdrop-filter:none;
+ font-size:12px;
+ font-weight:600;
+ line-height:1.4;
+ color:#CDD7DC;
+ white-space:normal;
+ transition:color .25s ease,border-color .3s ease,background .3s ease,padding-left .3s ease;
+}
+.ex-orbit-tag::before{
+ content:"";
+ position:absolute;
+ left:calc(-1 * var(--ex-orbit-lead) - 4px);
+ top:50%;
+ width:var(--ex-orbit-lead);
+ height:1px;
+ background:linear-gradient(90deg,transparent,rgba(250,47,76,.34) 42%,rgba(250,47,76,.82));
+ transform:scaleX(.58);
+ transform-origin:right center;
+ opacity:.5;
+ transition:transform .42s ease,opacity .42s ease,filter .42s ease;
+ pointer-events:none;
+}
+.ex-orbit-tag::after{
+ content:"";
+ position:absolute;
+ top:calc(50% - 3px);
+ left:calc(-1 * var(--ex-orbit-lead) - 8px);
+ width:6px;
+ height:6px;
+ border-radius:50%;
+ background:#FA506A;
+ box-shadow:0 0 11px rgba(250,47,76,.38);
+ opacity:.48;
+ transform:scale(.75);
+ transition:opacity .3s ease,transform .35s ease,box-shadow .35s ease;
+ pointer-events:none;
+}
+.ex-orbit-index{font-size:10px;letter-spacing:.14em;font-variant-numeric:tabular-nums;color:#E65B73}
+.ex-orbit-name{min-width:0;text-wrap:pretty}
+.ex-orbit-tag .ex-ti{width:16px;height:16px;color:#B5C1C9;transition:color .25s ease,transform .3s ease}
+.ex-orbit-tag:hover,.ex-orbit-tag:focus-visible{
+ padding-left:13px;
+ color:#FFFFFF;
+ border-color:rgba(250,47,76,.55);
+ background:linear-gradient(90deg,rgba(171,43,65,.14),transparent 72%);
+}
+.ex-orbit-tag:hover::before,.ex-orbit-tag:focus-visible::before{transform:scaleX(1);opacity:1;filter:drop-shadow(0 0 7px #FA2F4C)}
+.ex-orbit-tag:hover::after,.ex-orbit-tag:focus-visible::after{opacity:1;transform:scale(1.28);box-shadow:0 0 14px 3px rgba(250,47,76,.68)}
+.ex-orbit-tag:hover .ex-ti,.ex-orbit-tag:focus-visible .ex-ti{color:#FA506A;transform:translate(2px,-2px)}
+.ex-page .ex-orbit-tag:focus-visible{outline:2px solid #FA506A;outline-offset:4px}
+.ex-page.ex-motion-off .ex-orbit-tag,.ex-page.ex-motion-off .ex-orbit-tag::before,.ex-page.ex-motion-off .ex-orbit-tag::after,.ex-page.ex-motion-off .ex-orbit-tag .ex-ti{transition:none!important}
+
 .ex-finish{min-height:750px;grid-template-columns:1fr;justify-items:center;text-align:center}
 .ex-finish-copy{max-width:790px;display:grid;justify-items:center}
 .ex-finish h2{font-size:clamp(47px,6vw,80px)}
@@ -256,6 +332,13 @@ body.ex-page{
  .ex-day-events{grid-template-columns:repeat(2,minmax(0,1fr));min-height:auto}
  .ex-morph-shell{right:5vw}
 }
+@media(max-width:1090px){
+ .ex-hero-side{justify-self:start;align-self:start;width:min(430px,100%);margin-top:4px}
+ .ex-orbit-tag{padding-left:32px}
+ .ex-orbit-tag::before{left:5px;width:18px;transform:scaleX(1)}
+ .ex-orbit-tag::after{left:2px}
+ .ex-orbit-tag:hover,.ex-orbit-tag:focus-visible{padding-left:36px}
+}
 @media(max-width:850px){
  .ex-header{height:65px;padding:0 16px}
  .ex-scroll-progress{top:65px}
@@ -264,7 +347,7 @@ body.ex-page{
  .ex-hero{min-height:calc(100svh - 65px);grid-template-columns:1fr}
  .ex-hero-copy{max-width:540px}
  .ex-hero-rail{left:24px;bottom:37px}
- .ex-hero-side{display:none}
+ .ex-hero-side{display:grid}
  .ex-glass{width:100%;max-width:680px;justify-self:center;padding:25px}
  .ex-story{max-width:670px}
  .ex-story h2{font-size:clamp(35px,6vw,59px)}
@@ -319,6 +402,7 @@ body.ex-page{
 }
 /* Keep all information and navigation usable when animation is undesirable. */
 @media(prefers-reduced-motion:reduce){
+ .ex-page .ex-orbit-tag,.ex-page .ex-orbit-tag::before,.ex-page .ex-orbit-tag::after,.ex-page .ex-orbit-tag .ex-ti{transition:none!important}
  html{scroll-behavior:auto}
  .ex-page .ex-reveal{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}
  .ex-page .ex-calendar-day,.ex-page .ex-chart-bar{animation:none!important;transition:none!important}

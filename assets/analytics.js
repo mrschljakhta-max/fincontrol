@@ -80,7 +80,20 @@ async function savePrefs(changes){if(demo){prefs={...prefs,...changes};return}aw
 async function changeOrder(key,delta){const order=widgetOrder(),i=order.indexOf(key),j=i+delta;if(j<0||j>=order.length)return;[order[i],order[j]]=[order[j],order[i]];try{await savePrefs({order});applyLayout();drawLayout()}catch(e){notice(e.message)}}
 function drawLayout(){const host=$('layout-options');host.replaceChildren();let dragged=null;for(const [i,key] of widgetOrder().entries()){const row=el('div','fc-layout-option'),handle=el('span','fc-drag-handle','⠿'),label=el('label'),check=el('input');handle.draggable=true;handle.title='Перетягни, щоб змінити порядок';handle.ondragstart=e=>{dragged=key;e.dataTransfer.setData('text/plain',key);e.dataTransfer.effectAllowed='move'};row.ondragover=e=>e.preventDefault();row.ondrop=async e=>{e.preventDefault();if(!dragged||dragged===key)return;const order=widgetOrder().filter(k=>k!==dragged);order.splice(order.indexOf(key),0,dragged);try{await savePrefs({order});applyLayout();drawLayout()}catch(err){notice(err.message)}};check.type='checkbox';check.checked=!prefs.hidden?.includes(key);check.onchange=async()=>{const hidden=new Set(prefs.hidden||[]);if(check.checked)hidden.delete(key);else hidden.add(key);try{await savePrefs({hidden:[...hidden]});applyLayout()}catch(e){check.checked=!check.checked;notice(e.message)}};label.append(check,document.createTextNode(widgetNames[key]));const up=button('↑',()=>changeOrder(key,-1),'fc-icon-button'),down=button('↓',()=>changeOrder(key,1),'fc-icon-button');up.disabled=i===0;down.disabled=i===widgetOrder().length-1;up.setAttribute('aria-label','Підняти: '+widgetNames[key]);down.setAttribute('aria-label','Опустити: '+widgetNames[key]);row.append(handle,label,up,down);host.append(row)}}
 function toggleDemo(){demo=!demo;scenarioReady=false;filters={};page=0;try{prefs=demo?{}:S.read(K.prefs,{})}catch(e){error(e)}$('period').value=demo?'12m':'month';$('detail-search').value='';$('detail-kind').value='all';$('heat-month').value='';render();notice(demo?'Демонстраційний режим: записи не зберігаються':'Повернуто твої дані')}
-function routeHash(){const name=location.hash.slice(1);if(name==='new'){setView('operations',false);editEntry()}else if(['overview','analysis','goals','operations'].includes(name))setView(name,false)}
+function routeHash(){
+ const name=location.hash.slice(1);
+ if(name==='income'){
+  setView('operations',false);
+  // Direct link from the orbital HUD: show actual income records, not a demo.
+  $('detail-kind').value='income';
+  $('detail-search').value='';
+  page=0;
+  renderTable();
+ }else if(name==='new'){
+  setView('operations',false);
+  editEntry();
+ }else if(['overview','analysis','goals','operations'].includes(name))setView(name,false);
+}
 for(const b of document.querySelectorAll('[data-view]')){b.onclick=()=>setView(b.dataset.view);b.onkeydown=e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const tabs=[...document.querySelectorAll('[data-view]')],i=tabs.indexOf(b),next=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;tabs[next].focus();setView(tabs[next].dataset.view)}}
 for(const b of document.querySelectorAll('[data-go-view]'))b.onclick=()=>setView(b.dataset.goView);
 for(const id of ['period','from','to'])$(id).onchange=()=>{filters={};page=0;$('custom-dates').hidden=$('period').value!=='custom';render()};
