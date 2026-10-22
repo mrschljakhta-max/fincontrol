@@ -34,7 +34,7 @@
  const stamp=d=>C.day(d).toLocaleDateString('uk-UA',{day:'numeric',month:'short'});
  const captionMonth=d=>C.day(d).toLocaleDateString('uk-UA',{month:'long',year:'numeric'});
  const signed={income:1,refund:1,expense:-1,debt_payment:-1,reserve_deposit:-1};
- let selectedDay=C.today(),calendarAnchor=C.monthStart(C.today()),lastError='',previousRenderDay='',motionEnabled=true,resizeObserver=null;
+ let selectedDay=C.today(),calendarAnchor=C.monthStart(C.today()),lastError='',previousRenderDay='',motionEnabled=true,resizeObserver=null,chartRange=6;
  const motionKey='fincontrol-experience-motion-v1';
  const motionButton=$('ex-motion-toggle');
  // Premium render replaces the vector phone ONLY when its local image is loaded.
@@ -141,12 +141,37 @@
     const mark=el('i');mark.dataset.type=event.category||C.category(event.kind);dots.append(mark);
    }
    button.append(digit,dots);
-   button.addEventListener('click',()=>{selectedDay=date;highlightCalendarDay();renderDay(byDay.get(date)||[],date,today)});
+   button.addEventListener('click',()=>{selectedDay=date;highlightCalendarDay();renderDay(byDay.get(date)||[],date,today);renderCalendarOrbit(byDay,today)});
    container.append(button);
   }
   if(!C.validDate(selectedDay)||selectedDay<displayStart||selectedDay>last)selectedDay=first;
   highlightCalendarDay();
   renderDay(byDay.get(selectedDay)||[],selectedDay,today);
+  renderCalendarOrbit(byDay,today);
+ }
+ function renderCalendarOrbit(byDay,today){
+  const host=$('ex-calendar-orbit');
+  if(!host)return;
+  host.replaceChildren();
+  const start=C.weekStart(selectedDay),labels=['Пн','Вт','Ср','Чт','Пт','Сб','Нд'];
+  for(let i=0;i<7;i++){
+   const date=C.addDays(start,i),dayItems=byDay.get(date)||[];
+   const button=el('button','ex-calendar-orbit-day');
+   button.type='button';
+   button.dataset.date=date;
+   button.setAttribute('aria-pressed',String(date===selectedDay));
+   button.setAttribute('aria-label',stamp(date)+' · подій '+dayItems.length);
+   if(date===today)button.setAttribute('aria-current','date');
+   button.append(el('span','ex-calendar-orbit-weekday',labels[i]),el('span','ex-calendar-orbit-dot',''),el('span','ex-calendar-orbit-number',String(Number(date.slice(8)))));
+   if(dayItems.length)button.classList.add('has-events');
+   button.addEventListener('click',()=>{
+    selectedDay=date;
+    highlightCalendarDay();
+    renderDay(dayItems,date,today);
+    renderCalendarOrbit(byDay,today);
+   });
+   host.append(button);
+  }
  }
  function changeCalendarMonth(delta){
   const base=C.shiftMonth(calendarAnchor,delta);
@@ -224,6 +249,7 @@
    progressTrack?.removeAttribute('aria-valuenow');
    progressTrack?.setAttribute('aria-valuetext','Житлову ціль не налаштовано');
    $('ex-house-stage')?.style?.setProperty?.('--ex-house-charge','0%');
+   $('ex-house-stage')?.setAttribute('data-goal-phase','0');
    return;
   }
   // Existing FINCONTROL housing acquisition formula, unchanged.
@@ -244,35 +270,60 @@
   }
   // The energy ring never exposes hidden percentages.
   $('ex-house-stage')?.style?.setProperty?.('--ex-house-charge',(privacyOn?0:progress).toFixed(1)+'%');
+  // Discrete facade-light phases, hidden in private mode. No new financial source.
+  $('ex-house-stage')?.setAttribute('data-goal-phase',String(privacyOn?0:progress>=75?3:progress>=40?2:progress>0?1:0));
  }
  function renderAnalytics(ledger,today){
   const container=$('ex-chart');container.replaceChildren();
+  const insight=$('ex-analytics-insight');
+  document.querySelectorAll('[data-ex-chart-range]').forEach(button=>{
+   button.setAttribute('aria-pressed',String(Number(button.dataset.exChartRange)===chartRange));
+  });
   if(!ledger||!Array.isArray(ledger.entries)){
    container.append(el('p','ex-empty','Аналітика з’явиться після внесення операцій.'));
    set('ex-analytics-note','У цьому браузері журнал відсутній. Демонстраційні суми не використовуються.');
+   if(insight)insight.textContent='Немає операцій для перегляду.';
    return;
   }
-  const months=Array.from({length:6},(_,index)=>{
-   const ym=C.shiftMonth(today,-5+index);
+  const months=Array.from({length:chartRange},(_,index)=>{
+   const ym=C.shiftMonth(today,index-chartRange+1);
    return {ym,...monthTotals(ledger.entries,ym)};
   });
+  container.style.setProperty('--ex-chart-count',String(chartRange));
+  if(insight)insight.textContent='Оберіть стовпчик, щоб побачити деталі.';
   const max=Math.max(1,...months.flatMap(v=>[v.inc,v.out]));
   for(const [idx,m] of months.entries()){
-   const group=el('div','ex-chart-group'+(!m.inc&&!m.out?' is-empty':'')+(idx===5?' is-current':''));
+   const group=el('div','ex-chart-group'+(!m.inc&&!m.out?' is-empty':'')+(idx===months.length-1?' is-current':''));
    const bars=el('div','ex-chart-bars');
+   const monthLabel=C.day(m.ym+'-01').toLocaleDateString('uk-UA',{month:'long',year:'numeric'});
    for(const [type,val] of [['in',m.inc],['out',m.out]]){
-    const bar=el('span','ex-chart-bar'+(type==='out'?' is-out':''));
+    const bar=el('button','ex-chart-bar'+(type==='out'?' is-out':''));
+    bar.type='button';
     bar.style.setProperty('--bar-h',privacyOn?'5%':val?Math.max(3,val/max*100)+'%':'0%');
     bar.style.setProperty('--bar-delay',idx*70+'ms');
-    bar.setAttribute('title',privacyOn?'Суми приховано':(type==='in'?'Надходження':'Витрати')+' · '+cash(val));
+    const name=type==='in'?'Надходження':'Витрати';
+    const accessible=privacyOn?name+' · '+monthLabel+' · суму приховано':name+' · '+monthLabel+' · '+cash(val);
+    bar.setAttribute('aria-label',accessible);
+    bar.setAttribute('title',accessible);
+    bar.addEventListener('click',()=>{
+     if(insight)insight.textContent=privacyOn?name+' · '+monthLabel+' · суму приховано':name+' · '+monthLabel+' · '+cash(val);
+    });
     bars.append(bar);
    }
    group.append(bars,el('span','ex-chart-month',C.day(m.ym+'-01').toLocaleDateString('uk-UA',{month:'short'})));
    container.append(group);
   }
   const count=months.reduce((s,v)=>s+v.count,0);
-  set('ex-analytics-note','Фактичних операцій за шість місяців: '+number.format(count)+'. Власні перекази не впливають на ці два ряди.');
+  set('ex-analytics-note','Фактичних операцій за '+chartRange+' міс.: '+number.format(count)+'. Власні перекази не включено.');
  }
+ document.querySelectorAll('[data-ex-chart-range]').forEach(button=>{
+  button.addEventListener('click',()=>{
+   const next=Number(button.dataset.exChartRange);
+   if(![3,6,12].includes(next)||next===chartRange)return;
+   chartRange=next;
+   refreshData();
+  });
+ });
  function refreshData(){
   lastError='';
   const today=C.today(),ledger=read(S.K.ledger),debts=read(S.K.debts),calendar=read(S.K.calendar),reserve=read(S.K.reserve),home=read(S.K.home);

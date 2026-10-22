@@ -18,15 +18,17 @@
 <link rel="stylesheet" href="assets/experience-house.css?v=1">
 <link rel="stylesheet" href="assets/experience-house-floating.css?v=2">
 <link rel="stylesheet" href="assets/house-cinematic-3d.css?v=1">
+<link rel="stylesheet" href="assets/experience-cinematic-next.css?v=1">
 <script src="assets/store.js?v=5"></script>
 <script src="assets/finance.js?v=4"></script>
 <script src="assets/calendar-model.js?v=3"></script>
 <script src="assets/crystal-3d.js?v=1" defer></script>
-<script src="assets/experience.js?v=11" defer></script>
+<script src="assets/experience.js?v=12" defer></script>
 <script src="assets/experience-design-system.js?v=2" defer></script>
 <script src="assets/experience-house.js?v=2" defer></script>
 <script src="assets/house-cinematic-geometry.js?v=1" defer></script>
 <script src="assets/house-cinematic-3d.js?v=1" defer></script>
+<script src="assets/experience-cinematic.js?v=1" defer></script>
 </head>
 <body class="ex-page">
 <a class="ex-skip" href="#main-content">Перейти до фінансового огляду</a>
@@ -279,6 +281,8 @@
     <div class="ex-month-wrap">
      <div class="ex-weekdays" aria-hidden="true"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span></div>
      <div id="ex-calendar-grid" class="ex-calendar-grid" role="group" aria-label="Поточний фінансовий місяць"></div>
+     <div class="ex-calendar-orbit-label">ТИЖНЕВА ОРБІТА <span aria-hidden="true">/</span> ВИБІР ДАТИ</div>
+     <div id="ex-calendar-orbit" class="ex-calendar-orbit" role="group" aria-label="Вибір дня тижня"></div>
     </div>
     <div class="ex-day-panel">
      <p class="ex-eyebrow">ОБРАНИЙ ДЕНЬ</p><h3 id="ex-day-label">Сьогодні</h3>
@@ -397,8 +401,16 @@
   </div>
   <div class="ex-glass ex-reveal" data-reveal-child>
    <div class="ex-glass-heading"><span class="ex-panel-label"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-chart-bar"></use></svg><span>Надходження й витрати</span></span><span class="ex-mini-tag">Останні 6 місяців</span></div>
-   <div class="ex-chart-legend"><span><i class="ex-dot ex-dot-red"></i> Надходження</span><span><i class="ex-dot"></i> Витрати й кредити</span></div>
-   <div id="ex-chart" class="ex-chart" role="img" aria-label="Динаміка доходів і витрат за останні шість місяців"></div>
+   <div class="ex-chart-toolbar">
+    <div class="ex-chart-legend"><span><i class="ex-dot ex-dot-red"></i> Надходження</span><span><i class="ex-dot"></i> Витрати й кредити</span></div>
+    <div class="ex-chart-ranges" role="group" aria-label="Період графіка">
+     <button type="button" data-ex-chart-range="3" aria-pressed="false">3 міс.</button>
+     <button type="button" data-ex-chart-range="6" aria-pressed="true">6 міс.</button>
+     <button type="button" data-ex-chart-range="12" aria-pressed="false">12 міс.</button>
+    </div>
+   </div>
+   <div id="ex-chart" class="ex-chart" role="group" aria-label="Динаміка доходів і витрат. Обери стовпчик для деталей"></div>
+   <p id="ex-analytics-insight" class="ex-analytics-insight" aria-live="polite">Оберіть стовпчик, щоб побачити деталі.</p>
    <p class="ex-card-note" id="ex-analytics-note">Дані беруться з фактичних записів журналу.</p>
    <a href="analytics.html#analysis" class="ex-card-link">Досліджувати графіки <svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-arrow-up-right"></use></svg></a>
   </div>
@@ -410,6 +422,16 @@
    <p>Панорама — для цілісного погляду. У повному кабінеті доступні всі робочі інструменти, редагування, імпорт і резервні копії.</p>
    <div class="ex-hero-actions"><a class="ex-button ex-button-primary" href="analytics.html">Перейти до кабінету <svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-arrow-up-right"></use></svg></a><a class="ex-text-link" href="data-center.html">Резервні копії <svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-device-floppy"></use></svg></a></div>
   </div>
+  <nav class="ex-finish-launcher ex-reveal" aria-label="Застосунки FINCONTROL">
+   <p class="ex-finish-launcher-kicker">FINCONTROL <span> / </span> ШВИДКИЙ ДОСТУП</p>
+   <p class="ex-finish-launcher-title">Відкрий свій простір</p>
+   <div class="ex-finish-apps">
+    <a href="analytics.html#overview" aria-label="Фінансовий огляд"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/tabler-sprite.svg#ti-layout-dashboard"></use></svg><span>Огляд</span></a>
+    <a href="calendar.html" aria-label="Фінансовий календар"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/tabler-sprite.svg#ti-calendar-event"></use></svg><span>Календар</span></a>
+    <a href="reserve.html" aria-label="Фінансовий резерв"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/tabler-sprite.svg#ti-shield-check"></use></svg><span>Резерв</span></a>
+    <a href="goals.html" aria-label="Фінансові цілі"><svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/tabler-sprite.svg#ti-target-arrow"></use></svg><span>Цілі</span></a>
+   </div>
+  </nav>
  </section>
 </main>
 <footer class="ex-footer"><span>FINCONTROL · MOTION</span><span>Локальні фінансові дані · 2026</span><a href="#intro">Нагору <svg class="ex-ti" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="assets/icons/tabler-sprite.svg#ti-arrow-up-right"></use></svg></a></footer>
