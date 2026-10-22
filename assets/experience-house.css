@@ -133,26 +133,26 @@
   box-shadow:0 0 10px rgba(250,47,76,.42);
   animation:ex-house-pulse 3.1s ease-in-out infinite;
 }
-.ex-page #housing.ex-house-image-ready .ex-house-art{
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-art{
   opacity:1;
   filter:brightness(.94) saturate(1.04);
   transform:scale(1.018) translate3d(0,0,0);
 }
-.ex-page #housing.ex-house-image-ready .ex-house-wireframe{
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-wireframe{
   opacity:0;
   transform:scale(1.03) translateY(-4px);
 }
-.ex-page #housing.ex-house-image-ready .ex-house-sheen{
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-sheen{
   opacity:.3;
 }
-.ex-page #housing.ex-house-image-ready .ex-house-trail{
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-trail{
   opacity:.78;
   transform:scaleX(1);
 }
-.ex-page.ex-ready:not(.ex-motion-off) #housing.ex-house-image-ready .ex-glass.is-visible .ex-house-stage-scene{
+.ex-page.ex-ready:not(.ex-motion-off) #housing.ex-house-image-ready.ex-house-revealed .ex-glass.is-visible .ex-house-stage-scene{
   animation:ex-house-camera-float 12s ease-in-out 1.65s infinite;
 }
-.ex-page.ex-ready:not(.ex-motion-off) #housing.ex-house-image-ready .ex-glass.is-visible .ex-house-sheen{
+.ex-page.ex-ready:not(.ex-motion-off) #housing.ex-house-image-ready.ex-house-revealed .ex-glass.is-visible .ex-house-sheen{
   animation:ex-house-glass 14s ease-in-out 1s infinite;
 }
 @keyframes ex-house-camera-float{
@@ -203,7 +203,7 @@
  .ex-page #housing .ex-house-stage-caption{font-size:9px;letter-spacing:.07em}
  .ex-page #housing .ex-house-stage-ambient{filter:blur(10px)}
  .ex-page #housing .ex-house-art{transform:scale(1.05)}
- .ex-page #housing.ex-house-image-ready .ex-house-art{transform:scale(1)}
+ .ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-art{transform:scale(1)}
 }
 .ex-page.ex-motion-off #housing .ex-house-stage-ambient,
 .ex-page.ex-motion-off #housing .ex-house-stage-pulse,
@@ -224,5 +224,5 @@
  .ex-page #housing .ex-house-art,
  .ex-page #housing .ex-house-wireframe,
  .ex-page #housing .ex-house-trail{transition:none!important;will-change:auto}
- .ex-page #housing.ex-house-image-ready .ex-house-art{transform:none}
+ .ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-art{transform:none}
 }
