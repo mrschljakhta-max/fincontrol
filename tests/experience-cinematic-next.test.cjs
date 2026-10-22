@@ -34,7 +34,7 @@ test('same eight scenes, local assets and real final navigation remain available
   assert.ok(html.includes('id="'+id+'"'));
  for(const file of ['assets/experience-cinematic-next.css','assets/experience-cinematic.js'])
   assert.ok(fs.existsSync(path.join(root,file)));
- assert.match(html,/assets\/experience\.js\?v=12/);
+ assert.match(html,/assets\/experience\.js\?v=13/);
  assert.equal((css.match(/\{/g)||[]).length,(css.match(/\}/g)||[]).length);
 });
 test('interactive week orbit draws seven buttons and updates selection without storage',()=>{
@@ -58,6 +58,8 @@ test('interactive week orbit draws seven buttons and updates selection without s
 });
 test('analytics supports 3 / 6 / 12 months and no private amount disclosure',()=>{
  assert.match(html,/id="ex-analytics-insight"/);
+ assert.match(html,/id="ex-analytics-range-label"/);
+ assert.match(script,/set\('ex-analytics-range-label','Останні '\+chartRange\+' міс.'\)/);
  for(const range of [3,6,12])assert.ok(html.includes('data-ex-chart-range="'+range+'"'));
  assert.match(script,/chartRange=next/);
  assert.match(script,/privacyOn\?'5%'/);

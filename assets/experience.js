@@ -274,6 +274,7 @@
   $('ex-house-stage')?.setAttribute('data-goal-phase',String(privacyOn?0:progress>=75?3:progress>=40?2:progress>0?1:0));
  }
  function renderAnalytics(ledger,today){
+  set('ex-analytics-range-label','Останні '+chartRange+' міс.');
   const container=$('ex-chart');container.replaceChildren();
   const insight=$('ex-analytics-insight');
   document.querySelectorAll('[data-ex-chart-range]').forEach(button=>{
