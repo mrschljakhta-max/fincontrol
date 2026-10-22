@@ -1,0 +1,400 @@
+/* FINCONTROL / House 2.5D — transparent premium villa on floating volcanic rock.
+   Two LOCAL images are used: the cutout + a transparent emissive layer.
+   NOT a new 3D mesh. The model breathes, parallax-tilts and glows while still.
+   The user's saved financial figures remain in HTML, outside the art. */
+
+.ex-page #housing .ex-glass-house {
+  --ex-house-tilt-x:0deg;
+  --ex-house-tilt-y:0deg;
+  --ex-house-charge:0%;
+  --ex-house-parallax:0px;
+  background:transparent;
+  border:0;
+  padding:clamp(2px,1vw,12px);
+  box-shadow:none;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  overflow:visible;
+}
+.ex-page #housing .ex-glass-house::before{display:none}
+.ex-page #housing .ex-glass-house .ex-glass-heading{
+  max-width:750px;
+  padding:11px 15px;
+  border-radius:13px;
+  border:1px solid rgba(205,215,220,.19);
+  background:linear-gradient(115deg,rgba(19,26,32,.79),rgba(51,42,48,.64));
+  box-shadow:0 9px 24px rgba(0,0,0,.2);
+  margin:0 0 8px;
+}
+.ex-page #housing .ex-house-stage{
+  margin:-3px auto 1px;
+  width:100%;
+  max-width:740px;
+  overflow:visible;
+  isolation:isolate;
+  perspective:1100px;
+}
+.ex-page #housing .ex-house-stage-ambient {
+  z-index:0;
+  inset:-12% -10%;
+  opacity:.92;
+  background:
+    radial-gradient(ellipse at 45% 68%,rgba(250,47,76,.18) 0%,rgba(171,43,65,.14) 30%,transparent 74%);
+  filter:blur(22px);
+  animation:ex-house-airglow 6.3s ease-in-out infinite;
+}
+.ex-page #housing .ex-house-stage-scene{
+  position:relative;
+  z-index:1;
+  width:100%;
+  height:auto;
+  aspect-ratio:1.68;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  overflow:visible;
+  box-shadow:none;
+  transform:none!important;
+  animation:none!important;
+  will-change:auto;
+  isolation:isolate;
+}
+.ex-page #housing .ex-house-float {
+  position:absolute;
+  z-index:3;
+  inset:-8% -4% -17%;
+  pointer-events:none;
+  transform-origin:50% 66%;
+  will-change:transform;
+}
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-float{
+  animation:ex-house-hover-breath 9.8s cubic-bezier(.48,.07,.42,.97) infinite;
+}
+.ex-page #housing .ex-house-tilt{
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+  transform-origin:50% 61%;
+  transform:perspective(1000px) rotateX(var(--ex-house-tilt-x,0deg)) rotateY(var(--ex-house-tilt-y,0deg));
+  transition:transform .48s cubic-bezier(.15,.85,.25,1);
+}
+.ex-page #housing .ex-house-art,
+.ex-page #housing .ex-house-emission,
+.ex-page #housing .ex-house-wireframe,
+.ex-page #housing .ex-house-sheen{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.ex-page #housing .ex-house-art{
+  z-index:2;
+  opacity:0;
+  transform:translate3d(0,20px,0) scale(.93);
+  filter:
+    drop-shadow(0 23px 21px rgba(0,0,0,.47))
+    drop-shadow(0 0 15px rgba(250,47,76,.08));
+  transition:opacity 1.28s ease, transform 1.4s cubic-bezier(.16,.78,.2,1);
+}
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-art{
+  opacity:1;
+  transform:translate3d(0,0,0) scale(1);
+  filter:
+    drop-shadow(0 23px 21px rgba(0,0,0,.47))
+    drop-shadow(0 0 15px rgba(250,47,76,.08));
+}
+.ex-page #housing .ex-house-emission{
+  z-index:3;
+  opacity:0;
+  transform:none;
+  filter:blur(3px);
+  mix-blend-mode:screen;
+  transition:opacity 1.4s ease .75s;
+  animation:ex-house-windows-live 5.8s ease-in-out infinite;
+}
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-emission{opacity:.34}
+.ex-page #housing .ex-house-wireframe{
+  z-index:4;
+  opacity:.94;
+  background:none;
+  transform:translateY(5px) scale(.91);
+  transition:opacity .85s ease .45s,transform 1.1s ease;
+  filter:drop-shadow(0 0 13px rgba(250,47,76,.38));
+}
+.ex-page #housing .ex-house-wireframe svg{
+  width:100%;height:100%;
+  stroke-dasharray:none;
+  stroke-dashoffset:0;
+  filter:none;
+}
+.ex-page #housing .ex-house-wireframe .ex-house-draw-line {
+  stroke-dasharray:2200;
+  stroke-dashoffset:2200;
+  animation:ex-house-blueprint-draw 2.4s cubic-bezier(.21,.67,.23,1) forwards;
+  animation-play-state:paused;
+}
+.ex-page #housing.ex-house-in-view .ex-house-wireframe .ex-house-draw-line{
+  animation-play-state:running;
+}
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-wireframe{
+  opacity:0;
+  transform:translate3d(0,-6px,0) scale(1.03);
+}
+.ex-page #housing .ex-house-sheen{
+  z-index:4;
+  opacity:0;
+  background:
+    linear-gradient(110deg,
+    transparent 22%,rgba(255,245,238,.01) 30%,rgba(255,245,238,.1) 43%,
+    rgba(255,245,238,.21) 51%,rgba(255,245,238,.025) 59%,transparent 72%);
+  -webkit-mask:url("images/fincontrol-house-floating.webp?v=1") center/contain no-repeat;
+  mask:url("images/fincontrol-house-floating.webp?v=1") center/contain no-repeat;
+  mix-blend-mode:screen;
+  transform:translateX(-40%);
+  animation:ex-house-light-sweep 12.7s ease-in-out infinite;
+}
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-sheen{
+  opacity:.34;
+}
+.ex-page #housing .ex-house-floor-shadow{
+  position:absolute;
+  z-index:1;
+  left:14%;
+  bottom:1%;
+  width:73%;
+  height:17%;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(250,47,76,.42),rgba(86,21,37,.2) 42%,transparent 73%);
+  filter:blur(18px);
+  transform:scaleX(.8) scaleY(.73);
+  opacity:.52;
+  animation:ex-house-shadow-pulse 9.8s ease-in-out infinite;
+}
+.ex-page #housing .ex-house-orbit{
+  position:absolute;
+  z-index:2;
+  left:10%;
+  width:80%;
+  bottom:4.5%;
+  height:43%;
+  border:2px solid rgba(250,47,76,.22);
+  border-radius:50%;
+  box-shadow:0 0 19px rgba(250,47,76,.24), inset 0 0 13px rgba(250,47,76,.13);
+  transform:perspective(460px) rotateX(74deg);
+  animation:ex-house-energy-orbit 16s linear infinite;
+  opacity:.82;
+  pointer-events:none;
+}
+.ex-page #housing .ex-house-orbit::after{
+  content:"";
+  position:absolute;
+  inset:-3px;
+  border-radius:50%;
+  background:conic-gradient(from 35deg,
+    #FB627A 0%,
+    #E33956 var(--ex-house-charge,0%),
+    transparent var(--ex-house-charge,0%),
+    transparent 100%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 3px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 3px));
+  filter:drop-shadow(0 0 11px rgba(250,47,76,.65));
+  opacity:.65;
+}
+.ex-page #housing .ex-house-trail{
+  bottom:5%;
+  height:2px;
+  left:8%;
+  width:84%;
+  opacity:.64;
+  border-radius:50%;
+  z-index:2;
+  transform:scaleX(0);
+}
+.ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-trail{
+  transform:scaleX(1);
+  opacity:.68;
+}
+.ex-page #housing .ex-house-particles{
+  position:absolute;
+  z-index:5;
+  inset:0;
+  pointer-events:none;
+  overflow:visible;
+}
+.ex-page #housing .ex-house-particles i{
+  position:absolute;
+  width:3px;height:3px;border-radius:50%;
+  background:#FFA1B2;
+  box-shadow:0 0 9px 2px rgba(250,47,76,.35);
+  animation:ex-house-ember 6s ease-in-out infinite;
+}
+.ex-page #housing .ex-house-particles i:nth-child(1){left:13%;top:47%;animation-delay:-1s}
+.ex-page #housing .ex-house-particles i:nth-child(2){left:80%;top:19%;animation-delay:-4s}
+.ex-page #housing .ex-house-particles i:nth-child(3){left:92%;top:68%;animation-delay:-2s}
+.ex-page #housing .ex-house-particles i:nth-child(4){left:23%;top:74%;animation-delay:-5s}
+.ex-page #housing .ex-house-particles i:nth-child(5){left:64%;top:15%;animation-delay:-3s}
+.ex-page #housing .ex-house-particles i:nth-child(6){left:42%;top:84%;animation-delay:-.8s}
+.ex-page #housing .ex-house-particles i:nth-child(7){left:9%;top:32%;animation-delay:-3.7s}
+
+.ex-page #housing .ex-house-stage-caption{
+  margin:0 0 clamp(15px,2.2vw,25px);
+  padding-top:5px;
+  color:#D6DAE0;
+  font-size:11px;
+  line-height:1.4;
+  letter-spacing:.12em;
+}
+.ex-page #housing .ex-house-stats{
+  position:relative;
+  z-index:2;
+  width:100%;
+  padding:clamp(19px,2.6vw,27px);
+  margin-top:5px;
+  border-radius:20px;
+  border:1px solid rgba(205,215,220,.21);
+  background:linear-gradient(125deg,rgba(31,27,38,.77),rgba(14,21,31,.82));
+  -webkit-backdrop-filter:blur(22px) saturate(115%);
+  backdrop-filter:blur(22px) saturate(115%);
+  box-shadow:0 17px 52px rgba(3,9,17,.29),inset 0 1px rgba(255,255,255,.07);
+  display:grid;
+}
+.ex-page #housing .ex-house-stat-title{
+  display:flex;align-items:center;gap:10px;
+  color:#E1E7ED;
+  font-size:13px;
+  font-weight:650;
+  margin-bottom:16px;
+}
+.ex-page #housing .ex-house-stat-title .ex-ti{
+  width:18px;height:18px;
+  color:#FA506A;
+}
+.ex-page #housing .ex-house-stats>small{
+  color:#B8C4CE;
+  font-size:12px;
+  margin-bottom:4px;
+}
+.ex-page #housing .ex-house-stats>.ex-metric-xl{
+  margin:0 0 18px;
+  font-weight:670;
+  letter-spacing:-.035em;
+}
+.ex-page #housing .ex-house-stats .ex-progress-track{margin:0}
+.ex-page #housing .ex-house-stats .ex-progress-caption{
+  margin:11px 0 8px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+}
+.ex-page #housing .ex-house-stats .ex-card-link{margin-top:16px}
+
+@keyframes ex-house-hover-breath{
+  0%,100%{transform:translate3d(0,2px,0) rotateZ(-.45deg) scale(.990)}
+  25%{transform:translate3d(0,-5px,0) rotateZ(.25deg) scale(1.004)}
+  50%{transform:translate3d(0,-11px,0) rotateZ(.56deg) scale(1.013)}
+  75%{transform:translate3d(0,-5px,0) rotateZ(-.15deg) scale(1)}
+}
+@keyframes ex-house-windows-live{
+  0%,100%{filter:brightness(.8) blur(3px);opacity:.22}
+  38%{filter:brightness(1.33) blur(4px);opacity:.60}
+  58%{filter:brightness(1.10) blur(5px);opacity:.43}
+  76%{filter:brightness(1.48) blur(3px);opacity:.66}
+}
+@keyframes ex-house-light-sweep{
+  0%,18%,100%{transform:translateX(-45%);opacity:0}
+  48%{transform:translateX(19%);opacity:.35}
+  72%{transform:translateX(52%);opacity:.08}
+}
+@keyframes ex-house-shadow-pulse{
+  0%,100%{transform:scaleX(.88) scaleY(.78);opacity:.43}
+  50%{transform:scaleX(1.03) scaleY(.94);opacity:.63}
+}
+@keyframes ex-house-energy-orbit{
+  0%,100%{filter:drop-shadow(0 0 5px rgba(250,47,76,.18))}
+  50%{filter:drop-shadow(0 0 20px rgba(250,47,76,.30))}
+}
+@keyframes ex-house-airglow{
+  0%,100%{opacity:.65;transform:scale(.96)}
+  50%{opacity:1;transform:scale(1.045)}
+}
+@keyframes ex-house-ember{
+  0%,100%{opacity:0;transform:translate3d(0,8px,0) scale(.7)}
+  25%{opacity:.8}
+  70%{opacity:.18;transform:translate3d(7px,-28px,0) scale(1.2)}
+}
+@keyframes ex-house-blueprint-draw{
+  0%{stroke-dashoffset:2200;opacity:1}
+  100%{stroke-dashoffset:0;opacity:1}
+}
+
+/* Pause invisible decoration to avoid wasting battery across the long site. */
+.ex-page:not(.ex-motion-off) #housing:not(.ex-house-in-view) .ex-house-float,
+.ex-page:not(.ex-motion-off) #housing:not(.ex-house-in-view) .ex-house-emission,
+.ex-page:not(.ex-motion-off) #housing:not(.ex-house-in-view) .ex-house-sheen,
+.ex-page:not(.ex-motion-off) #housing:not(.ex-house-in-view) .ex-house-stage-ambient,
+.ex-page:not(.ex-motion-off) #housing:not(.ex-house-in-view) .ex-house-floor-shadow,
+.ex-page:not(.ex-motion-off) #housing:not(.ex-house-in-view) .ex-house-orbit,
+.ex-page:not(.ex-motion-off) #housing:not(.ex-house-in-view) .ex-house-particles i{
+  animation-play-state:paused!important;
+}
+.ex-page.ex-motion-off #housing .ex-house-float,
+.ex-page.ex-motion-off #housing .ex-house-emission,
+.ex-page.ex-motion-off #housing .ex-house-sheen,
+.ex-page.ex-motion-off #housing .ex-house-stage-ambient,
+.ex-page.ex-motion-off #housing .ex-house-floor-shadow,
+.ex-page.ex-motion-off #housing .ex-house-orbit,
+.ex-page.ex-motion-off #housing .ex-house-particles i,
+.ex-page.ex-motion-off #housing .ex-house-stage-pulse,
+.ex-page.ex-motion-off #housing .ex-house-wireframe .ex-house-draw-line{
+  animation:none!important;
+}
+.ex-page.ex-motion-off #housing .ex-house-tilt{
+  transition:none!important;
+  transform:none!important;
+}
+.ex-page.ex-motion-off #housing .ex-house-wireframe .ex-house-draw-line{
+  stroke-dashoffset:0!important;
+}
+@media(max-width:1090px){
+  .ex-page #housing .ex-glass-house{max-width:760px}
+}
+@media(max-width:680px){
+  .ex-page #housing .ex-glass-house{padding:0}
+  .ex-page #housing .ex-house-stage{
+    max-width:100%;
+    margin-bottom:2px;
+  }
+  .ex-page #housing .ex-house-stage-scene{aspect-ratio:1.45}
+  .ex-page #housing .ex-house-float{inset:-7% -12% -14%}
+  .ex-page #housing .ex-house-stage-caption{font-size:9px;letter-spacing:.07em;margin-bottom:14px}
+  .ex-page #housing .ex-house-stats{padding:19px 17px;border-radius:17px}
+  .ex-page #housing .ex-house-stats>.ex-metric-xl{font-size:35px}
+  .ex-page #housing .ex-house-particles i:nth-child(n+5){display:none}
+  .ex-page #housing .ex-house-orbit{bottom:6%}
+}
+@media(hover:none){
+  .ex-page #housing .ex-house-tilt{transform:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .ex-page #housing .ex-house-float,
+  .ex-page #housing .ex-house-emission,
+  .ex-page #housing .ex-house-sheen,
+  .ex-page #housing .ex-house-stage-ambient,
+  .ex-page #housing .ex-house-floor-shadow,
+  .ex-page #housing .ex-house-orbit,
+  .ex-page #housing .ex-house-particles i,
+  .ex-page #housing .ex-house-stage-pulse,
+  .ex-page #housing .ex-house-wireframe .ex-house-draw-line{
+    animation:none!important;
+  }
+  .ex-page #housing .ex-house-tilt{transform:none!important;transition:none!important}
+  .ex-page #housing .ex-house-art{transition:none!important}
+  .ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-art{
+    opacity:1;
+    transform:none;
+  }
+  .ex-page #housing.ex-house-image-ready.ex-house-revealed .ex-house-emission{opacity:.3}
+  .ex-page #housing .ex-house-wireframe .ex-house-draw-line{stroke-dashoffset:0!important}
+}
