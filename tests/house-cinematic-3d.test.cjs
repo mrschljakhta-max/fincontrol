@@ -108,7 +108,7 @@ test('drag rotates true model and WebGL context loss restores picture fallback',
 test('unsupported WebGL and reduced motion are safe and non-animated',()=>{
  const noGL=rig(false);
  assert.equal(noGL.states.has('ex-house-3d-ready'),false);
- const reduced=rig(true);
+ const reduced=rig(true,true);
  assert.equal(reduced.states.has('ex-house-3d-ready'),true);
  reduced.show(true);
  assert.equal(reduced.frames.size,0);
